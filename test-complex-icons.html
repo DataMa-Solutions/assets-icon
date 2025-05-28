@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Icônes Complexes - DataMa Icons</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .icon-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .icon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .icon-display {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-display svg {
+            width: 100%;
+            height: 100%;
+        }
+        .icon-name {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+            word-break: break-word;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 30px 0 15px;
+            border-bottom: 2px solid #16D0B4;
+            padding-bottom: 5px;
+        }
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 8px;
+        }
+        .comparison-item {
+            flex: 1;
+            text-align: center;
+        }
+        .comparison-item h3 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .size-test {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Test des Icônes Complexes - DataMa Icons</h1>
+        
+        <div class="section-title">Icônes Complexes Multi-Couleurs</div>
+        <div class="icon-grid" id="complex-icons"></div>
+        
+        <div class="section-title">Comparaison: Avant vs Après</div>
+        <div class="comparison">
+            <div class="comparison-item">
+                <h3>❌ Avant (Path unique)</h3>
+                <p>Les icônes multi-couleurs étaient converties en un seul path, perdant leurs couleurs</p>
+            </div>
+            <div class="comparison-item">
+                <h3>✅ Après (Content complet)</h3>
+                <p>Les icônes complexes conservent tous leurs éléments et couleurs</p>
+            </div>
+        </div>
+        
+        <div class="section-title">Test de Tailles</div>
+        <div id="size-tests"></div>
+    </div>
+
+    <script src="dist/icons.js" type="module"></script>
+    <script type="module">
+        import { DataMaLightIcons } from './dist/icons.js';
+        
+        // Fonction pour créer un SVG à partir des données d'icône
+        function createSVG(iconData) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', iconData.viewBox);
+            svg.setAttribute('width', iconData.width);
+            svg.setAttribute('height', iconData.height);
+            
+            if (iconData.isComplex && iconData.content) {
+                // Pour les icônes complexes, utiliser le contenu HTML
+                svg.innerHTML = iconData.content;
+            } else if (iconData.path) {
+                // Pour les icônes simples, créer un path
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', iconData.path);
+                path.setAttribute('fill', 'currentColor');
+                svg.appendChild(path);
+            }
+            
+            return svg;
+        }
+        
+        // Récupérer toutes les icônes complexes automatiquement
+        const complexIcons = [];
+        const simpleIcons = [];
+        
+        Object.keys(DataMaLightIcons).forEach(iconName => {
+            const iconData = DataMaLightIcons[iconName];
+            if (iconData.isComplex) {
+                complexIcons.push(iconName);
+            } else {
+                simpleIcons.push(iconName);
+            }
+        });
+        
+        console.log(`🎨 Trouvé ${complexIcons.length} icônes complexes et ${simpleIcons.length} icônes simples`);
+        
+        // Afficher toutes les icônes complexes
+        const complexGrid = document.getElementById('complex-icons');
+        complexIcons.forEach(iconName => {
+            const iconData = DataMaLightIcons[iconName];
+            if (iconData) {
+                const card = document.createElement('div');
+                card.className = 'icon-card';
+                
+                const display = document.createElement('div');
+                display.className = 'icon-display';
+                display.appendChild(createSVG(iconData));
+                
+                const name = document.createElement('div');
+                name.className = 'icon-name';
+                name.textContent = iconName.replace('-svg', '').replace(/-/g, ' ');
+                
+                // Ajouter des informations sur l'icône
+                const info = document.createElement('div');
+                info.style.fontSize = '10px';
+                info.style.color = '#999';
+                info.style.marginTop = '5px';
+                info.textContent = `${iconData.category} • ${iconData.width}x${iconData.height}`;
+                
+                card.appendChild(display);
+                card.appendChild(name);
+                card.appendChild(info);
+                complexGrid.appendChild(card);
+            }
+        });
+        
+        // Test de tailles pour illustration-anonymous-svg (si elle existe)
+        const sizeTests = document.getElementById('size-tests');
+        const sizes = [16, 24, 32, 48, 64];
+        const testIcon = DataMaLightIcons['illustration-anonymous-svg'];
+        
+        if (testIcon) {
+            const testTitle = document.createElement('h3');
+            testTitle.textContent = 'illustration-anonymous-svg à différentes tailles :';
+            testTitle.style.margin = '20px 0 10px';
+            sizeTests.appendChild(testTitle);
+            
+            sizes.forEach(size => {
+                const sizeTest = document.createElement('div');
+                sizeTest.className = 'size-test';
+                
+                const svg = createSVG(testIcon);
+                svg.style.width = size + 'px';
+                svg.style.height = size + 'px';
+                
+                const label = document.createElement('span');
+                label.textContent = `${size}px`;
+                
+                sizeTest.appendChild(svg);
+                sizeTest.appendChild(label);
+                sizeTests.appendChild(sizeTest);
+            });
+        }
+        
+        // Mettre à jour le titre avec le nombre d'icônes
+        const mainTitle = document.querySelector('h1');
+        mainTitle.textContent = `🎨 Test des Icônes Complexes - ${complexIcons.length} icônes`;
+        
+        console.log('✅ Test des icônes complexes chargé');
+        console.log('📊 Icônes complexes affichées:', complexIcons.length);
+        console.log('🎨 Icônes complexes:', complexIcons);
+    </script>
+</body>
+</html> 

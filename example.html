@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataMa Icons - Exemple avec centrage amélioré</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .category-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .category-section h2 {
+            color: #333;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .show-all-btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .show-all-btn:hover {
+            background: #005a9e;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        
+        .icon-example {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-example:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .icon-example.hidden {
+            display: none;
+        }
+        
+        /* Icon container for consistent sizing */
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            margin: 10px auto;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+        }
+        
+        .icon-container svg {
+            max-width: 40px;
+            max-height: 40px;
+        }
+        
+        .icon-name {
+            font-size: 11px;
+            color: #666;
+            margin: 5px 0;
+            word-break: break-word;
+        }
+        
+        .icon-info {
+            font-size: 10px;
+            color: #999;
+            margin: 2px 0;
+        }
+        
+        .complex-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            display: inline-block;
+            margin: 2px;
+        }
+        
+        .simple-badge {
+            background: #51cf66;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            display: inline-block;
+            margin: 2px;
+        }
+        
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 5px;
+        }
+        
+        .controls button {
+            margin: 5px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #007acc;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .controls button:hover {
+            background: #005a9e;
+        }
+        
+        .error {
+            color: red;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 DataMa Icons - Centrage Amélioré</h1>
+    
+    <div class="controls">
+        <p><strong>Contrôles de test :</strong></p>
+        <button onclick="replaceIcons({ size: 24 })">Taille 24px</button>
+        <button onclick="replaceIcons({ size: 32 })">Taille 32px</button>
+        <button onclick="replaceIcons({ size: 48 })">Taille 48px</button>
+        <button onclick="replaceIcons({ fill: '#007acc' })">Couleur Bleue</button>
+        <button onclick="replaceIcons({ fill: '#ff6b6b' })">Couleur Rouge</button>
+        <button onclick="replaceIcons({ stroke: '#333', 'stroke-width': '2' })">Contour</button>
+        <button onclick="replaceIcons()">Reset</button>
+    </div>
+
+    <!-- Container dynamique pour les catégories -->
+    <div id="categories-container"></div>
+
+    <h2>📊 Statistiques du système</h2>
+    <div id="stats-container" style="background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <ul>
+            <li><strong>Total d'icônes :</strong> <span id="total-icons">-</span></li>
+            <li><strong>Icônes complexes :</strong> <span id="complex-icons">-</span></li>
+            <li><strong>Icônes simples :</strong> <span id="simple-icons">-</span></li>
+            <li><strong>Catégories :</strong> <span id="total-categories">-</span></li>
+            <li><strong>ViewBox normalisé :</strong> Toutes les icônes sont centrées dans un espace 24x24</li>
+            <li><strong>Dimensions originales préservées</strong> dans <code>originalDimensions</code></li>
+        </ul>
+    </div>
+
+    <script src="dist/index-simple.js" type="module"></script>
+    <script>
+        // Global variables
+        let datamaLibrary = null;
+        let allIcons = {};
+        let categories = {};
+        let categoryExpanded = {}; // Sera initialisé dynamiquement
+        const defaultVisibleCount = 4;
+
+        // Emojis pour les catégories
+        const categoryEmojis = {
+            actions: '🔧',
+            data: '📊',
+            ui: '🎯',
+            illustrations: '🎨',
+            logos: '🏢',
+            navigation: '🧭',
+            light: '💡' // Nouvel emoji pour la catégorie light
+        };
+
+        // Load icon data
+        async function loadIconData() {
+            try {
+                // Wait for the module to load and check if datama library is available
+                await new Promise(resolve => {
+                    const checkLibrary = () => {
+                        if (typeof window.DataMaIcons !== 'undefined') {
+                            resolve();
+                        } else {
+                            setTimeout(checkLibrary, 50);
+                        }
+                    };
+                    checkLibrary();
+                });
+                
+                datamaLibrary = window.DataMaIcons;
+                console.log('DataMa library found');
+                
+                // Load categories and icons data
+                const categoriesResponse = await fetch('dist/categories.json');
+                categories = await categoriesResponse.json();
+                
+                const iconsResponse = await fetch('dist/icons.json');
+                allIcons = await iconsResponse.json();
+                
+                console.log('Loaded', Object.keys(allIcons).length, 'icons');
+                console.log('Categories:', Object.keys(categories));
+                
+                // Initialize categoryExpanded dynamically
+                categoryExpanded = {};
+                Object.keys(categories).forEach(categoryName => {
+                    categoryExpanded[categoryName] = false;
+                });
+                
+                // Create category sections dynamically
+                createCategorySections();
+                
+                // Update statistics
+                updateStatistics();
+                
+                // Populate initial category grids
+                populateCategories();
+            } catch (error) {
+                console.error('Failed to load icon data:', error);
+                document.body.insertAdjacentHTML('afterbegin', 
+                    '<div class="error">❌ Erreur: Impossible de charger les données d\'icônes. ' + error.message + '</div>'
+                );
+            }
+        }
+
+        // Create category sections dynamically
+        function createCategorySections() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = ''; // Clear existing content
+            
+            Object.keys(categories).forEach(categoryName => {
+                const emoji = categoryEmojis[categoryName] || '📁';
+                const displayName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+                
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.innerHTML = `
+                    <h2>
+                        ${emoji} ${displayName}
+                        <button class="show-all-btn" onclick="toggleCategory('${categoryName}')">Voir tout</button>
+                    </h2>
+                    <div class="icon-grid" id="${categoryName}-grid"></div>
+                `;
+                
+                container.appendChild(section);
+            });
+        }
+
+        // Update statistics dynamically
+        function updateStatistics() {
+            const totalIcons = Object.keys(allIcons).length;
+            const complexIcons = Object.values(allIcons).filter(icon => icon.isComplex).length;
+            const simpleIcons = totalIcons - complexIcons;
+            const totalCategories = Object.keys(categories).length;
+            
+            document.getElementById('total-icons').textContent = totalIcons;
+            document.getElementById('complex-icons').textContent = `${complexIcons} (utilisent la propriété content)`;
+            document.getElementById('simple-icons').textContent = `${simpleIcons} (utilisent la propriété path)`;
+            document.getElementById('total-categories').textContent = `${totalCategories} (${Object.keys(categories).join(', ')})`;
+        }
+
+        // Populate all categories with initial icons (first 4 or all if less than 4)
+        function populateCategories() {
+            Object.keys(categories).forEach(categoryName => {
+                const grid = document.getElementById(categoryName + '-grid');
+                if (grid) {
+                    populateCategoryGrid(categoryName, false); // false = not expanded
+                }
+            });
+        }
+
+        // Populate a specific category grid
+        function populateCategoryGrid(categoryName, expanded = false) {
+            const grid = document.getElementById(categoryName + '-grid');
+            const categoryIcons = categories[categoryName] || [];
+            
+            // Clear existing content
+            grid.innerHTML = '';
+            
+            // Determine how many icons to show
+            const visibleIcons = expanded ? categoryIcons : categoryIcons.slice(0, defaultVisibleCount);
+            
+            // Create icon elements
+            visibleIcons.forEach(iconName => {
+                const iconInfo = allIcons[iconName];
+                if (iconInfo) {
+                    const iconElement = createIconElement(iconName, iconInfo);
+                    grid.appendChild(iconElement);
+                }
+            });
+        }
+
+        // Replace icons with optional attributes
+        function replaceIcons(attrs = {}) {
+            if (!datamaLibrary || !datamaLibrary.replace) {
+                console.error('DataMa library not loaded');
+                return;
+            }
+            
+            try {
+                datamaLibrary.replace(attrs);
+                console.log('Icons replaced with attributes:', attrs);
+            } catch (error) {
+                console.error('Error replacing icons:', error);
+            }
+        }
+
+        // Toggle category to show all icons
+        function toggleCategory(categoryName) {
+            if (!categories[categoryName]) {
+                console.warn('Category not found:', categoryName);
+                return;
+            }
+
+            const button = document.querySelector(`[onclick="toggleCategory('${categoryName}')"]`);
+            const isCurrentlyExpanded = categoryExpanded[categoryName];
+            
+            // Toggle the expanded state
+            categoryExpanded[categoryName] = !isCurrentlyExpanded;
+            
+            // Update button text
+            button.textContent = categoryExpanded[categoryName] ? 'Réduire' : 'Voir tout';
+            
+            // Repopulate the grid
+            populateCategoryGrid(categoryName, categoryExpanded[categoryName]);
+            
+            // Replace icons after updating the grid
+            setTimeout(() => {
+                replaceIcons();
+            }, 100);
+        }
+
+        // Create an icon element
+        function createIconElement(iconName, iconInfo) {
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'icon-example';
+            
+            const displayName = iconName.replace('-svg', '').replace(/-/g, ' ');
+            const badge = iconInfo.isComplex ? 
+                '<span class="complex-badge">Complex</span>' : 
+                '<span class="simple-badge">Simple</span>';
+            
+            iconDiv.innerHTML = `
+                <div class="icon-container">
+                    <i data-datama="${iconName}"></i>
+                </div>
+                <div class="icon-name">${displayName}</div>
+                <div class="icon-info">${iconInfo.width || 24}x${iconInfo.height || 24}</div>
+                ${badge}
+            `;
+            
+            return iconDiv;
+        }
+
+        // Get display name for an icon
+        function getDisplayName(iconName) {
+            return iconName.replace('-svg', '').replace(/-/g, ' ');
+        }
+
+        // Get icon type
+        function getIconType(iconName) {
+            const icon = allIcons[iconName];
+            return icon && icon.isComplex ? 'Complex' : 'Simple';
+        }
+
+        // Get icon badge class
+        function getIconBadge(iconName) {
+            const icon = allIcons[iconName];
+            return icon && icon.isComplex ? 'complex-badge' : 'simple-badge';
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Page loaded, initializing...');
+            
+            await loadIconData();
+            
+            // Initial icon replacement
+            setTimeout(() => {
+                replaceIcons();
+                console.log('Initial icons loaded');
+            }, 300);
+        });
+    </script>
+</body>
+</html> 
