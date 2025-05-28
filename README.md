@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 118 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 118 icons organized in 7 categories, available as Vue 2 directive/components and JSON data.
 
 ## Installation
 
@@ -8,21 +8,23 @@ DataMa icon library with 118 icons, available as Vue 2 components and JSON data.
 npm install @datama/icons
 ```
 
+## Categories
+
+The library includes 118 icons organized in 7 categories:
+
+- **💼 Actions** - User interface actions and controls  
+- **📊 Data** - Data visualization and analysis icons
+- **🎨 Illustrations** - Complex illustrations and graphics
+- **💡 Light** - Simple line icons with consistent styling
+- **🏢 Logos** - Brand and service logos
+- **🧭 Navigation** - Navigation and directional icons
+- **🎛️ UI** - User interface elements and controls
+
 ## Usage
 
-### As JSON data (for vanilla JS projects)
+### 🔥 Vue 2 (Recommended)
 
-```javascript
-import { DataMaLightIcons } from '@datama/icons';
-// or
-const { DataMaLightIcons } = require('@datama/icons');
-
-// Use icon data
-const checkIcon = DataMaLightIcons.check;
-console.log(checkIcon.path); // SVG path data
-```
-
-### As Vue 2 components
+#### Installation in Vue
 
 ```javascript
 import Vue from 'vue';
@@ -31,173 +33,272 @@ import DatamaIcons from '@datama/icons/vue';
 Vue.use(DatamaIcons);
 ```
 
+#### Method 1: Using `<i>` tags with `data-datama` attribute
+
 ```vue
 <template>
   <div>
-    <!-- Using specific icon component -->
-    <IconCheck :size="24" fill="blue" />
+    <!-- Simple usage -->
+    <i data-datama="check-svg"></i>
+    <i data-datama="arrow-right-svg"></i>
     
-    <!-- Using generic icon component -->
-    <IconGeneric name="check" :size="24" fill="blue" />
+    <!-- With size and color -->
+    <i data-datama="settings-svg" data-size="32" data-fill="#007acc"></i>
+    
+    <!-- Reactive attributes -->
+    <i data-datama="home-svg" :data-size="iconSize" :data-fill="iconColor"></i>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      iconSize: 24,
+      iconColor: '#007acc'
+    }
+  }
+}
+</script>
 ```
 
-### Available props for Vue components
+#### Method 2: Using `v-datama` directive
 
-- `size`: Number or string (default: 24)
-- `width`: Number or string (overrides size)
-- `height`: Number or string (overrides size)  
-- `fill`: String (default: 'currentColor')
-- `stroke`: String (default: 'none')
-- `strokeWidth`: Number or string (default: 0)
-- `class`: String, object, or array for additional CSS classes
+```vue
+<template>
+  <div>
+    <!-- Basic directive usage -->
+    <span v-datama="'check-svg'"></span>
+    
+    <!-- With reactive icon name -->
+    <span v-datama="selectedIcon"></span>
+    
+    <!-- With attributes -->
+    <span v-datama="'upload-svg'" :data-size="48" :data-fill="'red'"></span>
+  </div>
+</template>
 
-## Available Icons (118)
+<script>
+export default {
+  data() {
+    return {
+      selectedIcon: 'search-svg'
+    }
+  }
+}
+</script>
+```
 
-- `add-folder-svg`
-- `alert-circle-svg`
-- `alert-triangle-svg`
-- `area-chart-svg`
-- `arrow-bottom-svg`
-- `arrow-down-right-svg`
-- `arrow-left-svg`
-- `arrow-right-svg`
-- `arrow-top-svg`
-- `arrow-up-right-svg`
-- `assess-svg`
-- `balance-scale-svg`
-- `books-svg`
-- `chat-svg`
-- `check-svg`
-- `chevron-down-svg`
-- `chevron-left-svg`
-- `chevron-right-svg`
-- `chevron-up-svg`
-- `close-svg`
-- `cog-svg`
-- `compare-svg`
-- `contacts-svg`
-- `copy-svg`
-- `cross-svg`
-- `data-svg`
-- `datama-logo-svg`
-- `datama-svg`
-- `detect-svg`
-- `documentation-svg`
-- `documents-svg`
-- `download-svg`
-- `drop-down-1-svg`
-- `drop-down-svg`
-- `drop-left-svg`
-- `drop-right-svg`
-- `drop-up-svg`
-- `earth-svg`
-- `edit-svg`
-- `eyes-svg`
-- `filter-svg`
-- `folder-open-svg`
-- `font-svg`
-- `function-svg`
-- `gauge-svg`
-- `graph-chart-svg`
-- `group-svg`
-- `groups-svg`
-- `handshake-svg`
-- `heart-svg`
-- `help-circle-svg`
-- `home-svg`
-- `illustration-analyze-slack-etc-svg`
-- `illustration-analyze-svg`
-- `illustration-anonymous-svg`
-- `illustration-compare-svg`
-- `illustration-data-svg`
-- `illustration-datasettings-svg`
-- `illustration-extension-premium-svg`
-- `illustration-free-svg`
-- `illustration-hearts-svg`
-- `illustration-ideas-svg`
-- `illustration-log-out-svg`
-- `illustration-premium-svg`
-- `journey-svg`
-- `key-svg`
-- `label-svg`
-- `leave-org-svg`
-- `license-key-svg`
-- `link-open-svg`
-- `link-svg`
-- `lock-svg`
-- `logo-looker-studio-svg`
-- `logo-power-bi-svg`
-- `logo-tableau-svg`
-- `magnifier-svg`
-- `maximize-2-svg`
-- `minus-svg`
-- `more-horizontal-svg`
-- `more-vertical-svg`
-- `new-tab-svg`
-- `paint-svg`
-- `peace-svg`
-- `pivot-svg`
-- `play-svg`
-- `plus-svg`
-- `profile-1-svg`
-- `profile-add-svg`
-- `profile-info-svg`
-- `profile-setting-svg`
-- `profile-svg`
-- `release-notes-1-svg`
-- `release-notes-svg`
-- `reverse-axis-svg`
-- `rotate-ccw-svg`
-- `rotate-ccw1-svg`
-- `rotate-cw-svg`
-- `rotate-cw1-svg`
-- `save-svg`
-- `search-svg`
-- `settings-1-svg`
-- `settings-org-svg`
-- `settings-svg`
-- `share-2-svg`
-- `shopping-cart-svg`
-- `stacked-svg`
-- `star-cool-svg`
-- `table-svg`
-- `text-color-svg`
-- `trash-2-svg`
-- `tree-svg`
-- `tutorials-svg`
-- `unstacked-svg`
-- `update-svg`
-- `upload-1-svg`
-- `upload-svg`
-- `warning-svg`
-- `x-svg`
+#### Method 3: Programmatic API
 
-## Icon Data Format
+```vue
+<template>
+  <div>
+    <!-- Using the global API -->
+    <div v-html="$datama.toSvg('data-svg', { size: 48, fill: 'blue' })"></div>
+    
+    <!-- Using in methods -->
+    <div v-html="generateIcon()"></div>
+  </div>
+</template>
 
-Each icon contains:
+<script>
+export default {
+  methods: {
+    generateIcon() {
+      return this.$datama.toSvg('settings-svg', {
+        size: this.iconSize,
+        fill: this.iconColor
+      });
+    }
+  },
+  data() {
+    return {
+      iconSize: 32,
+      iconColor: '#ff6b6b'
+    }
+  }
+}
+</script>
+```
+
+#### Available options for all methods
+
+- `data-size` / `size`: Icon size in pixels (default: 24)
+- `data-width` / `width`: Icon width (overrides size)
+- `data-height` / `height`: Icon height (overrides size)
+- `data-fill` / `fill`: Fill color (default: 'currentColor')
+- `data-stroke` / `stroke`: Stroke color (default: 'none')
+- `data-stroke-width` / `strokeWidth`: Stroke width (default: 0)
+
+### 📦 Vanilla JavaScript
+
+#### Using the simple API
+
+```javascript
+import { DataMaLightIcons, replace, toSvg } from '@datama/icons';
+
+// Replace all elements with data-datama attributes
+replace({
+  size: 24,
+  fill: 'currentColor'
+});
+
+// Generate SVG string
+const svgString = toSvg('check-svg', { size: 32, fill: 'blue' });
+
+// Access icon data directly
+const checkIcon = DataMaLightIcons['check-svg'];
+console.log(checkIcon.path);
+```
+
+#### HTML usage
+
+```html
+<!-- Include the simple API -->
+<script type="module" src="node_modules/@datama/icons/dist/index-simple.js"></script>
+
+<!-- Use data-datama attributes -->
+<i data-datama="check-svg" data-size="24"></i>
+<i data-datama="arrow-right-svg" data-fill="#007acc"></i>
+
+<script>
+// Replace all icons automatically when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  window.DatamaIcons.replace();
+});
+</script>
+```
+
+### 📋 JSON Data (Node.js/Advanced usage)
+
+```javascript
+// ES Modules
+import { DataMaLightIcons } from '@datama/icons';
+
+// CommonJS
+const { DataMaLightIcons } = require('@datama/icons');
+
+// Access icon data
+const checkIcon = DataMaLightIcons['check-svg'];
+console.log(checkIcon);
+// Output: { height: 24, path: "M9 16.17L4.83...", tags: ["check", "done"], ... }
+```
+
+## 🛠️ Development Scripts
+
+### Build Scripts
+
+- **`npm run build`** - Complete build process (processes SVGs, generates Vue components, JSON, and distribution files)
+- **`npm run build:svg`** - Process SVG files from `icons/` directory and generate SVG data
+- **`npm run build:vue`** - Generate Vue 2 components and directives from SVG data  
+- **`npm run build:json`** - Generate JSON exports (`icons.js`, `icons.json`, `categories.js`)
+- **`npm run build:all`** - Run all build steps in sequence (svg → vue → json → build)
+
+### Development Scripts
+
+- **`npm run dev`** - Development build with detailed output and examples
+- **`npm run preview`** - Build and test the complete package
+- **`npm run test`** - Run Jest tests
+- **`npm run lint`** - Lint JavaScript files in scripts/
+
+### Release Scripts
+
+- **`npm run release`** - Interactive release (prompts for version type)
+- **`npm run release:patch`** - Patch version release (1.0.0 → 1.0.1)
+- **`npm run release:minor`** - Minor version release (1.0.0 → 1.1.0)  
+- **`npm run release:major`** - Major version release (1.0.0 → 2.0.0)
+- **`npm run version:check`** - Display current version
+
+### Utility Scripts
+
+- **`npm run prepare`** - Auto-run `build:all` when installing (npm hook)
+
+## 📁 Project Structure
+
+```
+├── icons/                    # Source SVG files organized by category
+│   ├── actions/             # Action icons (UI controls)
+│   ├── data/                # Data visualization icons  
+│   ├── illustrations/       # Complex illustrations
+│   ├── light/               # Simple line icons
+│   ├── logos/               # Brand logos
+│   ├── navigation/          # Navigation icons
+│   └── ui/                  # UI element icons
+├── dist/                    # Generated distribution files
+│   ├── index.js             # CommonJS entry point
+│   ├── index.esm.js         # ES modules entry point
+│   ├── index.d.ts           # TypeScript definitions
+│   ├── index-simple.js      # Vanilla JavaScript API
+│   ├── icons.js             # Icon data (ES modules)
+│   ├── icons.json           # Icon data (JSON)
+│   └── vue/                 # Vue 2 components package
+├── scripts/                 # Build scripts
+│   ├── build.js             # Main build orchestrator
+│   ├── build-svg.js         # SVG processing
+│   ├── build-vue.js         # Vue components generation
+│   ├── build-json.js        # JSON exports generation
+│   ├── dev.js               # Development utilities
+│   └── release.sh           # Release automation
+├── example.html             # Vanilla JavaScript example
+├── example-vue.html         # Vue 2 example
+└── package.json
+```
+
+## 📊 Icon Data Format
+
+Each icon contains the following data:
 
 ```typescript
 interface IconData {
-  height: number;        // SVG height (usually 1024)
-  path: string;         // SVG path data
-  tags: string[];       // Search tags
-  ratio?: {             // Aspect ratio (optional)
+  height: number;          // SVG viewBox height (usually 24)
+  path?: string;          // SVG path data (for simple icons)
+  content?: string;       // Full SVG content (for complex icons)
+  tags: string[];         // Search/category tags
+  viewBox?: string;       // Custom viewBox (default: "0 0 24 24")
+  isComplex?: boolean;    // Whether icon uses content vs path
+  ratio?: {               // Custom aspect ratio
     width: number;
     height: number;
   };
 }
 ```
 
-## Development
+### Simple vs Complex Icons
 
-This package is auto-generated from SVG files. To contribute:
+- **Simple icons**: Use `path` property, single SVG path element
+- **Complex icons**: Use `content` property, can contain multiple elements, gradients, etc.
 
-1. Add your SVG files to the root directory
-2. Run `npm run build:all` to regenerate the package
-3. The CI/CD pipeline will automatically create a new release
+## 🎨 Examples
 
-## License
+Check out the included example files:
 
-Copyright (c) 2025 DATAMA SAS, All rights reserved.
+- **`example.html`** - Vanilla JavaScript usage with automatic icon replacement
+- **`example-vue.html`** - Vue 2 usage with all three methods (directive, data-attribute, API)
+
+## 🔧 Contributing
+
+### Adding New Icons
+
+1. Add SVG files to the appropriate category folder in `icons/`
+2. Run `npm run build:all` to regenerate all outputs
+3. Test your icons in `example.html` or `example-vue.html`
+4. The build process will automatically:
+   - Optimize SVGs
+   - Generate Vue components  
+   - Update JSON exports
+   - Create TypeScript definitions
+
+### Build Process Details
+
+The build process automatically:
+- Scans `icons/` subdirectories for SVG files
+- Generates icon names by converting filenames to kebab-case + `-svg` suffix
+- Creates categories based on folder structure
+- Optimizes SVGs and handles complex/simple icon types
+- Generates Vue directives, components, and vanilla JS APIs
+- Creates comprehensive TypeScript definitions
+
+## 📜 License
+
+MIT © DataMa SAS
