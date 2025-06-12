@@ -87,8 +87,8 @@ jobs:
           
           # Copy main package files
           cp package.json release/
-          cp icons.js release/
-          cp icons.json release/
+          cp dist/icons.js release/
+          cp dist/icons.json release/
           cp README.md release/
           cp -r dist release/
           

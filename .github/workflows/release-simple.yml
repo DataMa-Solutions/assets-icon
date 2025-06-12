@@ -1,0 +1,121 @@
+name: Simple Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "Releasing version: $VERSION"
+
+      - name: Build icons
+        run: npm run build:all
+
+      - name: Run tests
+        run: npm test
+
+      - name: Create release files
+        run: |
+          # Create release directory
+          mkdir -p release-assets
+          
+          # Copy the essential JavaScript files for direct download
+          cp dist/index-simple.js release-assets/datama-icons-simple.js
+          cp dist/icons.js release-assets/datama-icons-data.js
+          cp dist/icons.json release-assets/datama-icons-data.json
+          cp dist/datama-icons-helper.js release-assets/datama-icons-helper.js
+          cp dist/datama-icons-helper.min.js release-assets/datama-icons-helper.min.js
+          
+          # Create complete archive
+          mkdir -p complete-package
+          cp package.json complete-package/
+          cp README.md complete-package/
+          cp -r dist complete-package/
+          cp -r icons complete-package/
+          
+          # Create archives
+          cd complete-package
+          zip -r "../release-assets/datama-icons-${{ steps.version.outputs.version }}-complete.zip" .
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: DataMa Icons ${{ steps.version.outputs.version }}
+          body: |
+            ## 🎨 DataMa Icons ${{ steps.version.outputs.version }}
+            
+            Bibliothèque d'icônes DataMa avec **118 icônes** organisées en **7 catégories**.
+            
+            ### 📥 Téléchargement direct (pour extensions JS)
+            
+            **Fichier principal recommandé :**
+            - `datama-icons-simple.js` - API JavaScript vanilla (3.6KB)
+            
+            **Autres fichiers :**
+            - `datama-icons-data.js` - Données des icônes (ES modules)
+            - `datama-icons-data.json` - Données des icônes (JSON)
+            - `datama-icons-helper.js` - Helper avec auto-replace
+            - `datama-icons-helper.min.js` - Version minifiée
+            
+            ### 🚀 Utilisation rapide
+            
+            ```html
+            <!-- Inclure dans votre extension -->
+            <script src="datama-icons-simple.js"></script>
+            <script>
+              // Remplacer automatiquement tous les data-datama
+              DataMaIcons.replace();
+              
+              // Ou utiliser l'API
+              const iconSvg = DataMaIcons.toSvg('check-svg', { size: 24, fill: 'blue' });
+              document.getElementById('myIcon').innerHTML = iconSvg;
+            </script>
+            ```
+            
+            ### 📦 URLs de téléchargement direct
+            
+            Vous pouvez télécharger les fichiers directement depuis :
+            ```
+            https://github.com/DataMa-Solutions/assets-icon/releases/download/${{ steps.version.outputs.version }}/datama-icons-simple.js
+            ```
+            
+            ### 🎯 Categories disponibles
+            
+            - 💼 **Actions** - Contrôles d'interface utilisateur
+            - 📊 **Data** - Visualisation de données  
+            - 🎨 **Illustrations** - Illustrations complexes
+            - 💡 **Light** - Icônes simples et cohérentes
+            - 🏢 **Logos** - Logos de marques
+            - 🧭 **Navigation** - Icônes de navigation
+            - 🎛️ **UI** - Éléments d'interface
+          files: |
+            release-assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
