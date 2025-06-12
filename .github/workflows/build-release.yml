@@ -1,4 +1,4 @@
-name: Simple Release
+name: Build Release Assets
 
 on:
   push:
@@ -9,9 +9,12 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,6 +43,16 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Verify dist directory
+        run: |
+          echo "📁 Contents of dist directory:"
+          ls -la dist/
+          echo ""
+          echo "📊 Checking for required files..."
+          test -f dist/index-simple.js && echo "✅ index-simple.js found" || echo "❌ index-simple.js missing"
+          test -f dist/icons.js && echo "✅ icons.js found" || echo "❌ icons.js missing"
+          test -f dist/icons.json && echo "✅ icons.json found" || echo "❌ icons.json missing"
+
       - name: Create release files
         run: |
           # Create release directory
@@ -49,8 +62,6 @@ jobs:
           cp dist/index-simple.js release-assets/datama-icons-simple.js
           cp dist/icons.js release-assets/datama-icons-data.js
           cp dist/icons.json release-assets/datama-icons-data.json
-          cp dist/datama-icons-helper.js release-assets/datama-icons-helper.js
-          cp dist/datama-icons-helper.min.js release-assets/datama-icons-helper.min.js
           
           # Create complete archive
           mkdir -p complete-package
@@ -63,6 +74,10 @@ jobs:
           cd complete-package
           zip -r "../release-assets/datama-icons-${{ steps.version.outputs.version }}-complete.zip" .
           cd ..
+          
+          echo ""
+          echo "📦 Created release assets:"
+          ls -la release-assets/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -81,8 +96,6 @@ jobs:
             **Autres fichiers :**
             - `datama-icons-data.js` - Données des icônes (ES modules)
             - `datama-icons-data.json` - Données des icônes (JSON)
-            - `datama-icons-helper.js` - Helper avec auto-replace
-            - `datama-icons-helper.min.js` - Version minifiée
             
             ### 🚀 Utilisation rapide
             
@@ -118,4 +131,18 @@ jobs:
           files: |
             release-assets/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Call the deploy workflow only if we have the required secrets
+  deploy:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/deploy-release.yml
+    with:
+      version: ${{ needs.build.outputs.version }}
+      tag: ${{ needs.build.outputs.tag }}
+    secrets:
+      GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
+      GCS_CDN_URL: ${{ secrets.GCS_CDN_URL }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }} 

@@ -1,0 +1,130 @@
+name: Deploy to GCS and NPM
+
+on:
+  # Ce workflow se déclenche via workflow_call depuis build-release
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+    secrets:
+      GCP_SERVICE_ACCOUNT_KEY:
+        required: true
+      GCS_BUCKET:
+        required: true
+      GCS_CDN_URL:
+        required: true
+      NPM_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set version variables
+        id: version
+        run: |
+          echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "Deploying version: ${{ inputs.version }}"
+
+      - name: Build icons for deployment
+        run: npm run build:all
+
+      - name: Create release archive for GCS
+        run: |
+          # Create release directory for GCS deployment
+          mkdir -p release
+          
+          # Copy main package files
+          cp package.json release/
+          cp dist/icons.js release/
+          cp dist/icons.json release/
+          cp README.md release/
+          cp -r dist release/
+          
+          # Create archives
+          cd release
+          zip -r "../datama-icons-${{ steps.version.outputs.version }}.zip" .
+          tar -czf "../datama-icons-${{ steps.version.outputs.version }}.tar.gz" .
+          cd ..
+
+      # Setup Google Cloud Authentication
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # Deploy to Google Cloud Storage
+      - name: Deploy to GCS
+        run: |
+          # Define GCS bucket and paths
+          GCS_BUCKET="${{ secrets.GCS_BUCKET }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Upload versioned release
+          gsutil -m cp -r release/* gs://$GCS_BUCKET/releases/$VERSION/
+          
+          # Upload archives
+          gsutil cp datama-icons-$VERSION.zip gs://$GCS_BUCKET/archives/
+          gsutil cp datama-icons-$VERSION.tar.gz gs://$GCS_BUCKET/archives/
+          
+          # Upload as 'latest' for easy access
+          gsutil -m cp -r release/* gs://$GCS_BUCKET/latest/
+          
+          # Create a version manifest
+          echo '{"version":"'$VERSION'","build_date":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'","icon_count":118}' > version.json
+          gsutil cp version.json gs://$GCS_BUCKET/latest/
+          gsutil cp version.json gs://$GCS_BUCKET/releases/$VERSION/
+          
+          # Set proper cache headers for CDN usage
+          gsutil -m setmeta -h "Cache-Control:public,max-age=31536000" gs://$GCS_BUCKET/releases/$VERSION/**
+          gsutil -m setmeta -h "Cache-Control:public,max-age=3600" gs://$GCS_BUCKET/latest/**
+          
+          echo "✅ Successfully deployed to GCS:"
+          echo "📁 Versioned: gs://$GCS_BUCKET/releases/$VERSION/"
+          echo "📁 Latest: gs://$GCS_BUCKET/latest/"
+          echo "📦 Archives: gs://$GCS_BUCKET/archives/"
+
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            echo "🚀 Publishing to NPM..."
+            npm publish --access public || echo "⚠️ NPM publish failed or package already exists"
+                     else
+             echo "⚠️ NPM_TOKEN not set, skipping NPM publish"
+           fi 
