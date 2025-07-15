@@ -52,7 +52,7 @@ function buildJson() {
     console.log(`📁 Categories: ${Object.keys(categories).join(', ')}`);
   }
 
-  // Generate icons.js file (only in dist)
+  // Generate icons.js file (ESM version)
   const header = generateHeader(iconNames.length, complexIcons.length, simpleIcons.length);
   const jsContent = `${header}export const DataMaLightIcons = ${JSON.stringify(svgData, null, 2)};
 

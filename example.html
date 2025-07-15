@@ -1,412 +1,910 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataMa Icons - Exemple avec centrage amélioré</title>
+    <title>DataMa Icons - Icon Catalog by Categories</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
+            background: #f8f9fa;
         }
         
-        .category-section {
-            margin: 30px 0;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .category-section h2 {
+        .header h1 {
+            margin: 0 0 10px 0;
             color: #333;
-            border-bottom: 2px solid #007acc;
-            padding-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+            margin: 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #007acc;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007acc;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .customization {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .customization summary {
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            list-style: none;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .customization summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .customization summary::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: transform 0.2s;
+        }
+        
+        .customization[open] summary::before {
+            transform: rotate(90deg);
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .control-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .control-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .range-container {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .range-input {
+            flex: 1;
+            margin: 0;
+        }
+        
+        .range-value {
+            background: #007acc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            min-width: 35px;
+            text-align: center;
+        }
+        
+        .color-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             align-items: center;
         }
         
-        .show-all-btn {
-            background: #007acc;
-            color: white;
+        .color-input {
+            width: 40px;
+            height: 40px;
             border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            background: none;
         }
         
-        .show-all-btn:hover {
-            background: #005a9e;
+        .color-preset {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-preset:hover {
+            transform: scale(1.1);
+            border-color: #666;
+        }
+        
+        .icon-selector-container {
+            grid-column: 1 / -1;
+        }
+        
+        .selector-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .icon-select {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .preview-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            margin-top: 15px;
+        }
+        
+        .preview-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-info {
+            flex: 1;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff3cd;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .checkbox-container input {
+            margin: 0;
+        }
+        
+        .checkbox-container label {
+            margin: 0;
+            font-size: 14px;
+            color: #856404;
+        }
+        
+        .reset-button {
+            width: 100%;
+            padding: 12px 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .reset-button:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+        
+        .reset-button:active {
+            transform: translateY(0);
+        }
+        
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #007acc;
+            box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .category {
+            background: white;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #007acc, #0056b3);
+            color: white;
+            padding: 20px 30px;
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
         }
         
         .icon-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            margin: 20px 0;
+            padding: 30px;
         }
         
-        
-        .icon-example {
-            padding: 15px;
-            border: 1px solid #ddd;
+        .icon-item {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
+            padding: 20px;
             text-align: center;
-            background: white;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
         }
         
-        .icon-example:hover {
+        .icon-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: #007acc;
         }
         
-        .icon-example.hidden {
-            display: none;
+        .icon-item.clicked {
+            background: #e3f2fd;
+            border-color: #007acc;
         }
         
-        /* Icon container for consistent sizing */
-        .icon-container {
-            width: 48px;
-            height: 48px;
-            margin: 10px auto;
-            border: 1px solid #eee;
-            border-radius: 4px;
+        .icon-display {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fafafa;
-        }
-        
-        .icon-container svg {
-            max-width: 40px;
-            max-height: 40px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         
         .icon-name {
-            font-size: 11px;
-            color: #666;
-            margin: 5px 0;
-            word-break: break-word;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
         
         .icon-info {
-            font-size: 10px;
-            color: #999;
-            margin: 2px 0;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
         }
         
-        .complex-badge {
-            background: #ff6b6b;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 9px;
-            display: inline-block;
-            margin: 2px;
+        .icon-technical {
+            font-family: Monaco, 'Courier New', monospace;
+            color: #888;
+            font-size: 11px;
+            margin-bottom: 8px;
         }
         
-        .simple-badge {
-            background: #51cf66;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 9px;
-            display: inline-block;
-            margin: 2px;
+        .icon-badges {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
-        .controls {
-            margin: 20px 0;
-            padding: 15px;
-            background: #e3f2fd;
-            border-radius: 5px;
-        }
-        
-        .controls button {
-            margin: 5px;
-            padding: 8px 16px;
-            border: none;
+        .badge {
+            padding: 3px 6px;
             border-radius: 4px;
-            background: #007acc;
-            color: white;
-            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
         }
         
-        .controls button:hover {
-            background: #005a9e;
+        .badge-complex {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .badge-simple {
+            background: #28a745;
+            color: white;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .info-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-section strong {
+            color: #856404;
+        }
+        
+        .hidden {
+            display: none;
         }
         
         .error {
-            color: red;
-            padding: 10px;
-            background: #ffebee;
-            border-radius: 4px;
-            margin: 10px 0;
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-    <h1>🎨 DataMa Icons - Centrage Amélioré</h1>
+    <div class="header">
+        <h1>🎨 DataMa Icons</h1>
+        <p>Complete catalog of DataMa icons organized by categories</p>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="total-icons">-</div>
+                <div class="stat-label">Total icons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="complex-icons">-</div>
+                <div class="stat-label">Complex icons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="simple-icons">-</div>
+                <div class="stat-label">Simple icons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="total-categories">-</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+    </div>
+
+    <details class="customization">
+        <summary>🎨 Icon Customization</summary>
+        
+        <div class="info-section">
+            <strong>💡 Info:</strong> Colors apply only to <strong>simple icons</strong>. Complex icons preserve their original colors.
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label class="control-label">Icon size</label>
+                <div class="range-container">
+                    <input type="range" id="size-range" class="range-input" min="16" max="64" value="32">
+                    <span id="size-value" class="range-value">32px</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">Icon color</label>
+                <div class="color-container">
+                    <input type="color" id="color-picker" class="color-input" value="#007acc">
+                    <div class="color-preset" style="background: #007acc" data-color="#007acc" title="DataMa Blue"></div>
+                    <div class="color-preset" style="background: #28a745" data-color="#28a745" title="Success Green"></div>
+                    <div class="color-preset" style="background: #dc3545" data-color="#dc3545" title="Error Red"></div>
+                    <div class="color-preset" style="background: #ffc107" data-color="#ffc107" title="Warning Yellow"></div>
+                    <div class="color-preset" style="background: #6c757d" data-color="#6c757d" title="Secondary Gray"></div>
+                    <div class="color-preset" style="background: #17a2b8" data-color="#17a2b8" title="Info Cyan"></div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="force-complex-color">
+                    <label for="force-complex-color">Force color even on complex icons</label>
+                </div>
+            </div>
+            
+            <div class="control-group icon-selector-container">
+                <label class="control-label">Test individual icon</label>
+                <div class="selector-container">
+                    <select id="icon-select" class="icon-select">
+                        <option value="">Select an icon to test...</option>
+                    </select>
+                </div>
+                
+                <div class="preview-container">
+                    <div class="preview-icon" id="preview-icon">
+                        <!-- Icon will appear here -->
+                    </div>
+                    <div class="preview-info" id="preview-info">
+                        Select an icon to see the preview
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <button id="reset-button" class="reset-button">🔄 Reset to defaults</button>
+            </div>
+        </div>
+    </details>
+
+    <div class="search-section">
+        <input type="text" class="search-input" id="search-input" placeholder="🔍 Search for an icon...">
+    </div>
+
+    <div id="loading" class="loading">
+        ⏳ Loading icons...
+    </div>
+
+    <div id="categories" class="hidden">
+        <!-- Categories will be populated here -->
+    </div>
+
+    <!-- Load the DataMa Icons library -->
+    <script src="dist/DataMaIconsNew.js?v=2"></script>
     
-    <div class="controls">
-        <p><strong>Contrôles de test :</strong></p>
-        <button onclick="replaceIcons({ size: 24 })">Taille 24px</button>
-        <button onclick="replaceIcons({ size: 32 })">Taille 32px</button>
-        <button onclick="replaceIcons({ size: 48 })">Taille 48px</button>
-        <button onclick="replaceIcons({ fill: '#007acc' })">Couleur Bleue</button>
-        <button onclick="replaceIcons({ fill: '#ff6b6b' })">Couleur Rouge</button>
-        <button onclick="replaceIcons({ stroke: '#333', 'stroke-width': '2' })">Contour</button>
-        <button onclick="replaceIcons()">Reset</button>
-    </div>
-
-    <!-- Container dynamique pour les catégories -->
-    <div id="categories-container"></div>
-
-    <h2>📊 Statistiques du système</h2>
-    <div id="stats-container" style="background: #f0f8ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
-        <ul>
-            <li><strong>Total d'icônes :</strong> <span id="total-icons">-</span></li>
-            <li><strong>Icônes complexes :</strong> <span id="complex-icons">-</span></li>
-            <li><strong>Icônes simples :</strong> <span id="simple-icons">-</span></li>
-            <li><strong>Catégories :</strong> <span id="total-categories">-</span></li>
-            <li><strong>ViewBox normalisé :</strong> Toutes les icônes sont centrées dans un espace 24x24</li>
-            <li><strong>Dimensions originales préservées</strong> dans <code>originalDimensions</code></li>
-        </ul>
-    </div>
-
-    <script src="dist/index-simple.js" type="module"></script>
     <script>
-        // Global variables
-        let datamaLibrary = null;
         let allIcons = {};
-        let categories = {};
-        let categoryExpanded = {}; // Sera initialisé dynamiquement
-        const defaultVisibleCount = 4;
+        let currentIconSize = 32;
+        let currentIconFill = '#007acc';
+        let forceComplexColor = false;
+        let searchTerm = '';
 
-        // Emojis pour les catégories
+        // Category emojis
         const categoryEmojis = {
-            actions: '🔧',
-            data: '📊',
-            ui: '🎯',
-            illustrations: '🎨',
-            logos: '🏢',
-            navigation: '🧭',
-            light: '💡' // Nouvel emoji pour la catégorie light
+            'actions': '💼',
+            'data': '📊', 
+            'illustrations': '🎨',
+            'light': '💡',
+            'logos': '🏢',
+            'navigation': '🧭',
+            'ui': '🎛️'
         };
 
-        // Load icon data
-        async function loadIconData() {
+        // Initialize the page
+        async function loadIcons() {
             try {
-                // Wait for the module to load and check if datama library is available
-                await new Promise(resolve => {
-                    const checkLibrary = () => {
-                        if (typeof window.DataMaIcons !== 'undefined') {
-                            resolve();
-                        } else {
-                            setTimeout(checkLibrary, 50);
-                        }
-                    };
-                    checkLibrary();
-                });
+                console.log('DataMa Icons loaded:', DataMaIcons);
                 
-                datamaLibrary = window.DataMaIcons;
-                console.log('DataMa library found');
-                
-                // Load categories and icons data
-                const categoriesResponse = await fetch('dist/categories.json');
-                categories = await categoriesResponse.json();
-                
-                const iconsResponse = await fetch('dist/icons.json');
-                allIcons = await iconsResponse.json();
+                // Load icon data
+                const response = await fetch('dist/icons.json');
+                allIcons = await response.json();
                 
                 console.log('Loaded', Object.keys(allIcons).length, 'icons');
-                console.log('Categories:', Object.keys(categories));
-                
-                // Initialize categoryExpanded dynamically
-                categoryExpanded = {};
-                Object.keys(categories).forEach(categoryName => {
-                    categoryExpanded[categoryName] = false;
-                });
-                
-                // Create category sections dynamically
-                createCategorySections();
                 
                 // Update statistics
-                updateStatistics();
+                updateStats();
                 
-                // Populate initial category grids
-                populateCategories();
+                // Populate icon selector
+                populateIconSelector();
+                
+                // Display categories
+                displayCategories();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Hide loading, show content
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('categories').classList.remove('hidden');
+                
             } catch (error) {
-                console.error('Failed to load icon data:', error);
-                document.body.insertAdjacentHTML('afterbegin', 
-                    '<div class="error">❌ Erreur: Impossible de charger les données d\'icônes. ' + error.message + '</div>'
-                );
+                console.error('Failed to load icons:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<div class="error">❌ Error: Failed to load icon data. ' + error.message + '</div>';
             }
         }
 
-        // Create category sections dynamically
-        function createCategorySections() {
-            const container = document.getElementById('categories-container');
-            container.innerHTML = ''; // Clear existing content
-            
-            Object.keys(categories).forEach(categoryName => {
-                const emoji = categoryEmojis[categoryName] || '📁';
-                const displayName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-                
-                const section = document.createElement('div');
-                section.className = 'category-section';
-                section.innerHTML = `
-                    <h2>
-                        ${emoji} ${displayName}
-                        <button class="show-all-btn" onclick="toggleCategory('${categoryName}')">Voir tout</button>
-                    </h2>
-                    <div class="icon-grid" id="${categoryName}-grid"></div>
-                `;
-                
-                container.appendChild(section);
-            });
-        }
-
-        // Update statistics dynamically
-        function updateStatistics() {
+        // Update statistics
+        function updateStats() {
             const totalIcons = Object.keys(allIcons).length;
             const complexIcons = Object.values(allIcons).filter(icon => icon.isComplex).length;
             const simpleIcons = totalIcons - complexIcons;
-            const totalCategories = Object.keys(categories).length;
+            const categories = new Set(Object.values(allIcons).map(icon => icon.category)).size;
             
             document.getElementById('total-icons').textContent = totalIcons;
-            document.getElementById('complex-icons').textContent = `${complexIcons} (utilisent la propriété content)`;
-            document.getElementById('simple-icons').textContent = `${simpleIcons} (utilisent la propriété path)`;
-            document.getElementById('total-categories').textContent = `${totalCategories} (${Object.keys(categories).join(', ')})`;
+            document.getElementById('complex-icons').textContent = complexIcons;
+            document.getElementById('simple-icons').textContent = simpleIcons;
+            document.getElementById('total-categories').textContent = categories;
         }
 
-        // Populate all categories with initial icons (first 4 or all if less than 4)
-        function populateCategories() {
-            Object.keys(categories).forEach(categoryName => {
-                const grid = document.getElementById(categoryName + '-grid');
-                if (grid) {
-                    populateCategoryGrid(categoryName, false); // false = not expanded
+        // Display categories and icons
+        function displayCategories() {
+            const categoriesContainer = document.getElementById('categories');
+            const categorizedIcons = {};
+            
+            // Group icons by category
+            Object.entries(allIcons).forEach(([iconName, iconData]) => {
+                const category = iconData.category || 'uncategorized';
+                if (!categorizedIcons[category]) {
+                    categorizedIcons[category] = [];
                 }
+                categorizedIcons[category].push({ name: iconName, data: iconData });
+            });
+            
+            // Sort categories alphabetically
+            const sortedCategories = Object.keys(categorizedIcons).sort();
+            
+            categoriesContainer.innerHTML = '';
+            
+            sortedCategories.forEach(category => {
+                const icons = categorizedIcons[category];
+                const filteredIcons = searchTerm ? 
+                    icons.filter(icon => 
+                        icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (icon.data.tags && icon.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+                    ) : icons;
+                
+                if (filteredIcons.length === 0) return;
+                
+                const emoji = categoryEmojis[category] || '📁';
+                const displayName = category.charAt(0).toUpperCase() + category.slice(1);
+                const iconCount = filteredIcons.length;
+                
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `
+                    <h2 class="category-header">
+                        ${emoji} ${displayName} (${iconCount} icons)
+                    </h2>
+                    <div class="icon-grid">
+                        ${filteredIcons.map(icon => createIconHTML(icon.name, icon.data)).join('')}
+                    </div>
+                `;
+                
+                categoriesContainer.appendChild(categoryDiv);
             });
         }
 
-        // Populate a specific category grid
-        function populateCategoryGrid(categoryName, expanded = false) {
-            const grid = document.getElementById(categoryName + '-grid');
-            const categoryIcons = categories[categoryName] || [];
-            
-            // Clear existing content
-            grid.innerHTML = '';
-            
-            // Determine how many icons to show
-            const visibleIcons = expanded ? categoryIcons : categoryIcons.slice(0, defaultVisibleCount);
-            
-            // Create icon elements
-            visibleIcons.forEach(iconName => {
-                const iconInfo = allIcons[iconName];
-                if (iconInfo) {
-                    const iconElement = createIconElement(iconName, iconInfo);
-                    grid.appendChild(iconElement);
-                }
-            });
-        }
-
-        // Replace icons with optional attributes
-        function replaceIcons(attrs = {}) {
-            if (!datamaLibrary || !datamaLibrary.replace) {
-                console.error('DataMa library not loaded');
-                return;
-            }
-            
-            try {
-                datamaLibrary.replace(attrs);
-                console.log('Icons replaced with attributes:', attrs);
-            } catch (error) {
-                console.error('Error replacing icons:', error);
-            }
-        }
-
-        // Toggle category to show all icons
-        function toggleCategory(categoryName) {
-            if (!categories[categoryName]) {
-                console.warn('Category not found:', categoryName);
-                return;
-            }
-
-            const button = document.querySelector(`[onclick="toggleCategory('${categoryName}')"]`);
-            const isCurrentlyExpanded = categoryExpanded[categoryName];
-            
-            // Toggle the expanded state
-            categoryExpanded[categoryName] = !isCurrentlyExpanded;
-            
-            // Update button text
-            button.textContent = categoryExpanded[categoryName] ? 'Réduire' : 'Voir tout';
-            
-            // Repopulate the grid
-            populateCategoryGrid(categoryName, categoryExpanded[categoryName]);
-            
-            // Replace icons after updating the grid
-            setTimeout(() => {
-                replaceIcons();
-            }, 100);
-        }
-
-        // Create an icon element
-        function createIconElement(iconName, iconInfo) {
-            const iconDiv = document.createElement('div');
-            iconDiv.className = 'icon-example';
-            
+        // Create HTML for a single icon
+        function createIconHTML(iconName, iconData) {
             const displayName = iconName.replace('-svg', '').replace(/-/g, ' ');
-            const badge = iconInfo.isComplex ? 
-                '<span class="complex-badge">Complex</span>' : 
-                '<span class="simple-badge">Simple</span>';
+            const isComplex = iconData.isComplex;
+            const badge = isComplex ? 
+                '<span class="badge badge-complex">Complex</span>' : 
+                '<span class="badge badge-simple">Simple</span>';
             
-            iconDiv.innerHTML = `
-                <div class="icon-container">
-                    <i data-datama="${iconName}"></i>
+            return `
+                <div class="icon-item" onclick="copyIconCode('${iconName}')">
+                    <div class="icon-display" id="icon-${iconName}">
+                        <!-- Icon will be inserted here -->
+                    </div>
+                    <div class="icon-name">${displayName}</div>
+                    <div class="icon-info">${iconData.width || 24}×${iconData.height || 24}px</div>
+                    <div class="icon-technical">${iconName}</div>
+                    <div class="icon-badges">
+                        ${badge}
+                    </div>
                 </div>
-                <div class="icon-name">${displayName}</div>
-                <div class="icon-info">${iconInfo.width || 24}x${iconInfo.height || 24}</div>
-                ${badge}
             `;
+        }
+
+        // Populate icon selector dropdown
+        function populateIconSelector() {
+            const select = document.getElementById('icon-select');
+            const iconNames = Object.keys(allIcons).sort();
             
-            return iconDiv;
-        }
-
-        // Get display name for an icon
-        function getDisplayName(iconName) {
-            return iconName.replace('-svg', '').replace(/-/g, ' ');
-        }
-
-        // Get icon type
-        function getIconType(iconName) {
-            const icon = allIcons[iconName];
-            return icon && icon.isComplex ? 'Complex' : 'Simple';
-        }
-
-        // Get icon badge class
-        function getIconBadge(iconName) {
-            const icon = allIcons[iconName];
-            return icon && icon.isComplex ? 'complex-badge' : 'simple-badge';
-        }
-
-        // Initialize everything when page loads
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('Page loaded, initializing...');
+            // Group by category for better organization
+            const categorizedIcons = {};
+            iconNames.forEach(iconName => {
+                const category = allIcons[iconName].category || 'uncategorized';
+                if (!categorizedIcons[category]) {
+                    categorizedIcons[category] = [];
+                }
+                categorizedIcons[category].push(iconName);
+            });
             
-            await loadIconData();
+            // Create optgroups
+            Object.keys(categorizedIcons).sort().forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = `${categoryEmojis[category] || '📁'} ${category.charAt(0).toUpperCase() + category.slice(1)}`;
+                
+                categorizedIcons[category].forEach(iconName => {
+                    const option = document.createElement('option');
+                    option.value = iconName;
+                    const displayName = iconName.replace('-svg', '').replace(/-/g, ' ');
+                    const badge = allIcons[iconName].isComplex ? ' (Complex)' : ' (Simple)';
+                    option.textContent = displayName + badge;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Size range slider
+            const sizeRange = document.getElementById('size-range');
+            const sizeValue = document.getElementById('size-value');
             
-            // Initial icon replacement
+            sizeRange.addEventListener('input', (e) => {
+                currentIconSize = parseInt(e.target.value);
+                sizeValue.textContent = currentIconSize + 'px';
+                updateAllIcons();
+                updatePreview();
+            });
+
+            // Color picker
+            const colorPicker = document.getElementById('color-picker');
+            colorPicker.addEventListener('input', (e) => {
+                currentIconFill = e.target.value;
+                updateAllIcons();
+                updatePreview();
+            });
+
+            // Color presets
+            document.querySelectorAll('.color-preset').forEach(preset => {
+                preset.addEventListener('click', (e) => {
+                    const color = e.target.dataset.color;
+                    currentIconFill = color;
+                    colorPicker.value = color;
+                    updateAllIcons();
+                    updatePreview();
+                });
+            });
+
+            // Force complex color checkbox
+            const forceCheckbox = document.getElementById('force-complex-color');
+            forceCheckbox.addEventListener('change', (e) => {
+                forceComplexColor = e.target.checked;
+                updateAllIcons();
+                updatePreview();
+            });
+
+            // Icon selector
+            const iconSelect = document.getElementById('icon-select');
+            iconSelect.addEventListener('change', (e) => {
+                updatePreview(e.target.value);
+            });
+
+            // Reset button
+            const resetButton = document.getElementById('reset-button');
+            resetButton.addEventListener('click', () => {
+                resetToDefaults();
+            });
+
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchTerm = e.target.value.trim();
+                    displayCategories();
+                    updateAllIcons();
+                }, 300);
+            });
+
+            // Initial icon population
+            updateAllIcons();
+        }
+
+        // Update all displayed icons
+        function updateAllIcons() {
+            Object.keys(allIcons).forEach(iconName => {
+                const iconContainer = document.getElementById(`icon-${iconName}`);
+                if (iconContainer) {
+                    iconContainer.innerHTML = '';
+                    const iconElement = DataMaIcons.get(iconName, {
+                        size: currentIconSize,
+                        fill: currentIconFill,
+                        forceComplexColor: forceComplexColor
+                    });
+                    if (iconElement) {
+                        iconContainer.appendChild(iconElement);
+                    }
+                }
+            });
+        }
+
+        // Update preview
+        function updatePreview(iconName = null) {
+            const previewIcon = document.getElementById('preview-icon');
+            const previewInfo = document.getElementById('preview-info');
+            const selectedIcon = iconName || document.getElementById('icon-select').value;
+            
+            if (!selectedIcon) {
+                previewIcon.innerHTML = '';
+                previewInfo.textContent = 'Select an icon to see the preview';
+                return;
+            }
+            
+            const iconData = allIcons[selectedIcon];
+            if (!iconData) return;
+            
+            // Create icon
+            previewIcon.innerHTML = '';
+            const iconElement = DataMaIcons.get(selectedIcon, {
+                size: currentIconSize,
+                fill: currentIconFill,
+                forceComplexColor: forceComplexColor
+            });
+            
+            if (iconElement) {
+                previewIcon.appendChild(iconElement);
+            }
+            
+            // Update info
+            const displayName = selectedIcon.replace('-svg', '').replace(/-/g, ' ');
+            previewInfo.innerHTML = `
+                <strong>${displayName}</strong><br>
+                Size: ${currentIconSize}px<br>
+                Color: ${currentIconFill}<br>
+                Force color: ${forceComplexColor ? 'Yes' : 'No'}
+            `;
+        }
+
+        // Reset to default values
+        function resetToDefaults() {
+            // Reset variables
+            currentIconSize = 32;
+            currentIconFill = '#007acc';
+            forceComplexColor = false;
+            
+            // Reset UI controls
+            document.getElementById('size-range').value = 32;
+            document.getElementById('size-value').textContent = '32px';
+            document.getElementById('color-picker').value = '#007acc';
+            document.getElementById('force-complex-color').checked = false;
+            document.getElementById('icon-select').value = '';
+            
+            // Update icons and preview
+            updateAllIcons();
+            updatePreview();
+            
+            // Show feedback
+            showCopyNotification('Settings reset to defaults');
+        }
+
+        // Copy icon code to clipboard
+        function copyIconCode(iconName) {
+            const iconData = allIcons[iconName];
+            
+            let codeText = `DataMaIcons.get('${iconName}'`;
+            
+            const options = [];
+            if (currentIconSize !== 24) options.push(`size: ${currentIconSize}`);
+            if (currentIconFill !== 'currentColor' && !iconData.isComplex) options.push(`fill: '${currentIconFill}'`);
+            if (forceComplexColor && iconData.isComplex) options.push(`forceComplexColor: true`);
+            
+            if (options.length > 0) {
+                codeText += `, { ${options.join(', ')} }`;
+            }
+            
+            codeText += ')';
+            
+            if (iconData.isComplex && !forceComplexColor) {
+                codeText += ' // Note: Complex icons preserve their original colors';
+            }
+            
+            // Copy to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(codeText).then(() => {
+                    showCopyNotification(codeText);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyNotification(codeText);
+            }
+            
+            // Visual feedback
+            const iconItem = event.target.closest('.icon-item');
+            if (iconItem) {
+                iconItem.classList.add('clicked');
+                setTimeout(() => {
+                    iconItem.classList.remove('clicked');
+                }, 200);
+            }
+        }
+
+        // Show copy notification
+        function showCopyNotification(text) {
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.textContent = `Copied: ${text}`;
+            
+            document.body.appendChild(notification);
+            
             setTimeout(() => {
-                replaceIcons();
-                console.log('Initial icons loaded');
-            }, 300);
-        });
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', loadIcons);
     </script>
 </body>
 </html> 

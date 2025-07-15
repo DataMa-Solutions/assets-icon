@@ -10,13 +10,25 @@ on:
       tag:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
+      is_release:
+        required: true
+        type: string
     secrets:
-      GCP_SERVICE_ACCOUNT_KEY:
-        required: true
-      GCS_BUCKET:
-        required: true
-      GCS_CDN_URL:
-        required: true
+      GCP_SERVICE_ACCOUNT_KEY_STAGING:
+        required: false
+      GCS_BUCKET_STAGING:
+        required: false
+      GCS_CDN_URL_STAGING:
+        required: false
+      GCP_SERVICE_ACCOUNT_KEY_PROD:
+        required: false
+      GCS_BUCKET_PROD:
+        required: false
+      GCS_CDN_URL_PROD:
+        required: false
       NPM_TOKEN:
         required: false
 
@@ -27,6 +39,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,17 +63,88 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set deployment variables
+        id: deploy-vars
+        run: |
+          ENVIRONMENT="${{ inputs.environment }}"
+          
+          echo "🌍 Setting up deployment for environment: $ENVIRONMENT"
+          
+          if [[ "$ENVIRONMENT" == "staging" ]]; then
+            echo "🧪 STAGING deployment configuration"
+            echo "gcp_key=${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}" >> $GITHUB_OUTPUT
+            echo "gcs_bucket=${{ secrets.GCS_BUCKET_STAGING }}" >> $GITHUB_OUTPUT
+            echo "gcs_cdn_url=${{ secrets.GCS_CDN_URL_STAGING }}" >> $GITHUB_OUTPUT
+            echo "environment_suffix=staging" >> $GITHUB_OUTPUT
+            echo "cache_max_age=300" >> $GITHUB_OUTPUT
+            
+            # Extract path prefix from CDN URL for staging
+            CDN_URL="${{ secrets.GCS_CDN_URL_STAGING }}"
+            if [[ "$CDN_URL" =~ https://[^/]+/(.+)$ ]]; then
+              BUCKET_PREFIX="${BASH_REMATCH[1]}"
+            else
+              BUCKET_PREFIX=""
+            fi
+            echo "bucket_prefix=$BUCKET_PREFIX" >> $GITHUB_OUTPUT
+            
+          elif [[ "$ENVIRONMENT" == "production" ]]; then
+            echo "🚀 PRODUCTION deployment configuration"
+            echo "gcp_key=${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PROD }}" >> $GITHUB_OUTPUT
+            echo "gcs_bucket=${{ secrets.GCS_BUCKET_PROD }}" >> $GITHUB_OUTPUT
+            echo "gcs_cdn_url=${{ secrets.GCS_CDN_URL_PROD }}" >> $GITHUB_OUTPUT
+            echo "environment_suffix=prod" >> $GITHUB_OUTPUT
+            echo "cache_max_age=31536000" >> $GITHUB_OUTPUT
+            
+            # Extract path prefix from CDN URL for production
+            CDN_URL="${{ secrets.GCS_CDN_URL_PROD }}"
+            if [[ "$CDN_URL" =~ https://[^/]+/(.+)$ ]]; then
+              BUCKET_PREFIX="${BASH_REMATCH[1]}"
+            else
+              BUCKET_PREFIX=""
+            fi
+            echo "bucket_prefix=$BUCKET_PREFIX" >> $GITHUB_OUTPUT
+            
+          else
+            echo "❌ Unknown environment: $ENVIRONMENT"
+            exit 1
+          fi
+          
+          echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "is_release=${{ inputs.is_release }}" >> $GITHUB_OUTPUT
+
+      - name: Validate deployment secrets
+        run: |
+          echo "🔍 Validating deployment secrets for ${{ inputs.environment }}..."
+          
+          if [[ -z "${{ steps.deploy-vars.outputs.gcp_key }}" ]]; then
+            echo "❌ Missing GCP service account key for ${{ inputs.environment }}"
+            exit 1
+          fi
+          
+          if [[ -z "${{ steps.deploy-vars.outputs.gcs_bucket }}" ]]; then
+            echo "❌ Missing GCS bucket for ${{ inputs.environment }}"
+            exit 1
+          fi
+          
+          if [[ -z "${{ steps.deploy-vars.outputs.gcs_cdn_url }}" ]]; then
+            echo "❌ Missing GCS CDN URL for ${{ inputs.environment }}"
+            exit 1
+          fi
+          
+          echo "✅ All required secrets available for ${{ inputs.environment }}"
+
       - name: Set version variables
         id: version
         run: |
-          echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
-          echo "tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
-          echo "Deploying version: ${{ inputs.version }}"
+          echo "version=${{ steps.deploy-vars.outputs.version }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ steps.deploy-vars.outputs.tag }}" >> $GITHUB_OUTPUT
+          echo "Deploying version: ${{ steps.deploy-vars.outputs.version }} to ${{ inputs.environment }}"
 
       - name: Build icons for deployment
         run: npm run build:all
 
-      - name: Create release archive for GCS
+      - name: Prepare deployment assets
         run: |
           # Create release directory for GCS deployment
           mkdir -p release
@@ -69,20 +153,27 @@ jobs:
           cp package.json release/
           cp dist/icons.js release/
           cp dist/icons.json release/
+          cp dist/DataMaIconsNew.js release/
+          cp dist/datama-icons-cdn.js release/
           cp README.md release/
           cp -r dist release/
           
-          # Create archives
-          cd release
-          zip -r "../datama-icons-${{ steps.version.outputs.version }}.zip" .
-          tar -czf "../datama-icons-${{ steps.version.outputs.version }}.tar.gz" .
-          cd ..
+          # Create archives only for production releases
+          if [[ "${{ inputs.is_release }}" == "true" ]]; then
+            cd release
+            zip -r "../datama-icons-${{ steps.version.outputs.version }}.zip" .
+            tar -czf "../datama-icons-${{ steps.version.outputs.version }}.tar.gz" .
+            cd ..
+            echo "📦 Created release archives for production"
+          else
+            echo "ℹ️ Skipping archive creation for development deployment"
+          fi
 
       # Setup Google Cloud Authentication
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          credentials_json: ${{ steps.deploy-vars.outputs.gcp_key }}
 
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -91,40 +182,111 @@ jobs:
       - name: Deploy to GCS
         run: |
           # Define GCS bucket and paths
-          GCS_BUCKET="${{ secrets.GCS_BUCKET }}"
+          GCS_BUCKET="${{ steps.deploy-vars.outputs.gcs_bucket }}"
+          BUCKET_PREFIX="${{ steps.deploy-vars.outputs.bucket_prefix }}"
           VERSION="${{ steps.version.outputs.version }}"
+          ENVIRONMENT="${{ inputs.environment }}"
+          IS_RELEASE="${{ inputs.is_release }}"
+          CACHE_MAX_AGE="${{ steps.deploy-vars.outputs.cache_max_age }}"
+          
+          # Construct the full bucket path with prefix
+          if [[ -n "$BUCKET_PREFIX" ]]; then
+            BUCKET_BASE_PATH="gs://$GCS_BUCKET/$BUCKET_PREFIX"
+            echo "🚀 Deploying to $ENVIRONMENT environment with prefix..."
+            echo "   Bucket: $GCS_BUCKET"
+            echo "   Prefix: $BUCKET_PREFIX"
+            echo "   Full path: $BUCKET_BASE_PATH"
+          else
+            BUCKET_BASE_PATH="gs://$GCS_BUCKET"
+            echo "🚀 Deploying to $ENVIRONMENT environment..."
+            echo "   Bucket: $GCS_BUCKET"
+            echo "   Full path: $BUCKET_BASE_PATH"
+          fi
+          echo "   Version: $VERSION"
+          echo "   Is Release: $IS_RELEASE"
           
           # Upload versioned release
-          gsutil -m cp -r release/* gs://$GCS_BUCKET/releases/$VERSION/
+          gsutil -m cp -r release/* $BUCKET_BASE_PATH/releases/$VERSION/
           
-          # Upload archives
-          gsutil cp datama-icons-$VERSION.zip gs://$GCS_BUCKET/archives/
-          gsutil cp datama-icons-$VERSION.tar.gz gs://$GCS_BUCKET/archives/
+          # Upload archives only for production releases
+          if [[ "$IS_RELEASE" == "true" ]]; then
+            echo "📦 Uploading release archives..."
+            gsutil cp datama-icons-$VERSION.zip $BUCKET_BASE_PATH/archives/ || echo "⚠️ Archive upload failed"
+            gsutil cp datama-icons-$VERSION.tar.gz $BUCKET_BASE_PATH/archives/ || echo "⚠️ Archive upload failed"
+          fi
           
           # Upload as 'latest' for easy access
-          gsutil -m cp -r release/* gs://$GCS_BUCKET/latest/
+          gsutil -m cp -r release/* $BUCKET_BASE_PATH/latest/
           
-          # Create a version manifest
-          echo '{"version":"'$VERSION'","build_date":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'","icon_count":118}' > version.json
-          gsutil cp version.json gs://$GCS_BUCKET/latest/
-          gsutil cp version.json gs://$GCS_BUCKET/releases/$VERSION/
+          # Create a version manifest with environment info
+          cat > version.json << EOF
+          {
+            "version": "$VERSION",
+            "environment": "$ENVIRONMENT",
+            "is_release": $IS_RELEASE,
+            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "icon_count": 118,
+            "commit_sha": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}"
+          }
+          EOF
+          
+          gsutil cp version.json $BUCKET_BASE_PATH/latest/
+          gsutil cp version.json $BUCKET_BASE_PATH/releases/$VERSION/
           
           # Set proper cache headers for CDN usage
-          gsutil -m setmeta -h "Cache-Control:public,max-age=31536000" gs://$GCS_BUCKET/releases/$VERSION/**
-          gsutil -m setmeta -h "Cache-Control:public,max-age=3600" gs://$GCS_BUCKET/latest/**
+          if [[ "$ENVIRONMENT" == "production" ]]; then
+            # Production: Long cache for versioned, short for latest
+            gsutil -m setmeta -h "Cache-Control:public,max-age=31536000" $BUCKET_BASE_PATH/releases/$VERSION/**
+            gsutil -m setmeta -h "Cache-Control:public,max-age=3600" $BUCKET_BASE_PATH/latest/**
+          else
+            # Staging: Short cache for everything
+            gsutil -m setmeta -h "Cache-Control:public,max-age=300" $BUCKET_BASE_PATH/releases/$VERSION/**
+            gsutil -m setmeta -h "Cache-Control:public,max-age=300" $BUCKET_BASE_PATH/latest/**
+          fi
           
-          echo "✅ Successfully deployed to GCS:"
-          echo "📁 Versioned: gs://$GCS_BUCKET/releases/$VERSION/"
-          echo "📁 Latest: gs://$GCS_BUCKET/latest/"
-          echo "📦 Archives: gs://$GCS_BUCKET/archives/"
+          echo "✅ Successfully deployed to $ENVIRONMENT GCS:"
+          echo "📁 Versioned: $BUCKET_BASE_PATH/releases/$VERSION/"
+          echo "📁 Latest: $BUCKET_BASE_PATH/latest/"
+          echo "🌐 CDN URL: ${{ steps.deploy-vars.outputs.gcs_cdn_url }}"
+          if [[ "$IS_RELEASE" == "true" ]]; then
+            echo "📦 Archives: $BUCKET_BASE_PATH/archives/"
+          fi
 
       - name: Publish to NPM
+        # Only publish to NPM for production releases (tagged versions)
+        if: inputs.environment == 'production' && inputs.is_release == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -n "$NODE_AUTH_TOKEN" ]; then
-            echo "🚀 Publishing to NPM..."
+            echo "🚀 Publishing to NPM (production release only)..."
             npm publish --access public || echo "⚠️ NPM publish failed or package already exists"
-                     else
-             echo "⚠️ NPM_TOKEN not set, skipping NPM publish"
-           fi 
+          else
+            echo "⚠️ NPM_TOKEN not set, skipping NPM publish"
+          fi
+
+      - name: Deployment Summary
+        run: |
+          echo "📋 Deployment Summary"
+          echo "=================="
+          echo "🌍 Environment: ${{ inputs.environment }}"
+          echo "📦 Version: ${{ steps.version.outputs.version }}"
+          echo "🏷️ Tag: ${{ steps.version.outputs.tag }}"
+          echo "🔖 Is Release: ${{ inputs.is_release }}"
+          echo "☁️ GCS Bucket: ${{ steps.deploy-vars.outputs.gcs_bucket }}"
+          echo "🌐 CDN URL: ${{ steps.deploy-vars.outputs.gcs_cdn_url }}"
+          echo ""
+          echo "🔗 Access URLs:"
+          echo "   Latest: ${{ steps.deploy-vars.outputs.gcs_cdn_url }}/latest/"
+          echo "   Versioned: ${{ steps.deploy-vars.outputs.gcs_cdn_url }}/releases/${{ steps.version.outputs.version }}/"
+          echo ""
+          if [[ "${{ inputs.environment }}" == "staging" ]]; then
+            echo "🧪 This is a STAGING deployment - suitable for testing"
+          else
+            echo "🚀 This is a PRODUCTION deployment"
+            if [[ "${{ inputs.is_release }}" == "true" ]]; then
+              echo "   📚 Published to NPM (if token available)"
+              echo "   📦 Release archives created"
+            fi
+          fi 

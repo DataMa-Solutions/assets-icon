@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - main
+      - staging
 
 permissions:
   contents: write
@@ -11,11 +14,12 @@ permissions:
 
 jobs:
   build:
-    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
       tag: ${{ steps.version.outputs.tag }}
+      environment: ${{ steps.environment.outputs.environment }}
+      is_release: ${{ steps.environment.outputs.is_release }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,13 +34,55 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Determine environment and version
+        id: environment
+        run: |
+          # Determine environment based on trigger
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            # Production release from tag
+            ENVIRONMENT="production"
+            IS_RELEASE="true"
+            VERSION=${GITHUB_REF#refs/tags/v}
+            TAG=${GITHUB_REF#refs/tags/}
+            echo "🏷️ Production release from tag: $VERSION"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # Production deployment from main branch
+            ENVIRONMENT="production"
+            IS_RELEASE="false"
+            VERSION=$(node -p "require('./package.json').version")-main.$(date +%Y%m%d.%H%M%S)
+            TAG="main-$(date +%Y%m%d-%H%M%S)"
+            echo "🚀 Production deployment from main: $VERSION"
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            # Staging deployment from staging branch
+            ENVIRONMENT="staging"
+            IS_RELEASE="false"
+            VERSION=$(node -p "require('./package.json').version")-staging.$(date +%Y%m%d.%H%M%S)
+            TAG="staging-$(date +%Y%m%d-%H%M%S)"
+            echo "🧪 Staging deployment from staging: $VERSION"
+          else
+            echo "❌ Unsupported branch/tag: ${{ github.ref }}"
+            exit 1
+          fi
+          
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "is_release=$IS_RELEASE" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          
+          echo "📋 Deployment Configuration:"
+          echo "   Environment: $ENVIRONMENT"
+          echo "   Is Release: $IS_RELEASE"
+          echo "   Version: $VERSION"
+          echo "   Tag: $TAG"
+
       - name: Extract version from tag
         id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION="${{ steps.environment.outputs.version }}"
+          TAG="${{ steps.environment.outputs.tag }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "Releasing version: $VERSION"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Deploying version: $VERSION to ${{ steps.environment.outputs.environment }}"
 
       - name: Build icons
         run: npm run build:all
@@ -50,7 +96,8 @@ jobs:
           ls -la dist/
           echo ""
           echo "📊 Checking for required files..."
-          test -f dist/index-simple.js && echo "✅ index-simple.js found" || echo "❌ index-simple.js missing"
+          test -f dist/DataMaIconsNew.js && echo "✅ DataMaIconsNew.js found" || echo "❌ DataMaIconsNew.js missing"
+          test -f dist/datama-icons-cdn.js && echo "✅ datama-icons-cdn.js found" || echo "❌ datama-icons-cdn.js missing"
           test -f dist/icons.js && echo "✅ icons.js found" || echo "❌ icons.js missing"
           test -f dist/icons.json && echo "✅ icons.json found" || echo "❌ icons.json missing"
 
@@ -60,7 +107,8 @@ jobs:
           mkdir -p release-assets
           
           # Copy the essential JavaScript files for direct download
-          cp dist/index-simple.js release-assets/datama-icons-simple.js
+          cp dist/DataMaIconsNew.js release-assets/datama-icons-simple.js
+          cp dist/datama-icons-cdn.js release-assets/datama-icons-cdn.js
           cp dist/icons.js release-assets/datama-icons-data.js
           cp dist/icons.json release-assets/datama-icons-data.json
           
@@ -80,7 +128,72 @@ jobs:
           echo "📦 Created release assets:"
           ls -la release-assets/
 
+      - name: Create Light Project Integration Package
+        run: |
+          # Create special package for Light project integration
+          mkdir -p light-integration
+          
+          # Copy the files needed for Light project
+          cp dist/DataMaIconsNew.js light-integration/
+          cp dist/icons.json light-integration/
+          
+          # Create a deployment script for Light project
+          cat > light-integration/integrate-icons.sh << 'EOF'
+          #!/bin/bash
+          
+          # Script to integrate DataMa Icons into Light project
+          # Usage: ./integrate-icons.sh /path/to/light/project
+          
+          if [ $# -eq 0 ]; then
+              echo "Usage: $0 /path/to/light/project"
+              exit 1
+          fi
+          
+          LIGHT_PROJECT_PATH="$1"
+          
+          if [ ! -d "$LIGHT_PROJECT_PATH" ]; then
+              echo "❌ Light project path does not exist: $LIGHT_PROJECT_PATH"
+              exit 1
+          fi
+          
+          # Check if it's a Light project
+          if [ ! -f "$LIGHT_PROJECT_PATH/src/resources/DataMaLight.js" ]; then
+              echo "❌ This doesn't look like a Light project (missing src/resources/DataMaLight.js)"
+              exit 1
+          fi
+          
+          echo "🚀 Integrating DataMa Icons into Light project..."
+          
+          # Create target directories if they don't exist
+          mkdir -p "$LIGHT_PROJECT_PATH/src/resources/components"
+          mkdir -p "$LIGHT_PROJECT_PATH/src/assets/icons"
+          
+          # Copy files
+          cp DataMaIconsNew.js "$LIGHT_PROJECT_PATH/src/resources/components/"
+          cp icons.json "$LIGHT_PROJECT_PATH/src/assets/icons/"
+          
+          echo "✅ Icons integrated successfully!"
+          echo "📄 Files copied:"
+          echo "   - DataMaIconsNew.js → src/resources/components/"
+          echo "   - icons.json → src/assets/icons/"
+          echo ""
+          echo "💡 You can now use: import { DataMaIcons } from './DataMaIconsNew.js'"
+          EOF
+          
+          chmod +x light-integration/integrate-icons.sh
+          
+          # Create ZIP for easy download
+          cd light-integration
+          zip -r "../release-assets/datama-icons-light-integration-${{ steps.version.outputs.version }}.zip" .
+          cd ..
+          
+          echo ""
+          echo "📦 Created Light integration package"
+          ls -la light-integration/
+
       - name: Create GitHub Release
+        # Only create GitHub releases for actual version tags
+        if: steps.environment.outputs.is_release == 'true'
         uses: softprops/action-gh-release@v1
         with:
           name: DataMa Icons ${{ steps.version.outputs.version }}
@@ -89,10 +202,14 @@ jobs:
             
             Bibliothèque d'icônes DataMa avec **118 icônes** organisées en **7 catégories**.
             
-            ### 📥 Téléchargement direct (pour extensions JS)
+            ### 📥 Téléchargement direct
             
-            **Fichier principal recommandé :**
-            - `datama-icons-simple.js` - API JavaScript vanilla (3.6KB)
+            **Pour les extensions et projets JS :**
+            - `datama-icons-simple.js` - API JavaScript vanilla compatible (2MB)
+            - `datama-icons-cdn.js` - Système CDN Font Awesome-style (2MB)
+            
+            **Pour le projet Light :**
+            - `datama-icons-light-integration-${{ steps.version.outputs.version }}.zip` - Package d'intégration avec script automatique
             
             **Autres fichiers :**
             - `datama-icons-data.js` - Données des icônes (ES modules)
@@ -100,17 +217,34 @@ jobs:
             
             ### 🚀 Utilisation rapide
             
+            **Extensions JS / Projets vanilla :**
             ```html
             <!-- Inclure dans votre extension -->
             <script src="datama-icons-simple.js"></script>
             <script>
-              // Remplacer automatiquement tous les data-datama
-              DataMaIcons.replace();
-              
-              // Ou utiliser l'API
-              const iconSvg = DataMaIcons.toSvg('check-svg', { size: 24, fill: 'blue' });
-              document.getElementById('myIcon').innerHTML = iconSvg;
+              // Utiliser l'API (100% compatible avec ancien système)
+              const iconSvg = DataMaIcons.get('home-svg', { size: 24 });
+              document.getElementById('myIcon').appendChild(iconSvg);
             </script>
+            ```
+            
+            **Projet Light :**
+            ```bash
+            # 1. Télécharger datama-icons-light-integration-x.x.x.zip
+            # 2. Extraire et exécuter :
+            ./integrate-icons.sh /chemin/vers/projet/light
+            
+            # 3. Dans votre code Light :
+            import { DataMaIcons } from './DataMaIconsNew.js';
+            const icon = DataMaIcons.get('home-svg');
+            ```
+            
+            **Vue.js / CDN :**
+            ```html
+            <script src="datama-icons-cdn.js"></script>
+            <!-- Font Awesome style -->
+            <i class="datama datama-home"></i>
+            <i class="datama datama-settings" data-size="32"></i>
             ```
             
             ### 📦 URLs de téléchargement direct
@@ -134,16 +268,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Call the deploy workflow only if we have the required secrets
+  # Call the deploy workflow for all successful builds
   deploy:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/deploy-release.yml
     with:
       version: ${{ needs.build.outputs.version }}
       tag: ${{ needs.build.outputs.tag }}
+      environment: ${{ needs.build.outputs.environment }}
+      is_release: ${{ needs.build.outputs.is_release }}
     secrets:
-      GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-      GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
-      GCS_CDN_URL: ${{ secrets.GCS_CDN_URL }}
+      GCP_SERVICE_ACCOUNT_KEY_STAGING: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}
+      GCS_BUCKET_STAGING: ${{ secrets.GCS_BUCKET_STAGING }}
+      GCS_CDN_URL_STAGING: ${{ secrets.GCS_CDN_URL_STAGING }}
+      GCP_SERVICE_ACCOUNT_KEY_PROD: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PROD }}
+      GCS_BUCKET_PROD: ${{ secrets.GCS_BUCKET_PROD }}
+      GCS_CDN_URL_PROD: ${{ secrets.GCS_CDN_URL_PROD }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }} 

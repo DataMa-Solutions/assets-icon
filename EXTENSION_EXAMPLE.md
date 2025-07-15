@@ -1,321 +1,416 @@
-# 📦 Utilisation dans votre Extension JavaScript
+# 📦 Using in your JavaScript Extension
 
-## 🚀 Téléchargement et intégration
+## 🚀 Download and Integration
 
-### URLs de téléchargement direct
+### Direct Download URLs
 
-Une fois que GitHub Actions aura terminé (dans quelques minutes), vous pourrez télécharger les fichiers depuis :
+Once GitHub Actions has completed (in a few minutes), you can download the files from:
 
 ```bash
-# Fichier principal recommandé (3.6KB)
+# Recommended main file (3.6KB)
 https://github.com/DataMa-Solutions/assets-icon/releases/download/v1.0.0/datama-icons-simple.js
 
-# Autres options
+# Other options
 https://github.com/DataMa-Solutions/assets-icon/releases/download/v1.0.0/datama-icons-data.js
 https://github.com/DataMa-Solutions/assets-icon/releases/download/v1.0.0/datama-icons-helper.min.js
 ```
 
-## 💻 Intégration dans votre extension
+## 💻 Integration in your extension
 
-### Option 1 : Inclusion directe
+### Option 1: Direct Inclusion
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mon Extension DataMa</title>
+    <title>My DataMa Extension</title>
 </head>
 <body>
-    <!-- Vos icônes avec l'attribut data-datama -->
+    <!-- Your icons with data-datama attribute -->
     <button>
         <i data-datama="check-svg" data-size="16"></i>
-        Valider
+        Validate
     </button>
     
     <div>
         <i data-datama="settings-svg" data-size="24" data-fill="#007acc"></i>
-        <span>Paramètres</span>
+        <span>Settings</span>
     </div>
 
-    <!-- Inclure le script DataMa -->
+    <!-- Include the DataMa script -->
     <script src="path/to/datama-icons-simple.js"></script>
     
     <script>
-        // Les icônes sont automatiquement remplacées !
-        console.log('DataMa Icons chargées:', DataMaIcons.getIconNames().length, 'icônes disponibles');
+        // Icons are automatically replaced!
+        console.log('DataMa Icons loaded:', DataMaIcons.getIconNames().length, 'icons available');
     </script>
 </body>
 </html>
 ```
 
-### Option 2 : API programmatique
+### Option 2: Manual JS Usage
 
 ```javascript
-// Charger le script DataMa Icons
-import('./path/to/datama-icons-simple.js').then(() => {
-    
-    // Créer des icônes dynamiquement
-    function createIconButton(iconName, label, onClick) {
-        const button = document.createElement('button');
-        button.className = 'datama-icon-btn';
-        
-        // Générer l'icône SVG
-        const iconSvg = DataMaIcons.toSvg(iconName, { 
-            size: 16, 
-            fill: 'currentColor' 
-        });
-        
-        button.innerHTML = `${iconSvg} <span>${label}</span>`;
-        button.addEventListener('click', onClick);
-        
-        return button;
-    }
-    
-    // Utilisation
-    const saveBtn = createIconButton('save-svg', 'Sauvegarder', () => {
-        console.log('Sauvegarde...');
-    });
-    
-    const deleteBtn = createIconButton('trash-2-svg', 'Supprimer', () => {
-        console.log('Suppression...');
-    });
-    
-    document.body.appendChild(saveBtn);
-    document.body.appendChild(deleteBtn);
+// Method 1: Get icons directly
+const homeIcon = DataMaIcons.get('home-svg', {
+    size: 24,
+    fill: '#007acc'
 });
+
+// Method 2: Replace existing elements
+const container = document.getElementById('my-container');
+container.appendChild(homeIcon);
+
+// Method 3: CSS-style insertion
+const iconHtml = DataMaIcons.getHtml('settings-svg', {
+    size: 20,
+    fill: 'currentColor'
+});
+document.querySelector('.my-element').innerHTML = iconHtml;
 ```
 
-### Option 3 : Extension avec popup
+## 🔧 Extension-specific Options
+
+### For Power BI Extensions
 
 ```javascript
-// popup.js de votre extension
-class DataMaExtensionPopup {
-    constructor() {
-        this.icons = null;
-        this.init();
-    }
-    
-    async init() {
-        // Charger les icônes DataMa
-        await this.loadDataMaIcons();
-        this.render();
-    }
-    
-    async loadDataMaIcons() {
-        // Si vous avez inclus le fichier localement
-        if (window.DataMaIcons) {
-            this.icons = window.DataMaIcons;
-            return;
-        }
+// Power BI compatible format
+class MyPowerBIVisual {
+    constructor(options) {
+        // ... your initialization
         
-        // Sinon charger depuis votre bundle
-        const script = document.createElement('script');
-        script.src = chrome.runtime.getURL('js/datama-icons-simple.js');
-        document.head.appendChild(script);
-        
-        return new Promise(resolve => {
-            script.onload = () => {
-                this.icons = window.DataMaIcons;
-                resolve();
-            };
-        });
-    }
-    
-    render() {
-        const container = document.getElementById('popup-container');
-        
-        container.innerHTML = `
-            <div class="header">
-                ${this.icons.toSvg('datama-logo-svg', { size: 32 })}
-                <h1>DataMa Extension</h1>
-            </div>
+        // Load DataMa Icons
+        const toolbarElement = this.target.append('div')
+            .classed('toolbar', true);
             
-            <div class="actions">
-                <button class="btn-primary" data-action="analyze">
-                    ${this.icons.toSvg('data-svg', { size: 16 })}
-                    Analyser
-                </button>
+        // Add icons to toolbar
+        ['settings-svg', 'refresh-svg', 'export-svg'].forEach(iconName => {
+            const button = toolbarElement.append('div')
+                .classed('toolbar-button', true)
+                .on('click', () => this.handleAction(iconName));
                 
-                <button class="btn-secondary" data-action="settings">
-                    ${this.icons.toSvg('settings-svg', { size: 16 })}
-                    Paramètres
-                </button>
-                
-                <button class="btn-danger" data-action="clear">
-                    ${this.icons.toSvg('trash-2-svg', { size: 16 })}
-                    Effacer
-                </button>
-            </div>
-            
-            <div class="status">
-                ${this.icons.toSvg('check-svg', { size: 14, fill: '#28a745' })}
-                Extension prête
-            </div>
-        `;
-        
-        // Ajouter les événements
-        container.querySelectorAll('[data-action]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const action = e.currentTarget.getAttribute('data-action');
-                this.handleAction(action);
-            });
+            const icon = DataMaIcons.get(iconName, { size: 20 });
+            button.node().appendChild(icon);
         });
-    }
-    
-    handleAction(action) {
-        switch(action) {
-            case 'analyze':
-                this.startAnalysis();
-                break;
-            case 'settings':
-                this.openSettings();
-                break;
-            case 'clear':
-                this.clearData();
-                break;
-        }
-    }
-    
-    startAnalysis() {
-        // Votre logique d'analyse
-        console.log('Démarrage de l\'analyse...');
-    }
-    
-    openSettings() {
-        // Ouvrir les paramètres
-        chrome.tabs.create({ url: chrome.runtime.getURL('settings.html') });
-    }
-    
-    clearData() {
-        // Effacer les données
-        if (confirm('Êtes-vous sûr de vouloir effacer les données ?')) {
-            console.log('Données effacées');
-        }
     }
 }
-
-// Initialiser quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
-    new DataMaExtensionPopup();
-});
 ```
 
-## 🎨 CSS pour styliser vos icônes
+### For Tableau Extensions
+
+```javascript
+// Tableau extension integration
+tableau.extensions.initializeAsync().then(() => {
+    // Initialize UI with DataMa icons
+    initializeUI();
+});
+
+function initializeUI() {
+    const toolbar = document.getElementById('toolbar');
+    
+    // Create action buttons with icons
+    const actions = [
+        { name: 'analyze-svg', action: 'analyze', label: 'Analyze' },
+        { name: 'settings-svg', action: 'configure', label: 'Configure' },
+        { name: 'help-svg', action: 'help', label: 'Help' }
+    ];
+    
+    actions.forEach(action => {
+        const button = document.createElement('button');
+        button.className = 'action-button';
+        button.onclick = () => handleAction(action.action);
+        
+        const icon = DataMaIcons.get(action.name, { size: 18 });
+        button.appendChild(icon);
+        button.appendChild(document.createTextNode(action.label));
+        
+        toolbar.appendChild(button);
+    });
+}
+```
+
+### For Looker Studio Connectors
+
+```javascript
+// Looker Studio connector with DataMa icons
+function getConfig() {
+    const config = {
+        configParams: [
+            {
+                type: 'INFO',
+                name: 'intro',
+                text: 'Configure your DataMa analysis'
+            }
+            // ... other config params
+        ]
+    };
+    
+    // Add visual icons to enhance UX
+    document.addEventListener('DOMContentLoaded', () => {
+        addIconsToConfig();
+    });
+    
+    return config;
+}
+
+function addIconsToConfig() {
+    // Add icons to configuration sections
+    const sections = document.querySelectorAll('.config-section');
+    sections.forEach((section, index) => {
+        const iconNames = ['settings-svg', 'data-svg', 'chart-svg'];
+        const icon = DataMaIcons.get(iconNames[index] || 'settings-svg', { 
+            size: 16, 
+            fill: '#4285f4' 
+        });
+        section.prepend(icon);
+    });
+}
+```
+
+## 🎨 Styling and Customization
+
+### CSS Classes for Consistency
 
 ```css
-/* Styles pour les boutons avec icônes */
-.datama-icon-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
+/* Base icon styling */
+.datama-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
 }
 
-.datama-icon-btn:hover {
-    background: #f8f9fa;
-    border-color: #007acc;
-}
+/* Size variants */
+.datama-icon--small { /* 16px icons */ }
+.datama-icon--medium { /* 24px icons */ }
+.datama-icon--large { /* 32px icons */ }
 
-.datama-icon-btn svg {
-    flex-shrink: 0;
-}
+/* Color themes */
+.datama-icon--primary { fill: #007acc; }
+.datama-icon--success { fill: #28a745; }
+.datama-icon--warning { fill: #ffc107; }
+.datama-icon--danger { fill: #dc3545; }
 
-/* Styles pour les différents types de boutons */
-.btn-primary {
-    background: #007acc;
-    color: white;
-    border-color: #007acc;
-}
-
-.btn-primary:hover {
-    background: #005a9e;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-    border-color: #6c757d;
-}
-
-.btn-danger {
-    background: #dc3545;
-    color: white;
-    border-color: #dc3545;
-}
-
-/* Header avec logo */
-.header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #eee;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-}
-
-/* Status avec icône */
-.status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-    padding: 8px;
-    background: #f8f9fa;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #28a745;
+/* Interactive states */
+.datama-icon:hover {
+    opacity: 0.7;
+    transition: opacity 0.2s;
 }
 ```
 
-## 📊 Icônes disponibles par catégorie
+### Dynamic Color Adaptation
 
-### 💼 Actions (8 icônes)
-- `add-folder-svg`, `assess-svg`, `compare-svg`, `detect-svg`
-- `leave-org-svg`, `update-svg`, `upload-svg`, `upload-1-svg`
+```javascript
+// Function to adapt icon colors to current theme
+function adaptIconsToTheme(theme) {
+    const colorMap = {
+        light: '#333333',
+        dark: '#ffffff',
+        blue: '#007acc',
+        purple: '#6f42c1'
+    };
+    
+    const fill = colorMap[theme] || '#333333';
+    
+    // Update all simple icons with new color
+    document.querySelectorAll('.datama-icon[data-type="simple"]').forEach(iconEl => {
+        const iconName = iconEl.dataset.icon;
+        const newIcon = DataMaIcons.get(iconName, { 
+            size: iconEl.dataset.size || 24,
+            fill: fill 
+        });
+        iconEl.replaceWith(newIcon);
+    });
+}
+```
 
-### 📊 Data (4 icônes)  
-- `pivot-svg`, `data-svg`, `graph-chart-svg`, `journey-svg`
+## 📊 Performance Considerations
 
-### 💡 Light (69 icônes)
-- `check-svg`, `settings-svg`, `trash-2-svg`, `save-svg`
-- `download-svg`, `edit-svg`, `filter-svg`, `plus-svg`, etc.
+### Lazy Loading for Large Extensions
 
-### 🏢 Logos (4 icônes)
-- `datama-logo-svg`, `logo-looker-studio-svg`, `logo-power-bi-svg`, `logo-tableau-svg`
+```javascript
+// Load icons only when needed
+class IconManager {
+    constructor() {
+        this.loadedIcons = new Set();
+        this.iconCache = new Map();
+    }
+    
+    async getIcon(iconName, options = {}) {
+        const cacheKey = `${iconName}-${JSON.stringify(options)}`;
+        
+        if (this.iconCache.has(cacheKey)) {
+            return this.iconCache.get(cacheKey);
+        }
+        
+        const icon = DataMaIcons.get(iconName, options);
+        this.iconCache.set(cacheKey, icon);
+        this.loadedIcons.add(iconName);
+        
+        return icon;
+    }
+    
+    preloadIcons(iconNames) {
+        iconNames.forEach(name => {
+            this.getIcon(name, { size: 24 });
+        });
+    }
+}
 
-### 🧭 Navigation (5 icônes)
-- `drop-down-svg`, `drop-up-svg`, `drop-left-svg`, `drop-right-svg`, `drop-down-1-svg`
+// Usage
+const iconManager = new IconManager();
+iconManager.preloadIcons(['settings-svg', 'home-svg', 'chart-svg']);
+```
 
-### 🎛️ UI (25 icônes) 
-- `home-svg`, `profile-svg`, `search-svg`, `warning-svg`
-- `documentation-svg`, `settings-1-svg`, etc.
+### Bundle Size Optimization
 
-### 🎨 Illustrations (13 icônes)
-- `illustration-analyze-svg`, `illustration-data-svg`, `illustration-premium-svg`, etc.
+```javascript
+// Only load icons you actually use
+const REQUIRED_ICONS = [
+    'settings-svg',
+    'chart-svg', 
+    'export-svg',
+    'refresh-svg'
+];
 
-## 🔧 Tips et bonnes pratiques
+// Validate that all required icons are available
+function validateRequiredIcons() {
+    const availableIcons = DataMaIcons.getIconNames();
+    const missingIcons = REQUIRED_ICONS.filter(icon => 
+        !availableIcons.includes(icon)
+    );
+    
+    if (missingIcons.length > 0) {
+        console.warn('Missing required icons:', missingIcons);
+    }
+    
+    return missingIcons.length === 0;
+}
+```
 
-1. **Taille des icônes** : Utilisez `data-size` ou l'option `size` pour contrôler la taille
-2. **Couleurs** : Utilisez `data-fill` ou `fill: 'currentColor'` pour hériter de la couleur du texte
-3. **Performance** : Le fichier `datama-icons-simple.js` fait seulement 3.6KB
-4. **Accessibilité** : Ajoutez des `aria-label` sur vos boutons avec icônes
+## 🐛 Debugging and Troubleshooting
 
-## 🚀 Déploiement
+### Debug Mode
 
-1. Téléchargez `datama-icons-simple.js` depuis GitHub Releases
-2. Incluez-le dans votre extension
-3. Ajoutez les permissions nécessaires dans votre `manifest.json`
-4. Utilisez les icônes avec l'API ou les attributs `data-datama`
+```javascript
+// Enable debug mode to see icon loading details
+DataMaIcons.debug = true;
 
-Votre extension est maintenant prête avec les icônes DataMa ! 🎉 
+// Test icon loading
+console.log('Available icons:', DataMaIcons.getIconNames());
+console.log('Icon count:', DataMaIcons.getIconNames().length);
+
+// Test specific icon
+const testIcon = DataMaIcons.get('settings-svg', { size: 24 });
+console.log('Test icon created:', testIcon ? 'Success' : 'Failed');
+```
+
+### Error Handling
+
+```javascript
+function safeGetIcon(iconName, options = {}, fallback = null) {
+    try {
+        return DataMaIcons.get(iconName, options);
+    } catch (error) {
+        console.warn(`Failed to load icon ${iconName}:`, error);
+        
+        if (fallback) {
+            return safeGetIcon(fallback, options);
+        }
+        
+        // Return a simple placeholder
+        const placeholder = document.createElement('div');
+        placeholder.style.cssText = `
+            width: ${options.size || 24}px;
+            height: ${options.size || 24}px;
+            background: #f0f0f0;
+            border: 1px dashed #ccc;
+            display: inline-block;
+        `;
+        return placeholder;
+    }
+}
+
+// Usage with fallback
+const icon = safeGetIcon('non-existent-svg', { size: 20 }, 'settings-svg');
+```
+
+## 📋 Icon Reference Quick Guide
+
+### Most Common Icons for Extensions
+
+```javascript
+// UI Controls
+'settings-svg'      // Configuration
+'home-svg'          // Home/Dashboard
+'search-svg'        // Search functionality
+'filter-svg'        // Data filtering
+'refresh-svg'       // Reload/Update
+'export-svg'        // Export data
+
+// Actions
+'edit-svg'          // Edit mode
+'save-svg'          // Save changes
+'delete-svg'        // Delete items
+'add-svg'           // Add new items
+'copy-svg'          // Copy to clipboard
+'download-svg'      // Download file
+
+// Navigation
+'arrow-left-svg'    // Back navigation
+'arrow-right-svg'   // Forward navigation
+'chevron-up-svg'    // Expand/Collapse
+'chevron-down-svg'  // Expand/Collapse
+
+// Status/Feedback
+'check-svg'         // Success state
+'x-svg'             // Error/Close
+'alert-circle-svg'  // Warning
+'help-circle-svg'   // Help/Info
+```
+
+## 🔄 Version Compatibility
+
+### Checking Library Version
+
+```javascript
+// Check if the library supports features you need
+if (DataMaIcons.version && DataMaIcons.version >= '1.1.0') {
+    // Use newer features like forceComplexColor
+    const icon = DataMaIcons.get('logo-svg', { 
+        fill: '#007acc',
+        forceComplexColor: true 
+    });
+} else {
+    // Fallback for older versions
+    const icon = DataMaIcons.get('logo-svg', { size: 24 });
+}
+```
+
+### Future-Proof Integration
+
+```javascript
+// Defensive coding for library updates
+function createDataMaIcon(iconName, options = {}) {
+    // Check if DataMaIcons is available
+    if (typeof DataMaIcons === 'undefined') {
+        console.error('DataMa Icons library not loaded');
+        return null;
+    }
+    
+    // Check if icon exists
+    if (!DataMaIcons.getIconNames().includes(iconName)) {
+        console.warn(`Icon ${iconName} not found in library`);
+        return null;
+    }
+    
+    // Create icon with error handling
+    try {
+        return DataMaIcons.get(iconName, options);
+    } catch (error) {
+        console.error(`Error creating icon ${iconName}:`, error);
+        return null;
+    }
+}
+```
+
+This completes the integration guide for using DataMa Icons in your JavaScript extensions! 

@@ -251,6 +251,206 @@ ${iconObjects}
 }
 
 /**
+ * Generate CDN-style library for Vue.js (like Font Awesome)
+ */
+function generateCdnVueLibrary(iconData) {
+  const iconNames = Object.keys(iconData).sort();
+  
+  return `/**
+ * DataMa Icons - CDN Vue.js Library (Font Awesome style)
+ * Usage: Include this script and use <i class="datama datama-icon-name"></i>
+ */
+
+(function(global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = global || self, factory(global.DatamaIcons = {}));
+}(this, function(exports) {
+  'use strict';
+
+  // Icon data
+  const iconData = ${JSON.stringify(iconData, null, 2)};
+
+  /**
+   * Convert class-based icon to SVG
+   */
+  function convertClassIconToSvg(element) {
+    const classList = Array.from(element.classList);
+    
+    // Find icon name from classes (datama-{icon-name})
+    const iconClass = classList.find(cls => cls.startsWith('datama-') && cls !== 'datama');
+    if (!iconClass) return;
+    
+    const iconName = iconClass.replace('datama-', '') + '-svg';
+    const icon = iconData[iconName];
+    
+    if (!icon) {
+      console.warn('DataMa Icons: Icon not found:', iconName);
+      return;
+    }
+    
+    // Get size from class or data attributes
+    let size = 16; // default size
+    if (element.hasAttribute('data-size')) {
+      size = parseInt(element.getAttribute('data-size')) || size;
+    } else {
+      const sizeClass = classList.find(cls => cls.match(/^size-\\d+$/));
+      if (sizeClass) {
+        size = parseInt(sizeClass.replace('size-', ''));
+      }
+    }
+    
+    // Create SVG
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const ratio = icon.ratio || { width: 1, height: 1 };
+    const width = Math.round(size * ratio.width);
+    const height = size;
+    
+    svg.setAttribute('viewBox', icon.viewBox || '0 0 24 24');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('class', 'datama-svg ' + classList.filter(cls => !cls.startsWith('datama-') || cls === 'datama').join(' '));
+    
+    // Add icon content
+    if (icon.isComplex && icon.content) {
+      svg.innerHTML = icon.content;
+    } else if (icon.path) {
+      if (icon.path.trim().startsWith('<')) {
+        svg.innerHTML = icon.path;
+      } else {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', icon.path);
+        path.setAttribute('fill', 'currentColor');
+        svg.appendChild(path);
+      }
+    }
+    
+    // Replace the <i> element with the SVG
+    if (element.parentNode) {
+      element.parentNode.replaceChild(svg, element);
+    }
+  }
+
+  /**
+   * Process all datama icons on the page
+   */
+  function processDatamaIcons() {
+    const elements = document.querySelectorAll('i.datama');
+    elements.forEach(convertClassIconToSvg);
+  }
+
+  /**
+   * Auto-process icons when DOM is ready
+   */
+  function autoProcess() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', processDatamaIcons);
+    } else {
+      processDatamaIcons();
+    }
+    
+    // Watch for dynamically added icons
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              // Check if the added node is a datama icon
+              if (node.matches && node.matches('i.datama')) {
+                convertClassIconToSvg(node);
+              }
+              // Check for datama icons in the added subtree
+              const icons = node.querySelectorAll && node.querySelectorAll('i.datama');
+              if (icons) {
+                icons.forEach(convertClassIconToSvg);
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  /**
+   * Vue.js Plugin
+   */
+  const VuePlugin = {
+    install(Vue, options = {}) {
+      // Add global method
+      Vue.prototype.$datamaIcons = {
+        process: processDatamaIcons,
+        iconData: iconData
+      };
+      
+      // Add global directive v-datama-icon
+      Vue.directive('datama-icon', {
+        bind(el, binding) {
+          const iconName = binding.value || binding.arg;
+          if (iconName) {
+            // Add classes to element to trigger icon processing
+            el.classList.add('datama', 'datama-' + iconName.replace('-svg', ''));
+            convertClassIconToSvg(el);
+          }
+        },
+        update(el, binding) {
+          const iconName = binding.value || binding.arg;
+          if (iconName) {
+            // Re-process icon if value changed
+            el.classList.add('datama', 'datama-' + iconName.replace('-svg', ''));
+            convertClassIconToSvg(el);
+          }
+        }
+      });
+      
+      // Auto-process on component mount if enabled
+      if (options.autoProcess !== false) {
+        Vue.mixin({
+          mounted() {
+            this.$nextTick(() => {
+              if (this.$el && this.$el.querySelectorAll) {
+                const icons = this.$el.querySelectorAll('i.datama');
+                icons.forEach(convertClassIconToSvg);
+              }
+            });
+          }
+        });
+      }
+    }
+  };
+
+  // Export everything
+  exports.processDatamaIcons = processDatamaIcons;
+  exports.iconData = iconData;
+  exports.VuePlugin = VuePlugin;
+  exports.default = VuePlugin;
+
+  // Auto-install for Vue if available
+  if (typeof window !== 'undefined') {
+    if (window.Vue) {
+      window.Vue.use(VuePlugin);
+    }
+    
+    // Make available globally
+    window.DatamaIcons = exports;
+    
+    // Auto-process icons
+    autoProcess();
+  }
+
+  console.log('DataMa Icons CDN library loaded');
+  console.log('Usage: <i class="datama datama-home"></i>');
+  console.log('Available icons:', ${iconNames.length});
+}));
+`;
+}
+
+/**
  * Build Vue library
  */
 function buildVue() {
@@ -295,6 +495,11 @@ function buildVue() {
   
   const libraryPath = path.join(vueDir, 'index.js');
   fs.writeFileSync(libraryPath, libraryCode);
+
+  // Generate CDN library (Font Awesome style)
+  const cdnLibraryCode = generateCdnVueLibrary(iconData);
+  const cdnLibraryPath = path.join(distDir, 'datama-icons-cdn.js');
+  fs.writeFileSync(cdnLibraryPath, cdnLibraryCode);
 
   // Generate package.json for Vue package
   const vuePackageJson = {
