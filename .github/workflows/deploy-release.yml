@@ -117,11 +117,6 @@ jobs:
         run: |
           echo "🔍 Validating deployment secrets for ${{ inputs.environment }}..."
           
-          if [[ -z "${{ steps.deploy-vars.outputs.gcp_key }}" ]]; then
-            echo "❌ Missing GCP service account key for ${{ inputs.environment }}"
-            exit 1
-          fi
-          
           if [[ -z "${{ steps.deploy-vars.outputs.gcs_bucket }}" ]]; then
             echo "❌ Missing GCS bucket for ${{ inputs.environment }}"
             exit 1
@@ -130,6 +125,19 @@ jobs:
           if [[ -z "${{ steps.deploy-vars.outputs.gcs_cdn_url }}" ]]; then
             echo "❌ Missing GCS CDN URL for ${{ inputs.environment }}"
             exit 1
+          fi
+          
+          # Test if GCP credentials exist by checking the secret indirectly
+          if [[ "${{ inputs.environment }}" == "staging" ]]; then
+            if [[ -z "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}" ]]; then
+              echo "❌ Missing GCP service account key for staging"
+              exit 1
+            fi
+          else
+            if [[ -z "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PROD }}" ]]; then
+              echo "❌ Missing GCP service account key for production"
+              exit 1
+            fi
           fi
           
           echo "✅ All required secrets available for ${{ inputs.environment }}"
