@@ -72,11 +72,11 @@ jobs:
           
           if [[ "$ENVIRONMENT" == "staging" ]]; then
             echo "🧪 STAGING deployment configuration"
-            echo "gcp_key=${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}" >> $GITHUB_OUTPUT
             echo "gcs_bucket=${{ secrets.GCS_BUCKET_STAGING }}" >> $GITHUB_OUTPUT
             echo "gcs_cdn_url=${{ secrets.GCS_CDN_URL_STAGING }}" >> $GITHUB_OUTPUT
             echo "environment_suffix=staging" >> $GITHUB_OUTPUT
             echo "cache_max_age=300" >> $GITHUB_OUTPUT
+            echo "use_staging=true" >> $GITHUB_OUTPUT
             
             # Extract path prefix from CDN URL for staging
             CDN_URL="${{ secrets.GCS_CDN_URL_STAGING }}"
@@ -89,11 +89,11 @@ jobs:
             
           elif [[ "$ENVIRONMENT" == "production" ]]; then
             echo "🚀 PRODUCTION deployment configuration"
-            echo "gcp_key=${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PROD }}" >> $GITHUB_OUTPUT
             echo "gcs_bucket=${{ secrets.GCS_BUCKET_PROD }}" >> $GITHUB_OUTPUT
             echo "gcs_cdn_url=${{ secrets.GCS_CDN_URL_PROD }}" >> $GITHUB_OUTPUT
             echo "environment_suffix=prod" >> $GITHUB_OUTPUT
             echo "cache_max_age=31536000" >> $GITHUB_OUTPUT
+            echo "use_staging=false" >> $GITHUB_OUTPUT
             
             # Extract path prefix from CDN URL for production
             CDN_URL="${{ secrets.GCS_CDN_URL_PROD }}"
@@ -173,7 +173,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ steps.deploy-vars.outputs.gcp_key }}
+          credentials_json: ${{ steps.deploy-vars.outputs.use_staging == 'true' && secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING || secrets.GCP_SERVICE_ACCOUNT_KEY_PROD }}
 
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
