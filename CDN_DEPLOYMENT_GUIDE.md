@@ -52,14 +52,14 @@ In your GitHub repository → **Settings** → **Secrets and variables** → **A
 ```
 GCP_SERVICE_ACCOUNT_KEY_STAGING={"type":"service_account",...}
 GCS_BUCKET_STAGING=your-staging-bucket-name
-GCS_CDN_URL_STAGING=https://storage.googleapis.com/your-staging-bucket-name
+GCS_CDN_URL_STAGING=https://ressources2.datama.io/assets/js/icons
 ```
 
 **Production Environment:**
 ```
 GCP_SERVICE_ACCOUNT_KEY_PROD={"type":"service_account",...}
 GCS_BUCKET_PROD=your-production-bucket-name
-GCS_CDN_URL_PROD=https://storage.googleapis.com/your-production-bucket-name
+GCS_CDN_URL_PROD=https://ressources.datama.io/assets/js/icons
 NPM_TOKEN=npm_xxxxxxxxx (optional)
 ```
 
@@ -394,7 +394,7 @@ https://storage.googleapis.com/your-production-bucket/
 <html>
 <head>
     <!-- Load from staging environment -->
-    <script src="https://storage.googleapis.com/your-staging-bucket/latest/datama-icons-cdn.js"></script>
+    <script src="https://ressources2.datama.io/assets/js/icons/latest/datama-icons-cdn.js"></script>
 </head>
 <body>
     <!-- Font Awesome style usage -->
@@ -413,9 +413,9 @@ https://storage.googleapis.com/your-production-bucket/
 <html>
 <head>
     <!-- Load from production environment -->
-    <script src="https://storage.googleapis.com/your-production-bucket/latest/datama-icons-cdn.js"></script>
+    <script src="https://ressources.datama.io/assets/js/icons/latest/datama-icons-cdn.js"></script>
     <!-- Or use a specific stable version -->
-    <script src="https://storage.googleapis.com/your-production-bucket/releases/1.2.0/datama-icons-cdn.js"></script>
+    <script src="https://ressources.datama.io/assets/js/icons/releases/1.2.0/datama-icons-cdn.js"></script>
 </head>
 <body>
     <!-- Font Awesome style usage -->
@@ -432,7 +432,7 @@ https://storage.googleapis.com/your-production-bucket/
 
 **🧪 Staging:**
 ```html
-<script src="https://storage.googleapis.com/your-staging-bucket/latest/DataMaIconsNew.js"></script>
+<script src="https://ressources2.datama.io/assets/js/icons/latest/DataMaIconsNew.js"></script>
 <script>
 // Use the API (100% compatible with legacy system)
 const icon = DataMaIcons.get('home-svg', { size: 24, fill: '#007acc' });
@@ -442,7 +442,7 @@ document.getElementById('container').appendChild(icon);
 
 **🚀 Production:**
 ```html
-<script src="https://storage.googleapis.com/your-production-bucket/latest/DataMaIconsNew.js"></script>
+<script src="https://ressources.datama.io/assets/js/icons/latest/DataMaIconsNew.js"></script>
 <script>
 // Use the API (100% compatible with legacy system)
 const icon = DataMaIcons.get('home-svg', { size: 24, fill: '#007acc' });

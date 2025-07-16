@@ -73,8 +73,8 @@ setup_environment() {
     # Ask for CDN path prefix
     echo ""
     echo "📁 Do you want to deploy files to a specific path in your bucket?"
-    echo "   Example: /assets/js for URL like https://ressources.datama.io/assets/js/"
-    read -p "Enter path prefix (leave empty for root, or enter like 'assets/js'): " PATH_PREFIX
+    echo "   Example: /assets/js/icons for URL like https://ressources.datama.io/assets/js/icons/"
+    read -p "Enter path prefix (leave empty for root, or enter like 'assets/js/icons'): " PATH_PREFIX
     
     # Construct CDN URL
     if [ -n "$PATH_PREFIX" ]; then
