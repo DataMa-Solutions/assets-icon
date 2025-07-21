@@ -1,6 +1,43 @@
 # Changelog - DataMa Icons
 
-## [1.1.0] - 2024-12-19
+## [1.0.2] - 2025-07-21
+
+### ✨ New Icons Added
+
+#### Data Sources Category (17 new icons)
+- **`csv-svg`**: CSV file format icon
+- **`email-svg`**: Email/messaging icon
+- **`excel-svg`**: Microsoft Excel icon
+- **`facebook-svg`**: Facebook platform icon
+- **`google-ads-svg`**: Google Ads platform icon
+- **`google-analytics-svg`**: Google Analytics icon
+- **`google-bigquery-svg`**: Google BigQuery database icon
+- **`google-drive-svg`**: Google Drive storage icon
+- **`google-sheets-svg`**: Google Sheets icon
+- **`google-svg`**: Google platform icon
+- **`looker-svg`**: Looker analytics platform icon
+- **`onedrive-svg`**: Microsoft OneDrive icon
+- **`power-bi-svg`**: Microsoft Power BI icon
+- **`redshift-svg`**: Amazon Redshift database icon
+- **`snowflake-svg`**: Snowflake data warehouse icon
+- **`tableau-svg`**: Tableau analytics icon
+
+#### Data Category (1 new icon)
+- **`database-svg`**: Generic database icon
+
+#### Logo Updates (1 new icon)
+- **`qlik-svg`**: Qlik analytics platform logo (replaced old format)
+
+### 🔄 Icon Updates
+- Removed legacy logo formats for better consistency
+- Updated icon structure for improved organization
+
+### 📈 Total Icon Count
+- **Total icons**: 139 (was 118)
+- **New this release**: 21 icons
+- **Categories affected**: Data Sources (new category), Data, Logos
+
+## [1.0.1] - 2024-12-19
 
 ### ✨ New Features
 
