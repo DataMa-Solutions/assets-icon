@@ -33,47 +33,39 @@ function normalizeSvgViewBox($svg) {
   const width = parseFloat($svg.attr('width')) || 24;
   const height = parseFloat($svg.attr('height')) || 24;
   
-  let normalizedViewBox = viewBox;
+  let normalizedViewBox = '0 0 24 24';
   let normalizedWidth = 24;
   let normalizedHeight = 24;
+  let scaleTransform = null;
   
   if (viewBox) {
     const [x, y, w, h] = viewBox.split(' ').map(parseFloat);
     
-    // Determine target size - prefer 24x24, but respect aspect ratio
-    const aspectRatio = w / h;
+    // Always normalize to 24x24 viewBox for consistency
+    // Calculate scale to fit content within 24x24 while preserving aspect ratio
+    const scaleX = 24 / w;
+    const scaleY = 24 / h;
+    const scale = Math.min(scaleX, scaleY);
     
-    if (aspectRatio > 1) {
-      // Wider than tall
-      normalizedWidth = 24;
-      normalizedHeight = Math.round(24 / aspectRatio);
-    } else if (aspectRatio < 1) {
-      // Taller than wide  
-      normalizedHeight = 24;
-      normalizedWidth = Math.round(24 * aspectRatio);
-    } else {
-      // Square
-      normalizedWidth = normalizedHeight = 24;
-    }
+    // Calculate translation to center the scaled content
+    const scaledWidth = w * scale;
+    const scaledHeight = h * scale;
+    const translateX = (24 - scaledWidth) / 2 - (x * scale);
+    const translateY = (24 - scaledHeight) / 2 - (y * scale);
     
-    // Center the content in a 24x24 space
-    const offsetX = (24 - normalizedWidth) / 2;
-    const offsetY = (24 - normalizedHeight) / 2;
-    
-    normalizedViewBox = `${-offsetX} ${-offsetY} 24 24`;
+    scaleTransform = `translate(${translateX}, ${translateY}) scale(${scale})`;
   } else {
-    // No viewBox, create one based on width/height
-    const aspectRatio = width / height;
+    // No viewBox, create transformation based on width/height
+    const scaleX = 24 / width;
+    const scaleY = 24 / height;
+    const scale = Math.min(scaleX, scaleY);
     
-    if (aspectRatio > 1) {
-      normalizedWidth = 24;
-      normalizedHeight = Math.round(24 / aspectRatio);
-    } else if (aspectRatio < 1) {
-      normalizedHeight = 24;
-      normalizedWidth = Math.round(24 * aspectRatio);
-    }
+    const scaledWidth = width * scale;
+    const scaledHeight = height * scale;
+    const translateX = (24 - scaledWidth) / 2;
+    const translateY = (24 - scaledHeight) / 2;
     
-    normalizedViewBox = '0 0 24 24';
+    scaleTransform = `translate(${translateX}, ${translateY}) scale(${scale})`;
   }
   
   return {
@@ -81,7 +73,8 @@ function normalizeSvgViewBox($svg) {
     height: normalizedHeight,
     viewBox: normalizedViewBox,
     originalWidth: width,
-    originalHeight: height
+    originalHeight: height,
+    scaleTransform: scaleTransform
   };
 }
 
@@ -137,17 +130,48 @@ function extractSvgData(svgContent, filename, category = '') {
     const complexPaths = $svg.find('[fill-rule], [clip-rule]');
     const hasComplexPaths = complexPaths.length > 0;
     
-    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths;
+    // Check if viewBox needs scaling (not standard 24x24 or similar)
+    let needsScaling = false;
+    const currentViewBox = $svg.attr('viewBox');
+    if (currentViewBox) {
+      const [x, y, w, h] = currentViewBox.split(' ').map(parseFloat);
+      needsScaling = (w !== 24 || h !== 24 || x !== 0 || y !== 0);
+    } else {
+      const currentWidth = parseFloat($svg.attr('width')) || 24;
+      const currentHeight = parseFloat($svg.attr('height')) || 24;
+      needsScaling = (currentWidth !== 24 || currentHeight !== 24);
+    }
+    
+    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling;
     
     let processedContent;
     
     if (isComplex) {
-      // For complex SVGs, keep the entire inner content
+      // For complex SVGs, keep the entire inner content but wrap in transform group if needed
       $svg.attr('viewBox', dimensions.viewBox);
       $svg.attr('width', dimensions.width);
       $svg.attr('height', dimensions.height);
       
-      processedContent = $svg.html();
+      if (dimensions.scaleTransform) {
+        // Wrap content in a group with scale transform
+        let originalContent = $svg.html();
+        
+        // Remove paths with fill="none" that are just background placeholders
+        const $temp = $('<div>').html(originalContent);
+        $temp.find('path[fill="none"]').each((idx, el) => {
+          const $el = $(el);
+          const d = $el.attr('d');
+          // Remove simple rectangle paths that are just placeholders
+          if (d && (d.match(/^M0\s+0h\d+v\d+H0V0z?$/i) || d.match(/^M0\s+0h\d+v\d+H0Z?$/i))) {
+            $el.remove();
+          }
+        });
+        originalContent = $temp.html();
+        
+        processedContent = `<g transform="${dimensions.scaleTransform}">${originalContent}</g>`;
+      } else {
+        processedContent = $svg.html();
+      }
     } else {
       // For simple SVGs, preserve the order by processing elements in document order
       const paths = [];
@@ -159,6 +183,18 @@ function extractSvgData(svgContent, filename, category = '') {
         
         if (tagName === 'path') {
           const d = $element.attr('d');
+          const fill = $element.attr('fill');
+          
+          // Skip paths with fill="none" that are background placeholders
+          if (fill === 'none') {
+            return; // Skip this path
+          }
+          
+          // Skip simple rectangular background paths
+          if (d && (d.match(/^M0\s+0h\d+v\d+H0V0z?$/i) || d.match(/^M0\s+0h\d+v\d+H0Z?$/i))) {
+            return; // Skip this path
+          }
+          
           if (d) {
             paths.push(d);
           }

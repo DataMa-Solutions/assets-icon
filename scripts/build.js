@@ -160,12 +160,23 @@ function createSVG(iconData, options = {}) {
                 }
             });
         }
-    } else if (iconData.path) {
+    } else if (!iconData.isComplex && iconData.path) {
         // For simple icons, create a path element
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', iconData.path);
         path.setAttribute('fill', fill);
         svg.appendChild(path);
+    } else {
+        // Fallback for malformed icon data
+        console.warn(\`Malformed icon data for icon. isComplex: \${iconData.isComplex}, hasContent: \${!!iconData.content}, hasPath: \${!!iconData.path}\`);
+        if (iconData.content) {
+            svg.innerHTML = iconData.content;
+        } else if (iconData.path) {
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', iconData.path);
+            path.setAttribute('fill', fill);
+            svg.appendChild(path);
+        }
     }
     
     return svg;

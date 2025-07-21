@@ -475,7 +475,8 @@
             <div class="control-group">
                 <label class="control-label">Icon color</label>
                 <div class="color-container">
-                    <input type="color" id="color-picker" class="color-input" value="#007acc">
+                    <input type="color" id="color-picker" class="color-input" value="#000000">
+                    <div class="color-preset" style="background: transparent; border: 2px solid #ddd" data-color="none" title="None (currentColor)">∅</div>
                     <div class="color-preset" style="background: #007acc" data-color="#007acc" title="DataMa Blue"></div>
                     <div class="color-preset" style="background: #28a745" data-color="#28a745" title="Success Green"></div>
                     <div class="color-preset" style="background: #dc3545" data-color="#dc3545" title="Error Red"></div>
@@ -532,7 +533,7 @@
     <script>
         let allIcons = {};
         let currentIconSize = 32;
-        let currentIconFill = '#007acc';
+        let currentIconFill = 'transparent';
         let forceComplexColor = false;
         let searchTerm = '';
 
@@ -723,8 +724,13 @@
             document.querySelectorAll('.color-preset').forEach(preset => {
                 preset.addEventListener('click', (e) => {
                     const color = e.target.dataset.color;
-                    currentIconFill = color;
-                    colorPicker.value = color;
+                    if (color === 'none') {
+                        currentIconFill = 'transparent';
+                        colorPicker.value = '#000000';
+                    } else {
+                        currentIconFill = color;
+                        colorPicker.value = color;
+                    }
                     updateAllIcons();
                     updatePreview();
                 });
@@ -772,9 +778,17 @@
                 const iconContainer = document.getElementById(`icon-${iconName}`);
                 if (iconContainer) {
                     iconContainer.innerHTML = '';
+                    const iconData = allIcons[iconName];
+                    
+                    // Use different default fill based on icon complexity
+                    let effectiveFill = currentIconFill;
+                    if (currentIconFill === 'transparent' && iconData) {
+                        effectiveFill = iconData.isComplex ? 'transparent' : '#000000';
+                    }
+                    
                     const iconElement = DataMaIcons.get(iconName, {
                         size: currentIconSize,
-                        fill: currentIconFill,
+                        fill: effectiveFill,
                         forceComplexColor: forceComplexColor
                     });
                     if (iconElement) {
@@ -801,9 +815,16 @@
             
             // Create icon
             previewIcon.innerHTML = '';
+            
+            // Use different default fill based on icon complexity
+            let effectiveFill = currentIconFill;
+            if (currentIconFill === 'transparent' && iconData) {
+                effectiveFill = iconData.isComplex ? 'transparent' : '#000000';
+            }
+            
             const iconElement = DataMaIcons.get(selectedIcon, {
                 size: currentIconSize,
-                fill: currentIconFill,
+                fill: effectiveFill,
                 forceComplexColor: forceComplexColor
             });
             
@@ -825,13 +846,13 @@
         function resetToDefaults() {
             // Reset variables
             currentIconSize = 32;
-            currentIconFill = '#007acc';
+            currentIconFill = 'transparent';
             forceComplexColor = false;
             
             // Reset UI controls
             document.getElementById('size-range').value = 32;
             document.getElementById('size-value').textContent = '32px';
-            document.getElementById('color-picker').value = '#007acc';
+            document.getElementById('color-picker').value = '#000000';
             document.getElementById('force-complex-color').checked = false;
             document.getElementById('icon-select').value = '';
             
