@@ -1,43 +1,37 @@
 # Changelog - DataMa Icons
 
-## [1.0.2] - 2025-07-21
+## [1.0.4] - 2025-01-27
 
-### ✨ New Icons Added
+### 🐛 Bug Fixes
+- **Fixed JavaScript error**: Resolved "Expected moveto path command" error in complex icons
+- **Improved error handling**: Added robust error handling in DataMaIconsNew.js for SVG path processing
+- **Enhanced icon rendering**: Better handling of complex SVG paths and stroke elements
 
-#### Data Sources Category (17 new icons)
-- **`csv-svg`**: CSV file format icon
-- **`email-svg`**: Email/messaging icon
-- **`excel-svg`**: Microsoft Excel icon
-- **`facebook-svg`**: Facebook platform icon
-- **`google-ads-svg`**: Google Ads platform icon
-- **`google-analytics-svg`**: Google Analytics icon
-- **`google-bigquery-svg`**: Google BigQuery database icon
-- **`google-drive-svg`**: Google Drive storage icon
-- **`google-sheets-svg`**: Google Sheets icon
-- **`google-svg`**: Google platform icon
-- **`looker-svg`**: Looker analytics platform icon
-- **`onedrive-svg`**: Microsoft OneDrive icon
-- **`power-bi-svg`**: Microsoft Power BI icon
-- **`redshift-svg`**: Amazon Redshift database icon
-- **`snowflake-svg`**: Snowflake data warehouse icon
-- **`tableau-svg`**: Tableau analytics icon
+### 🎨 UI/UX Improvements
+- **Default color behavior**: Changed default fill from blue (#007acc) to transparent
+- **Smart color management**: 
+  - Complex icons default to transparent (preserve original colors)
+  - Simple icons default to black (#000000) for visibility
+- **New "None" option**: Added transparent preset with ∅ symbol for testing transparent mode
+- **Improved color picker**: Default color picker now shows #000000 instead of blue
 
-#### Data Category (1 new icon)
-- **`database-svg`**: Generic database icon
+### 🔧 Technical Enhancements
+- **Dynamic fill logic**: Automatic color selection based on icon complexity
+- **Enhanced preview system**: Real-time updates with proper color inheritance
+- **Better reset functionality**: Reset now defaults to transparent instead of blue
+- **Improved icon centering**: Better positioning for complex icons like database
 
-#### Logo Updates (1 new icon)
-- **`qlik-svg`**: Qlik analytics platform logo (replaced old format)
+### 📚 Documentation
+- **Updated examples**: All examples now reflect new default behavior
+- **Enhanced testing interface**: Better visual feedback for color changes
+- **Improved error messages**: More descriptive error handling for developers
 
-### 🔄 Icon Updates
-- Removed legacy logo formats for better consistency
-- Updated icon structure for improved organization
+### 🔄 Breaking Changes
+None - Fully backward compatible
 
-### 📈 Total Icon Count
-- **Total icons**: 139 (was 118)
-- **New this release**: 21 icons
-- **Categories affected**: Data Sources (new category), Data, Logos
+---
 
-## [1.0.1] - 2024-12-19
+## [1.0.3] - 2024-12-19
 
 ### ✨ New Features
 
