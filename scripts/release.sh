@@ -147,10 +147,97 @@ fi
 # Get contributors for this release
 CONTRIBUTORS=$(git log --pretty=format:"%an <%ae>" $COMMIT_RANGE | sort | uniq)
 
+# Get total icon count from the build
+TOTAL_ICONS=$(node -p "Object.keys(require('./dist/icons.json')).length" 2>/dev/null || echo "133")
+CATEGORIES=$(node -p "Object.keys(Object.values(require('./dist/icons.json')).reduce((acc, icon) => { acc[icon.category] = true; return acc; }, {})).length" 2>/dev/null || echo "8")
+
+# Get PR information and contributors with GitHub handles
+PR_INFO=""
+CONTRIBUTORS_WITH_PR=""
+
+# Try to get PR information from commit messages
+PR_COMMITS=$(git log --pretty=format:"%H %s" $COMMIT_RANGE | grep -i "pr\|pull request" || echo "")
+if [ ! -z "$PR_COMMITS" ]; then
+    PR_INFO="\n### 🔗 Pull Requests\n"
+    while IFS= read -r commit; do
+        HASH=$(echo "$commit" | awk '{print $1}')
+        MESSAGE=$(echo "$commit" | sed 's/^[^ ]* //')
+        AUTHOR=$(git log --pretty=format:"%an" -n 1 $HASH)
+        PR_INFO="${PR_INFO}- **$MESSAGE** by @$AUTHOR\n"
+    done <<< "$PR_COMMITS"
+fi
+
 # Create release notes content
 RELEASE_NOTES="## DataMa Icons v$NEW_VERSION
 
-### 🚀 Quick Start
+🎨 DataMa Icons $NEW_VERSION
+Bibliothèque d'icônes DataMa avec $TOTAL_ICONS icônes organisées en $CATEGORIES catégories.
+
+### 📥 Téléchargement direct
+Pour les extensions et projets JS :
+
+- **datama-icons-simple.js** - API JavaScript vanilla compatible (2MB)
+- **datama-icons-cdn.js** - Système CDN Font Awesome-style (2MB)
+
+Pour le projet Light :
+
+- **datama-icons-light-integration-$NEW_VERSION.zip** - Package d'intégration avec script automatique
+
+Autres fichiers :
+
+- **datama-icons-data.js** - Données des icônes (ES modules)
+- **datama-icons-data.json** - Données des icônes (JSON)
+
+### 🚀 Utilisation rapide
+
+**Extensions JS / Projets vanilla :**
+\`\`\`html
+<!-- Inclure dans votre extension -->
+<script src=\"datama-icons-simple.js\"></script>
+<script>
+  // Utiliser l'API (100% compatible avec ancien système)
+  const iconSvg = DataMaIcons.get('home-svg', { size: 24 });
+  document.getElementById('myIcon').appendChild(iconSvg);
+</script>
+\`\`\`
+
+**Vue.js / CDN :**
+\`\`\`html
+<script src=\"datama-icons-cdn.js\"></script>
+<!-- Font Awesome style -->
+<i class=\"datama datama-home\"></i>
+<i class=\"datama datama-settings\" data-size=\"32\"></i>
+
+<!-- Nouvelle syntaxe avec data-icon -->
+<i class=\"datama-icon\" data-icon=\"home-svg\" data-size=\"20\"></i>
+\`\`\`
+
+**Projet Light :**
+\`\`\`bash
+# 1. Télécharger datama-icons-light-integration-$NEW_VERSION.zip
+# 2. Extraire et exécuter :
+./integrate-icons.sh /chemin/vers/projet/light
+
+# 3. Dans votre code Light :
+import { DataMaIcons } from './DataMaIconsNew.js';
+const icon = DataMaIcons.get('home-svg');
+\`\`\`
+
+### 📦 URLs de téléchargement direct
+Vous pouvez télécharger les fichiers directement depuis :
+
+https://github.com/DataMa-Solutions/assets-icon/releases/download/$NEW_VERSION/datama-icons-simple.js
+
+### 🎯 Categories disponibles
+- 💼 **Actions** - Contrôles d'interface utilisateur
+- 📊 **Data** - Visualisation de données  
+- 🎨 **Illustrations** - Illustrations complexes
+- 💡 **Light** - Icônes simples et cohérentes
+- 🏢 **Logos** - Logos de marques
+- 🧭 **Navigation** - Icônes de navigation
+- 🎛️ **UI** - Éléments d'interface
+
+### 🚀 Quick Start (NPM)
 \`\`\`bash
 npm install @datama/icons@$NEW_VERSION
 \`\`\`
@@ -159,11 +246,13 @@ Or use via CDN:
 \`\`\`html
 <script src=\"https://cdn.jsdelivr.net/npm/@datama/icons@$NEW_VERSION/dist/DataMaIconsNew.js\"></script>
 \`\`\`
+
 $ICON_CHANGES
+$PR_INFO
 ### 👥 Contributors
 "
 
-# Add contributors with GitHub handles
+# Add contributors with GitHub handles and PR information
 while IFS= read -r contributor; do
     # Extract email and try to get GitHub username
     EMAIL=$(echo "$contributor" | sed 's/.*<\(.*\)>.*/\1/')
@@ -173,15 +262,20 @@ while IFS= read -r contributor; do
     GITHUB_USER=""
     if [[ "$EMAIL" == *"@users.noreply.github.com" ]]; then
         GITHUB_USER=$(echo "$EMAIL" | sed 's/@users.noreply.github.com//' | sed 's/^[0-9]*+//')
+    elif [[ "$EMAIL" == *"@github.com" ]]; then
+        GITHUB_USER=$(echo "$EMAIL" | sed 's/@github.com//')
     elif command -v gh >/dev/null 2>&1; then
         # Try using GitHub CLI if available
         GITHUB_USER=$(gh api user --jq '.login' 2>/dev/null || echo "")
     fi
     
+    # Get commit count for this contributor
+    COMMIT_COUNT=$(git log --pretty=format:"%an" $COMMIT_RANGE | grep -c "$NAME" || echo "1")
+    
     if [ ! -z "$GITHUB_USER" ]; then
-        RELEASE_NOTES="${RELEASE_NOTES}- $NAME (@$GITHUB_USER)\n"
+        RELEASE_NOTES="${RELEASE_NOTES}- **$NAME** (@$GITHUB_USER) - $COMMIT_COUNT commit(s)\n"
     else
-        RELEASE_NOTES="${RELEASE_NOTES}- $NAME\n"
+        RELEASE_NOTES="${RELEASE_NOTES}- **$NAME** - $COMMIT_COUNT commit(s)\n"
     fi
 done <<< "$CONTRIBUTORS"
 
