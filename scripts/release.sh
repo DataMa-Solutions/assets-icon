@@ -283,7 +283,7 @@ RELEASE_NOTES="${RELEASE_NOTES}\n### 📚 Full Changelog
 See [CHANGELOG.md](./CHANGELOG.md) for detailed changes.
 
 ---
-*🤖 Generated with [Claude Code](https://claude.ai/code)*"
+
 
 # Commit version change and updated files
 echo "💾 Committing version change and updated files..."
@@ -293,10 +293,6 @@ git commit -m "🔖 Bump version to v$NEW_VERSION
 📝 Updated files with new icons and documentation
 
 $ICON_CHANGES
-
-🤖 Generated with [Claude Code](https://claude.ai/code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
 
 # Create and push tag
 echo "🏷️  Creating and pushing tag..."
