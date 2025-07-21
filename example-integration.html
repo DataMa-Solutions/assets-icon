@@ -175,18 +175,18 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
 &lt;script src="dist/datama-icons-cdn.js"&gt;&lt;/script&gt;
 
 // Use with classes (like Font Awesome)
-&lt;i class="datama datama-home"&gt;&lt;/i&gt;
-&lt;i class="datama datama-settings" data-size="32"&gt;&lt;/i&gt;
+&lt;i class="datama-icon" data-icon="home-svg"&gt;&lt;/i&gt;
+&lt;i class="datama-icon" data-icon="settings-svg" data-size="32"&gt;&lt;/i&gt;
         </div>
         
         <div class="demo-card">
             <h3>CDN Examples</h3>
             
             <div class="icon-showcase">
-                <span>Default size: <i class="datama datama-home"></i></span>
-                <span>Size 24: <i class="datama datama-settings" data-size="24"></i></span>
-                <span>Size 32: <i class="datama datama-plus" data-size="32"></i></span>
-                <span>Size 48: <i class="datama datama-check" data-size="48"></i></span>
+                <span>Default size: <i class="datama-icon" data-icon="home-svg"></i></span>
+                <span>Size 24: <i class="datama-icon" data-icon="settings-svg" data-size="24"></i></span>
+                <span>Size 32: <i class="datama-icon" data-icon="plus-svg" data-size="32"></i></span>
+                <span>Size 48: <i class="datama-icon" data-icon="check-svg" data-size="48"></i></span>
             </div>
             
             <button class="btn" onclick="addDynamicIcon()">Add Dynamic Icon</button>
@@ -202,12 +202,12 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
         <div class="demo-card">
             <h3>Navigation Icons (CDN)</h3>
             <div class="icon-showcase">
-                <i class="datama datama-chevron-left" data-size="24"></i>
-                <i class="datama datama-chevron-right" data-size="24"></i>
-                <i class="datama datama-chevron-up" data-size="24"></i>
-                <i class="datama datama-chevron-down" data-size="24"></i>
-                <i class="datama datama-arrow-left" data-size="24"></i>
-                <i class="datama datama-arrow-right" data-size="24"></i>
+                <i class="datama-icon" data-icon="chevron-left-svg" data-size="24"></i>
+                <i class="datama-icon" data-icon="chevron-right-svg" data-size="24"></i>
+                <i class="datama-icon" data-icon="chevron-up-svg" data-size="24"></i>
+                <i class="datama-icon" data-icon="chevron-down-svg" data-size="24"></i>
+                <i class="datama-icon" data-icon="arrow-left-svg" data-size="24"></i>
+                <i class="datama-icon" data-icon="arrow-right-svg" data-size="24"></i>
             </div>
             
             <h3>Action Icons (JavaScript API)</h3>
@@ -326,7 +326,8 @@ Tags for home-svg: ${homeIconData ? homeIconData.tags.join(', ') : 'N/A'}
         function addDynamicIcon() {
             const container = document.getElementById('dynamic-icons');
             const newIcon = document.createElement('i');
-            newIcon.className = 'datama datama-plus';
+            newIcon.className = 'datama-icon';
+            newIcon.setAttribute('data-icon', 'plus-svg');
             newIcon.setAttribute('data-size', '24');
             newIcon.style.margin = '5px';
             container.appendChild(newIcon);

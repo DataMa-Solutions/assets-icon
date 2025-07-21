@@ -258,7 +258,7 @@ function generateCdnVueLibrary(iconData) {
   
   return `/**
  * DataMa Icons - CDN Vue.js Library (Font Awesome style)
- * Usage: Include this script and use <i class="datama datama-icon-name"></i>
+ * Usage: Include this script and use <i class="datama-icon" data-icon="icon-name-svg"></i> or <i class="datama datama-icon-name"></i>
  */
 
 (function(global, factory) {
@@ -272,16 +272,26 @@ function generateCdnVueLibrary(iconData) {
   const iconData = ${JSON.stringify(iconData, null, 2)};
 
   /**
-   * Convert class-based icon to SVG
+   * Convert class-based or data-icon to SVG
    */
   function convertClassIconToSvg(element) {
     const classList = Array.from(element.classList);
+    let iconName;
     
-    // Find icon name from classes (datama-{icon-name})
-    const iconClass = classList.find(cls => cls.startsWith('datama-') && cls !== 'datama');
-    if (!iconClass) return;
+    // Check for data-icon attribute first (new format)
+    if (element.hasAttribute('data-icon')) {
+      iconName = element.getAttribute('data-icon');
+      // Ensure it ends with -svg
+      if (!iconName.endsWith('-svg')) {
+        iconName += '-svg';
+      }
+    } else {
+      // Fallback to class-based format (legacy)
+      const iconClass = classList.find(cls => cls.startsWith('datama-') && cls !== 'datama');
+      if (!iconClass) return;
+      iconName = iconClass.replace('datama-', '') + '-svg';
+    }
     
-    const iconName = iconClass.replace('datama-', '') + '-svg';
     const icon = iconData[iconName];
     
     if (!icon) {
@@ -336,7 +346,7 @@ function generateCdnVueLibrary(iconData) {
    * Process all datama icons on the page
    */
   function processDatamaIcons() {
-    const elements = document.querySelectorAll('i.datama');
+    const elements = document.querySelectorAll('i.datama, i.datama-icon[data-icon]');
     elements.forEach(convertClassIconToSvg);
   }
 
@@ -357,11 +367,11 @@ function generateCdnVueLibrary(iconData) {
           mutation.addedNodes.forEach(function(node) {
             if (node.nodeType === 1) { // Element node
               // Check if the added node is a datama icon
-              if (node.matches && node.matches('i.datama')) {
+              if (node.matches && node.matches('i.datama, i.datama-icon[data-icon]')) {
                 convertClassIconToSvg(node);
               }
               // Check for datama icons in the added subtree
-              const icons = node.querySelectorAll && node.querySelectorAll('i.datama');
+              const icons = node.querySelectorAll && node.querySelectorAll('i.datama, i.datama-icon[data-icon]');
               if (icons) {
                 icons.forEach(convertClassIconToSvg);
               }
@@ -414,7 +424,7 @@ function generateCdnVueLibrary(iconData) {
           mounted() {
             this.$nextTick(() => {
               if (this.$el && this.$el.querySelectorAll) {
-                const icons = this.$el.querySelectorAll('i.datama');
+                const icons = this.$el.querySelectorAll('i.datama, i.datama-icon[data-icon]');
                 icons.forEach(convertClassIconToSvg);
               }
             });
@@ -444,7 +454,7 @@ function generateCdnVueLibrary(iconData) {
   }
 
   console.log('DataMa Icons CDN library loaded');
-  console.log('Usage: <i class="datama datama-home"></i>');
+  console.log('Usage: <i class="datama-icon" data-icon="home-svg"></i> or <i class="datama datama-home"></i>');
   console.log('Available icons:', ${iconNames.length});
 }));
 `;
