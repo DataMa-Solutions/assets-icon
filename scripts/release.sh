@@ -98,10 +98,12 @@ npm run build:all
 echo "🧪 Running tests..."
 npm test
 
-# Commit version change
-echo "💾 Committing version change..."
-git add package.json
-git commit -m "🔖 Bump version to v$NEW_VERSION"
+# Commit version change and updated files
+echo "💾 Committing version change and updated files..."
+git add .
+git commit -m "🔖 Bump version to v$NEW_VERSION
+
+📝 Updated files with new icons and documentation"
 
 # Create and push tag
 echo "🏷️  Creating and pushing tag..."

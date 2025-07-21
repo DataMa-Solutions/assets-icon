@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 118 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 133 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (118)
+## Available Icons (133)
 
 - `add-folder-svg`
 - `alert-circle-svg`
@@ -80,7 +80,9 @@ Vue.use(DatamaIcons);
 - `contacts-svg`
 - `copy-svg`
 - `cross-svg`
+- `csv-svg`
 - `data-svg`
+- `database-svg`
 - `datama-logo-svg`
 - `datama-svg`
 - `detect-svg`
@@ -94,12 +96,21 @@ Vue.use(DatamaIcons);
 - `drop-up-svg`
 - `earth-svg`
 - `edit-svg`
+- `email-svg`
+- `excel-svg`
 - `eyes-svg`
+- `facebook-svg`
 - `filter-svg`
 - `folder-open-svg`
 - `font-svg`
 - `function-svg`
 - `gauge-svg`
+- `google-ads-svg`
+- `google-analytics-svg`
+- `google-bigquery-svg`
+- `google-drive-svg`
+- `google-sheets-svg`
+- `google-svg`
 - `graph-chart-svg`
 - `group-svg`
 - `groups-svg`
@@ -127,25 +138,27 @@ Vue.use(DatamaIcons);
 - `link-open-svg`
 - `link-svg`
 - `lock-svg`
-- `logo-looker-studio-svg`
-- `logo-power-bi-svg`
-- `logo-tableau-svg`
+- `looker-svg`
 - `magnifier-svg`
 - `maximize-2-svg`
 - `minus-svg`
 - `more-horizontal-svg`
 - `more-vertical-svg`
 - `new-tab-svg`
+- `onedrive-svg`
 - `paint-svg`
 - `peace-svg`
 - `pivot-svg`
 - `play-svg`
 - `plus-svg`
+- `power-bi-svg`
 - `profile-1-svg`
 - `profile-add-svg`
 - `profile-info-svg`
 - `profile-setting-svg`
 - `profile-svg`
+- `qlik-svg`
+- `redshift-svg`
 - `release-notes-1-svg`
 - `release-notes-svg`
 - `reverse-axis-svg`
@@ -160,9 +173,11 @@ Vue.use(DatamaIcons);
 - `settings-svg`
 - `share-2-svg`
 - `shopping-cart-svg`
+- `snowflake-svg`
 - `stacked-svg`
 - `star-cool-svg`
 - `table-svg`
+- `tableau-svg`
 - `text-color-svg`
 - `trash-2-svg`
 - `tree-svg`
