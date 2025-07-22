@@ -120,8 +120,7 @@ function createSVG(iconData, options = {}) {
         fill = 'currentColor',
         stroke = 'none',
         strokeWidth = 0,
-        className = '',
-        forceComplexColor = false  // New option to force color on complex icons
+        className = ''
     } = options;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -137,28 +136,17 @@ function createSVG(iconData, options = {}) {
     }
     
     if (iconData.isComplex && iconData.content) {
-        // For complex icons, use the content HTML and preserve original colors
-        // Complex icons often have intentional colors, gradients, masks, etc.
-        svg.innerHTML = iconData.content;
-        
-        // Apply custom color only if explicitly requested via forceComplexColor
-        if (forceComplexColor && fill !== 'currentColor') {
-            const childElements = svg.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, g');
-            childElements.forEach(child => {
-                // Only override if the element doesn't have explicit fill="none" or stroke-only styling
-                const currentFill = child.getAttribute('fill');
-                const currentStroke = child.getAttribute('stroke');
-                
-                // If element has no fill or has a color fill (not 'none'), apply the new color
-                if (!currentFill || (currentFill !== 'none' && currentFill !== 'transparent')) {
-                    child.setAttribute('fill', fill);
-                }
-                
-                // Also apply to stroke if it's currently a color and not 'none'
-                if (currentStroke && currentStroke !== 'none' && currentStroke !== 'transparent' && currentStroke !== 'currentColor') {
-                    child.setAttribute('stroke', fill);
-                }
-            });
+        // For complex icons, check if selective fill is requested and available
+        if (fill !== 'currentColor' && fill !== 'original' && iconData.selectiveFillContent) {
+            let content = iconData.selectiveFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else {
+            // Use original content with all original colors and gradients
+            svg.innerHTML = iconData.content;
         }
     } else if (!iconData.isComplex && iconData.path) {
         // For simple icons, create a path element
@@ -180,6 +168,29 @@ function createSVG(iconData, options = {}) {
     }
     
     return svg;
+}
+
+/**
+ * Apply selective fill to icons
+ * Uses pre-processed selective fill content when available
+ */
+function applySelectiveFill(svg, fillColor) {
+    // This function is now mainly for fallback cases
+    // Most of the work is done at build time in the selective fill content
+    const elements = svg.querySelectorAll('[fill="currentColor"], [stroke="currentColor"]');
+    
+    elements.forEach(element => {
+        const currentFill = element.getAttribute('fill');
+        const currentStroke = element.getAttribute('stroke');
+        
+        if (currentFill === 'currentColor') {
+            element.setAttribute('fill', fillColor);
+        }
+        
+        if (currentStroke === 'currentColor') {
+            element.setAttribute('stroke', fillColor);
+        }
+    });
 }
 
 /**
@@ -205,7 +216,9 @@ function replace(options = {}) {
             fill: element.getAttribute('data-fill') || options.fill,
             stroke: element.getAttribute('data-stroke') || options.stroke,
             strokeWidth: element.getAttribute('data-stroke-width') || options.strokeWidth,
-            className: element.className
+            className: element.className,
+            forceComplexColor: element.getAttribute('data-force-complex-color') === 'true' || options.forceComplexColor,
+            selectiveFill: element.getAttribute('data-selective-fill') !== 'false' && options.selectiveFill !== false
         };
         
         const svg = createSVG(iconData, elementOptions);

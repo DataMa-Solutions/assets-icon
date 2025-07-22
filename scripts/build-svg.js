@@ -78,6 +78,311 @@ function normalizeSvgViewBox($svg) {
   };
 }
 
+
+/**
+ * Extract color from CSS style string
+ * @param {string} styleString - Style attribute value
+ * @param {string} property - CSS property to extract (fill or stroke)
+ * @returns {string|null} - Color value or null if not found
+ */
+function extractColorFromStyle(styleString, property) {
+  if (!styleString) return null;
+  
+  // Handle both semicolon-separated and space-separated CSS
+  const regex = new RegExp(`${property}\\s*:\\s*([^;\\s]+)`, 'i');
+  const match = styleString.match(regex);
+  return match ? match[1].trim() : null;
+}
+
+/**
+ * Check if a color should be skipped (white, transparent, shadows)
+ * @param {string} color - Color value
+ * @param {number} opacity - Opacity value (0-1)
+ * @returns {boolean} - True if should be skipped
+ */
+function shouldSkipColor(color, opacity = 1) {
+  if (!color) return false; // undefined/null colors should be processed
+  
+  // Skip transparent colors
+  if (color === 'none' || color === 'transparent') {
+    return true;
+  }
+  
+  // Skip shadow colors (very low opacity)
+  if (opacity < 0.1) {
+    return true;
+  }
+  
+  // Skip pure white colors (backgrounds/decorations) - more comprehensive check
+  const lowerColor = color.toLowerCase().trim();
+  if (lowerColor === '#ffffff' || 
+      lowerColor === '#fff' || 
+      lowerColor === 'white' ||
+      lowerColor === 'rgb(255,255,255)' ||
+      lowerColor === 'rgb(255, 255, 255)') {
+    return true;
+  }
+  
+  // Do NOT skip pure black colors - make them colorable with currentColor
+  // Commented out to allow black to be replaced with currentColor
+  /*
+  if (lowerColor === '#000000' || 
+      lowerColor === '#000' || 
+      lowerColor === 'black' ||
+      lowerColor === 'rgb(0,0,0)' ||
+      lowerColor === 'rgb(0, 0, 0)') {
+    return true;
+  }
+  */
+  
+  // Skip URL references to gradients/patterns for now (will be handled separately)
+  if (color.startsWith('url(')) {
+    return true;
+  }
+  
+  return false;
+}
+
+/**
+ * Create selective fill version of complex SVG
+ * @param {string} svgContent - Raw SVG content
+ * @param {object} dimensions - Normalized dimensions
+ * @returns {string} - Processed content with selective fill logic
+ */
+function createSelectiveFillVersion(svgContent, dimensions) {
+  const $ = cheerio.load(svgContent, { xmlMode: true });
+  const $svg = $('svg');
+  
+  $svg.attr('viewBox', dimensions.viewBox);
+  $svg.attr('width', dimensions.width);  
+  $svg.attr('height', dimensions.height);
+  
+  // Remove style tags and class-based styling, but preserve defs for gradients
+  $svg.find('style').remove();
+  
+  // First, process gradients in defs to make them colorable
+  $svg.find('defs linearGradient stop, defs radialGradient stop').each((i, element) => {
+    const $stop = $(element);
+    const stopColor = $stop.attr('stop-color');
+    const stopOpacity = parseFloat($stop.attr('stop-opacity') || '1');
+    
+    // Skip colors that shouldn't be changed
+    if (shouldSkipColor(stopColor, stopOpacity)) {
+      return;
+    }
+    
+    // Replace all other colors with currentColor for main gradient stops
+    if (stopColor && stopColor !== 'currentColor') {
+      $stop.attr('stop-color', 'currentColor');
+    }
+  });
+  
+  // Special handling for PowerBI - convert filter usages to use currentColor
+  // Look for the black fill + filter pattern typical in PowerBI icon
+  $svg.find('use').each((i, element) => {
+    const $use = $(element);
+    const fill = $use.attr('fill');
+    const filter = $use.attr('filter');
+    
+    // Check if this is the PowerBI filter pattern
+    if ((fill === 'black' || fill === '#000' || fill === '#000000') && filter && filter.includes('filter-')) {
+      $use.attr('fill', 'currentColor');
+      $use.attr('fill-opacity', '0.8'); // Maintain some transparency
+    }
+    
+    // Also handle fills with url references in PowerBI
+    if (fill && fill.startsWith('url(#linearGradient-')) {
+      // Keep this as is, since the linearGradients are already processed to use currentColor
+    }
+  });
+  
+  // Process all rectangles in PowerBI to ensure they're colorable
+  $svg.find('rect').each((i, element) => {
+    const $rect = $(element);
+    const fill = $rect.attr('fill');
+    
+    if (fill && fill.startsWith('url(#linearGradient-')) {
+      // Keep this as is, since the linearGradients are already processed to use currentColor
+    }
+  });
+  
+  // Apply selective fill logic to all relevant elements, including those in defs
+  $svg.find('path, rect, circle, ellipse, polygon, polyline, use, g').each((i, element) => {
+    const $element = $(element);
+    const fill = $element.attr('fill');
+    const stroke = $element.attr('stroke');
+    const style = $element.attr('style');
+    const d = $element.attr('d');
+    const fillOpacity = parseFloat($element.attr('fill-opacity') || '1');
+    const tagName = element.tagName.toLowerCase();
+    const preserveWhite = $element.attr('data-preserve-white') === 'true';
+    
+    // If this element is marked to preserve white, keep its original fill
+    if (preserveWhite) {
+      return;
+    }
+    
+    // Remove class attribute since we removed the styles
+    $element.removeAttr('class');
+    $element.removeAttr('data-preserve-white'); // Clean up our custom attribute
+    
+    // Extract colors from style attribute
+    const styleFill = extractColorFromStyle(style, 'fill');
+    const styleStroke = extractColorFromStyle(style, 'stroke');
+    
+    // Determine final fill and stroke values
+    const finalFill = fill || styleFill;
+    const finalStroke = stroke || styleStroke;
+    
+    // Skip background paths that are explicitly transparent (like email background)
+    if (d && isBackgroundPath(d) && (!finalFill || finalFill === 'none' || finalFill === 'transparent')) {
+      return;
+    }
+    
+    // Special handling for paths with d attribute and fill="none" - these should stay transparent
+    if (tagName === 'path' && d && finalFill === 'none') {
+      return;
+    }
+    
+    // Check if this is a specific background rect (email first path)
+    if (tagName === 'path' && d && d.startsWith('M0 0h24v24H0V0z')) {
+      $element.attr('fill', 'none'); // Ensure email background is explicitly none
+      return; // Skip email background rectangle
+    }
+    
+    // Skip colors that shouldn't be changed, but still clean up styles
+    if (shouldSkipColor(finalFill, fillOpacity)) {
+      // Clean up style attributes that contain fills we want to skip
+      if (style && styleFill && shouldSkipColor(styleFill, fillOpacity)) {
+        let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+        // Clean up any remaining semicolons or spaces
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+      return;
+    }
+    
+    // Handle gradients and patterns - for complex cases, leave the URL references
+    if (finalFill && finalFill.startsWith('url(')) {
+      return;
+    }
+    
+    // Special handling for <use> elements - check if they have structural colors first
+    if (tagName === 'use') {
+      if (finalFill && shouldSkipColor(finalFill)) {
+        // Don't change structural colors like black shadows, but clean up styles
+        if (style && styleFill && shouldSkipColor(styleFill, fillOpacity)) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+        return;
+      } else if (finalFill && finalFill !== 'currentColor' && !shouldSkipColor(finalFill)) {
+        $element.attr('fill', 'currentColor');
+        // Remove conflicting style
+        if (style && styleFill) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (!finalFill) {
+        $element.attr('fill', 'currentColor');
+      }
+      return;
+    }
+    
+    // For all other elements (colored paths, shapes), make them fillable
+    if (finalFill && finalFill !== 'currentColor' && !shouldSkipColor(finalFill)) {
+      $element.attr('fill', 'currentColor');
+      // Remove conflicting style
+      if (style && styleFill) {
+        let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+    } else if (!finalFill && tagName !== 'g') {
+      // Elements without fill get currentColor for selective fill (except groups)
+      // Paths need fill for visual content
+      if (tagName === 'path' && d) {
+        $element.attr('fill', 'currentColor');
+      } else if (tagName !== 'path') {
+        $element.attr('fill', 'currentColor');
+      }
+    }
+    
+    // Also handle stroke for line elements
+    if (finalStroke && finalStroke !== 'none' && finalStroke !== 'transparent' && !finalStroke.startsWith('url(')) {
+      if (finalStroke !== 'currentColor' && !shouldSkipColor(finalStroke)) {
+        $element.attr('stroke', 'currentColor');
+        // Remove conflicting style
+        if (style && styleStroke) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      }
+    }
+  });
+  
+  let content = $svg.html();
+  if (dimensions.scaleTransform) {
+    content = `<g transform="${dimensions.scaleTransform}">${content}</g>`;
+  }
+  
+  return content;
+}
+
+/**
+ * Check if a path is likely a background/container path
+ * @param {string} d - Path data
+ * @returns {boolean}
+ */
+function isBackgroundPath(d) {
+  if (!d) return false;
+  
+  const cleanPath = d.replace(/\s+/g, ' ').trim();
+  
+  // Common patterns for background rectangles that cover entire viewport
+  const backgroundPatterns = [
+    /^M0\s+0h24v24H0V?0z?$/i,        // M0 0h24v24H0V0z or M0 0h24v24H0z
+    /^M0,?0h24v24H0V?0z?$/i,         // M0,0h24v24H0V0z variations
+    /^M0\s+0L24\s+0L24\s+24L0\s+24z?$/i, // Rectangle with L commands
+    // Email background pattern - more flexible
+    /^M24\s+\d+(\.\d+)?V\d+(\.\d+)?C24\s+\d+(\.\d+)?.*H\d+(\.\d+)?C\d+(\.\d+)?\s+24\s+0\s+\d+(\.\d+)?\s+0\s+\d+(\.\d+)?V\d+(\.\d+)?C0\s+\d+(\.\d+)?.*Z$/i,
+    // Generic large rectangle patterns that likely cover most of the viewport
+    /^M0\s+0[hH]\d+[vV]\d+[hH]-?\d+[vV]?-?\d*[zZ]?$/i,
+    // Another common background pattern
+    /^M\d+\s+\d+[hH]\d+[vV]\d+[hH]-?\d+[zZ]?$/i,
+    // Basic rectangle pattern
+    /^M\d+\s+\d+[hH]\d+[vV]\d+[hH]-?\d+[vV]-?\d+[zZ]?$/i,
+    // Specific email background pattern
+    /^M0\s+0h24v24H0V0z\s+M/i
+  ];
+  
+  return backgroundPatterns.some(pattern => pattern.test(cleanPath));
+}
+
+
 /**
  * Extract SVG data from SVG content, handling both simple and complex SVGs
  * @param {string} svgContent - Raw SVG content
@@ -95,6 +400,21 @@ function extractSvgData(svgContent, filename, category = '') {
       throw new Error('No SVG element found');
     }
 
+    // Special handling for Excel and Google Sheets icons to preserve white elements
+    if (filename.toLowerCase().includes('excel') || filename.toLowerCase().includes('sheets')) {
+      // Find white path elements and mark them with a special attribute
+      $svg.find('[fill="#fff"], [fill="#ffffff"], [fill="white"]').each((i, element) => {
+        const $element = $(element);
+        $element.attr('data-preserve-white', 'true');
+      });
+      
+      // Also check for white fills in style attribute
+      $svg.find('[style*="fill:#fff"], [style*="fill: #fff"], [style*="fill:#ffffff"], [style*="fill: #ffffff"], [style*="fill:white"], [style*="fill: white"]').each((i, element) => {
+        const $element = $(element);
+        $element.attr('data-preserve-white', 'true');
+      });
+    }
+
     // Normalize dimensions and viewBox
     const dimensions = normalizeSvgViewBox($svg);
     
@@ -110,13 +430,21 @@ function extractSvgData(svgContent, filename, category = '') {
       const $element = $(element);
       const fill = $element.attr('fill');
       const stroke = $element.attr('stroke');
+      const style = $element.attr('style');
+      
+      // Extract colors from style attributes as well
+      const styleFill = extractColorFromStyle(style, 'fill');
+      const styleStroke = extractColorFromStyle(style, 'stroke');
       
       // Consider fills and strokes (ignore 'none', null, and currentColor)
-      if (fill && fill !== 'none' && fill !== 'currentColor') {
-        colors.add(fill);
+      const finalFill = fill || styleFill;
+      const finalStroke = stroke || styleStroke;
+      
+      if (finalFill && finalFill !== 'none' && finalFill !== 'currentColor') {
+        colors.add(finalFill);
       }
-      if (stroke && stroke !== 'none' && stroke !== 'currentColor') {
-        colors.add(stroke);
+      if (finalStroke && finalStroke !== 'none' && finalStroke !== 'currentColor') {
+        colors.add(finalStroke);
       }
     });
     
@@ -130,6 +458,9 @@ function extractSvgData(svgContent, filename, category = '') {
     const complexPaths = $svg.find('[fill-rule], [clip-rule]');
     const hasComplexPaths = complexPaths.length > 0;
     
+    // Check for patterns with embedded images (very complex, leave as-is)
+    const hasEmbeddedImages = $svg.find('image, pattern image').length > 0;
+    
     // Check if viewBox needs scaling (not standard 24x24 or similar)
     let needsScaling = false;
     const currentViewBox = $svg.attr('viewBox');
@@ -142,7 +473,7 @@ function extractSvgData(svgContent, filename, category = '') {
       needsScaling = (currentWidth !== 24 || currentHeight !== 24);
     }
     
-    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling;
+    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages;
     
     let processedContent;
     
@@ -155,19 +486,6 @@ function extractSvgData(svgContent, filename, category = '') {
       if (dimensions.scaleTransform) {
         // Wrap content in a group with scale transform
         let originalContent = $svg.html();
-        
-        // Remove paths with fill="none" that are just background placeholders
-        const $temp = $('<div>').html(originalContent);
-        $temp.find('path[fill="none"]').each((idx, el) => {
-          const $el = $(el);
-          const d = $el.attr('d');
-          // Remove simple rectangle paths that are just placeholders
-          if (d && (d.match(/^M0\s+0h\d+v\d+H0V0z?$/i) || d.match(/^M0\s+0h\d+v\d+H0Z?$/i))) {
-            $el.remove();
-          }
-        });
-        originalContent = $temp.html();
-        
         processedContent = `<g transform="${dimensions.scaleTransform}">${originalContent}</g>`;
       } else {
         processedContent = $svg.html();
@@ -183,17 +501,6 @@ function extractSvgData(svgContent, filename, category = '') {
         
         if (tagName === 'path') {
           const d = $element.attr('d');
-          const fill = $element.attr('fill');
-          
-          // Skip paths with fill="none" that are background placeholders
-          if (fill === 'none') {
-            return; // Skip this path
-          }
-          
-          // Skip simple rectangular background paths
-          if (d && (d.match(/^M0\s+0h\d+v\d+H0V0z?$/i) || d.match(/^M0\s+0h\d+v\d+H0Z?$/i))) {
-            return; // Skip this path
-          }
           
           if (d) {
             paths.push(d);
@@ -241,8 +548,45 @@ function extractSvgData(svgContent, filename, category = '') {
     // Add appropriate content property
     if (isComplex) {
       iconData.content = processedContent;
+      
+      // Create selective fill version for complex icons, but skip those with embedded images
+      if (!hasEmbeddedImages) {
+        iconData.selectiveFillContent = createSelectiveFillVersion(svgContent, dimensions);
+      }
     } else {
       iconData.path = processedContent;
+      
+      // Special handling for Email icon to prevent merging paths
+      if (filename.toLowerCase().includes('email')) {
+        // For email icons, we want to preserve the separate paths
+        const $ = cheerio.load(svgContent, { xmlMode: true });
+        const $svg = $('svg');
+        
+        // Set the viewBox and dimensions
+        $svg.attr('viewBox', dimensions.viewBox);
+        $svg.attr('width', dimensions.width);
+        $svg.attr('height', dimensions.height);
+        
+        // Find the background path and content path
+        $svg.find('path').each((i, element) => {
+          const $path = $(element);
+          const d = $path.attr('d');
+          
+          // Ensure the background path is explicitly none
+          if (d && d.includes('M0 0h24v24H0V0z')) {
+            $path.attr('fill', 'none');
+          } else {
+            // This is the content path
+            $path.attr('fill', 'currentColor');
+          }
+        });
+        
+        iconData.selectiveFillContent = $svg.html();
+      }
+      // Create selective fill version for simple icons that have colors or are in sources category
+      else if (category === 'sources' || hasMultipleColors || colors.size > 0) {
+        iconData.selectiveFillContent = createSelectiveFillVersion(svgContent, dimensions);
+      }
     }
 
     console.log(`✓ Processed: ${filename} → ${iconName}${isComplex ? ' (complex)' : ''}`);

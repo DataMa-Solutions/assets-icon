@@ -134,18 +134,53 @@ ${iconObjects}
       .map(key => key + '="' + mergedAttrs[key] + '"')
       .join(' ');
 
-    // Generate SVG content
+    // Generate SVG content based on fill options
     let svgContent;
     if (icon.isComplex) {
-      // For complex SVGs, use the full content
-      svgContent = icon.content;
+      // For complex SVGs, check if selective fill is enabled
+      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none') {
+        // Only use selective fill if it exists
+        if (icon.selectiveFillContent) {
+          svgContent = icon.selectiveFillContent;
+          // Replace currentColor with actual fill color if specified
+          if (attrs.fill !== 'currentColor') {
+            svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
+            svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
+          }
+        } else {
+          // Fallback to original content if no selective fill version
+          svgContent = icon.content;
+        }
+      } else {
+        // Use original content with all original colors and gradients
+        svgContent = icon.content;
+      }
     } else {
-      // For simple SVGs, use path
-      svgContent = '<path d="' + icon.path + '" />';
+      // For simple SVGs
+      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none') {
+        // Check if they have selective fill content first
+        if (icon.selectiveFillContent) {
+          svgContent = icon.selectiveFillContent;
+          // Replace currentColor with actual fill color if specified
+          if (attrs.fill !== 'currentColor') {
+            svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
+            svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
+          }
+        } else {
+          // Simple path with fill
+          svgContent = '<path d="' + icon.path + '" fill="' + attrs.fill + '" />';
+        }
+      } else {
+        // Original simple path without fill
+        svgContent = '<path d="' + icon.path + '" />';
+      }
     }
 
-    return '<svg ' + attrsString + '>' + svgContent + '</svg>';
+    let svgString = '<svg ' + attrsString + '>' + svgContent + '</svg>';
+
+    return svgString;
   }
+
 
   /**
    * Replace all elements with data-datama attribute
@@ -458,6 +493,63 @@ function generateCdnVueLibrary(iconData) {
   console.log('Available icons:', ${iconNames.length});
 }));
 `;
+}
+
+/**
+ * Ensure currentColor is preserved in Vue components
+ */
+function createVueComponent(iconName, iconData) {
+  // Format the SVG template
+  const template = iconData.selectiveFillContent || iconData.content || `<path d="${iconData.path}"/>`;
+  
+  const width = iconData.width || 24;
+  const height = iconData.height || 24;
+  
+  const componentDef = `
+export default {
+  name: "${iconName}",
+  props: {
+    size: {
+      type: Number,
+      default: 24
+    },
+    fill: {
+      type: String,
+      default: "currentColor"
+    },
+    stroke: {
+      type: String,
+      default: "none"
+    },
+    strokeWidth: {
+      type: Number,
+      default: 0
+    }
+  },
+  render(h) {
+    const viewBox = "${iconData.viewBox || `0 0 ${width} ${height}`}";
+    const scale = iconData.transform ? iconData.transform.scale || 1 : 1;
+    const translateX = iconData.transform ? iconData.transform.x || 0 : 0;
+    const translateY = iconData.transform ? iconData.transform.y || 0 : 0;
+    
+    return h('svg', {
+      attrs: {
+        viewBox,
+        width: this.size,
+        height: this.size,
+        fill: this.fill,
+        stroke: this.stroke,
+        'stroke-width': this.strokeWidth
+      },
+      class: ['datama-icon', 'datama-icon-${iconName}']
+    }, [
+      ${iconData.transform ? `h('g', { attrs: { transform: 'translate(${translateX}, ${translateY}) scale(${scale})' } }, [ this.$slots.default ])` : `this.$slots.default`}
+    ]);
+  }
+};
+  `;
+  
+  return componentDef;
 }
 
 /**

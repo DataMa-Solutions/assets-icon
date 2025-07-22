@@ -26,77 +26,127 @@ function generateHeader(totalIcons, complexIcons = 0, simpleIcons = 0) {
  * Build JSON files from SVG data only (ignoring existing icons.js)
  */
 function buildJson() {
+  try {
+    console.log();
+    console.log('📦 Step 2: Generating JSON files...');
+    
+    // Load the SVG data
+    const svgData = loadSvgData();
+    
+    // Filter out icons without content or path (these are just category folders)
+    const filteredIcons = Object.entries(svgData).filter(([_, data]) => {
+      return data.content || data.path;
+    }).reduce((acc, [key, data]) => {
+      acc[key] = data;
+      return acc;
+    }, {});
+    
+    // Process icons for output
+    const processedIcons = processIconsForOutput(filteredIcons);
+    
+    // Count complexIcons (those with content property)
+    const complexIcons = Object.values(processedIcons).filter(icon => icon.isComplex).length;
+    const simpleIcons = Object.keys(processedIcons).length - complexIcons;
+    
+    // Get categories
+    const categories = [...new Set(Object.values(processedIcons).map(icon => icon.category))].filter(Boolean);
+    
+    // Create the output directory if it doesn't exist
+    const outDir = path.join(__dirname, '../dist');
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+    
+    // Write the JSON file
+    const jsonFile = path.join(outDir, 'icons.json');
+    fs.writeFileSync(jsonFile, JSON.stringify(processedIcons));
+    
+    // Write the JavaScript module
+    const jsFile = path.join(outDir, 'icons.js');
+    const jsContent = `export default ${JSON.stringify(processedIcons)};\n`;
+    fs.writeFileSync(jsFile, jsContent);
+    
+    // Generate a map of categories
+    const categoriesMap = {};
+    Object.entries(processedIcons).forEach(([iconName, iconData]) => {
+      const category = iconData.category || 'other';
+      if (!categoriesMap[category]) {
+        categoriesMap[category] = [];
+      }
+      categoriesMap[category].push(iconName);
+    });
+    
+    // Write the categories file
+    const categoriesFile = path.join(outDir, 'categories.js');
+    const categoriesContent = `export default ${JSON.stringify(categoriesMap)};\n`;
+    fs.writeFileSync(categoriesFile, categoriesContent);
+    
+    // Save SVG data to reuse in Vue component generation
+    const svgDataFile = path.join(outDir, 'svg-data.json');
+    fs.writeFileSync(svgDataFile, JSON.stringify(processedIcons));
+    
+    // Output stats
+    console.log(`📄 Building JSON files for ${Object.keys(processedIcons).length} icons from SVG data only...`);
+    console.log(`📊 Complex SVGs: ${complexIcons}, Simple SVGs: ${simpleIcons}`);
+    console.log(`📁 Categories: ${categories.join(', ')}`);
+    
+    const jsonSize = fs.statSync(jsonFile).size;
+    const jsSize = fs.statSync(jsFile).size;
+    
+    console.log(`✅ Generated icons.js (${(jsSize / 1024).toFixed(2)} KB)`);
+    console.log(`✅ Generated icons.json (${(jsonSize / 1024).toFixed(2)} KB)`);
+    console.log('✅ Generated categories.js');
+    
+    console.log(`📊 Total icons: ${Object.keys(processedIcons).length}`);
+    
+    // Generate list of complex icons for reference
+    console.log(`\n🎨 Complex icons: ${Object.entries(processedIcons)
+      .filter(([_, data]) => data.isComplex)
+      .map(([iconName]) => iconName)
+      .join(', ')}`);
+    console.log('💡 Complex icons use \'content\' property instead of \'path\'');
+    
+    return processedIcons;
+    
+  } catch (error) {
+    console.error('Error building JSON files:', error);
+    process.exit(1);
+  }
+}
+
+// Load SVG data from svg-data.json
+function loadSvgData() {
   const rootDir = process.cwd();
-  const distDir = path.join(rootDir, 'dist');
+  const svgDataPath = path.join(rootDir, 'dist', 'svg-data.json');
   
-  // Load SVG data
-  const svgDataPath = path.join(distDir, 'svg-data.json');
   if (!fs.existsSync(svgDataPath)) {
     console.log('⚠️  No SVG data found. Run build:svg first.');
-    return;
+    process.exit(1);
   }
+  
+  return JSON.parse(fs.readFileSync(svgDataPath, 'utf8'));
+}
 
-  const svgData = JSON.parse(fs.readFileSync(svgDataPath, 'utf8'));
-  const iconNames = Object.keys(svgData);
-  const complexIcons = iconNames.filter(name => svgData[name].isComplex);
-  const simpleIcons = iconNames.filter(name => !svgData[name].isComplex);
-
-  console.log(`📄 Building JSON files for ${iconNames.length} icons from SVG data only...`);
-  console.log(`📊 Complex SVGs: ${complexIcons.length}, Simple SVGs: ${simpleIcons.length}`);
-
-  // Load categories if available
-  const categoriesPath = path.join(distDir, 'categories.json');
-  let categories = {};
-  if (fs.existsSync(categoriesPath)) {
-    categories = JSON.parse(fs.readFileSync(categoriesPath, 'utf8'));
-    console.log(`📁 Categories: ${Object.keys(categories).join(', ')}`);
-  }
-
-  // Generate icons.js file (ESM version)
-  const header = generateHeader(iconNames.length, complexIcons.length, simpleIcons.length);
-  const jsContent = `${header}export const DataMaLightIcons = ${JSON.stringify(svgData, null, 2)};
-
-export default DataMaLightIcons;
-`;
-
-  const distJsPath = path.join(distDir, 'icons.js');
-  fs.writeFileSync(distJsPath, jsContent);
-
-  // Generate icons.json file (only in dist)
-  const distJsonPath = path.join(distDir, 'icons.json');
-  fs.writeFileSync(distJsonPath, JSON.stringify(svgData, null, 2));
-
-  // Generate categories.js export (only in dist)
-  if (Object.keys(categories).length > 0) {
-    const categoriesJs = `/**
- * DataMa Icons Categories
- * Generated on ${new Date().toISOString()}
- */
-
-export const iconCategories = ${JSON.stringify(categories, null, 2)};
-
-export default iconCategories;
-`;
+// Process icons for output in JSON format
+function processIconsForOutput(iconsData) {
+  // Filter out any unwanted icons or add any special processing
+  const processedIcons = {};
+  
+  Object.entries(iconsData).forEach(([iconName, iconData]) => {
+    // Create a new object with only the necessary properties
+    const processedIcon = {
+      ...iconData,
+      // Ensure we have selectiveFillContent when available
+      selectiveFillContent: iconData.selectiveFillContent || null,
+    };
     
-    const distCategoriesJsPath = path.join(distDir, 'categories.js');
-    fs.writeFileSync(distCategoriesJsPath, categoriesJs);
-  }
-
-  console.log(`✅ Generated icons.js (${(fs.statSync(distJsPath).size / 1024).toFixed(2)} KB)`);
-  console.log(`✅ Generated icons.json (${(fs.statSync(distJsonPath).size / 1024).toFixed(2)} KB)`);
+    // Remove any unnecessary properties if needed
+    // ...
+    
+    processedIcons[iconName] = processedIcon;
+  });
   
-  if (Object.keys(categories).length > 0) {
-    console.log(`✅ Generated categories.js`);
-  }
-  
-  console.log(`📊 Total icons: ${iconNames.length}`);
-
-  if (complexIcons.length > 0) {
-    console.log(`\n🎨 Complex icons: ${complexIcons.join(', ')}`);
-    console.log(`💡 Complex icons use 'content' property instead of 'path'`);
-  }
-
-  return svgData;
+  return processedIcons;
 }
 
 module.exports = { buildJson }; 

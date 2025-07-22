@@ -320,27 +320,10 @@
             cursor: pointer;
         }
         
-        /* Selective Fill CSS intégré */
+        /* Selective Fill CSS simple */
         :root {
             --datama-fill-color: currentColor;
             --datama-fill-opacity: 1;
-        }
-        
-        .datama-selective-fill svg *:not([fill="white"]):not([fill="#ffffff"]):not([fill="#FFFFFF"]):not([fill="#fff"]):not([fill="#FFF"]):not([fill="none"]):not(.preserve-white):not(.preserve-original) {
-            fill: var(--datama-fill-color) !important;
-            opacity: var(--datama-fill-opacity);
-        }
-        
-        .datama-selective-fill svg [fill="white"],
-        .datama-selective-fill svg [fill="#ffffff"],
-        .datama-selective-fill svg [fill="#FFFFFF"],
-        .datama-selective-fill svg [fill="#fff"],
-        .datama-selective-fill svg [fill="#FFF"] {
-            fill: white !important;
-        }
-        
-        .datama-selective-fill svg [fill="none"] {
-            fill: none !important;
         }
         
         /* Contenu principal */
@@ -635,8 +618,8 @@
             </div>
             
             <div class="checkbox-container">
-                <input type="checkbox" id="sidebar-force-complex">
-                <label for="sidebar-force-complex">Force complex icons</label>
+                <input type="checkbox" id="sidebar-selective-fill" checked>
+                <label for="sidebar-selective-fill">Enable selective fill</label>
             </div>
         </div>
         
@@ -719,7 +702,7 @@
         let currentIconSize = 32;
         let currentIconFill = '#000000';
         let currentIconOpacity = 1;
-        let forceComplexColor = false;
+        let selectiveFill = true;
         let searchTerm = '';
 
         // Category emojis
@@ -756,8 +739,7 @@
                 // Setup event listeners
                 setupEventListeners();
                 
-                // Apply selective fill to all icons by default
-                applySelectiveFillToAll();
+                        // Selective fill is now handled by JavaScript options in DataMaIcons.get()
                 
                 // Hide loading, show content
                 document.getElementById('loading').classList.add('hidden');
@@ -770,18 +752,7 @@
             }
         }
 
-        // Apply selective fill to all icons
-        function applySelectiveFillToAll() {
-            // Set CSS variables for selective fill
-            document.documentElement.style.setProperty('--datama-fill-color', currentIconFill);
-            document.documentElement.style.setProperty('--datama-fill-opacity', currentIconOpacity);
-            
-            // Add selective fill class to all icon containers
-            const iconContainers = document.querySelectorAll('.icon-display, .preview-icon');
-            iconContainers.forEach(container => {
-                container.classList.add('datama-selective-fill');
-            });
-        }
+        // Selective fill is now handled by JavaScript options in DataMaIcons.get()
 
         // Update statistics
         function updateStats() {
@@ -843,10 +814,9 @@
                 categoriesContainer.appendChild(categoryDiv);
             });
             
-            // Reapply selective fill after DOM update
+            // Update icons after DOM update
             setTimeout(() => {
                 updateAllIcons();
-                applySelectiveFillToAll();
             }, 10);
         }
 
@@ -860,7 +830,7 @@
             
             return `
                 <div class="icon-item" onclick="copyIconCode('${iconName}')">
-                    <div class="icon-display datama-selective-fill" id="icon-${iconName}">
+                    <div class="icon-display" id="icon-${iconName}">
                         <!-- Icon will be inserted here -->
                     </div>
                     <div class="icon-name">${displayName}</div>
@@ -944,7 +914,7 @@
             colorPicker.addEventListener('input', (e) => {
                 currentIconFill = e.target.value;
                 updateColorPresets();
-                applySelectiveFillToAll();
+                updateAllIcons();
                 updatePreview();
             });
 
@@ -960,7 +930,7 @@
                         colorPicker.value = color;
                     }
                     updateColorPresets();
-                    applySelectiveFillToAll();
+                    updateAllIcons();
                     updatePreview();
                 });
             });
@@ -972,14 +942,14 @@
             intensityRange.addEventListener('input', (e) => {
                 currentIconOpacity = parseFloat(e.target.value);
                 intensityValue.textContent = Math.round(currentIconOpacity * 100) + '%';
-                applySelectiveFillToAll();
+                updateAllIcons();
                 updatePreview();
             });
 
-            // Force complex checkbox
-            const forceCheckbox = document.getElementById('sidebar-force-complex');
-            forceCheckbox.addEventListener('change', (e) => {
-                forceComplexColor = e.target.checked;
+            // Selective fill checkbox
+            const selectiveFillCheckbox = document.getElementById('sidebar-selective-fill');
+            selectiveFillCheckbox.addEventListener('change', (e) => {
+                selectiveFill = e.target.checked;
                 updateAllIcons();
                 updatePreview();
             });
@@ -1012,18 +982,19 @@
 
         // Update all displayed icons
         function updateAllIcons() {
+            // Update CSS variables
+            document.documentElement.style.setProperty('--datama-fill-color', currentIconFill);
+            document.documentElement.style.setProperty('--datama-fill-opacity', currentIconOpacity);
+            
             Object.keys(allIcons).forEach(iconName => {
                 const iconContainer = document.getElementById(`icon-${iconName}`);
                 if (iconContainer) {
                     iconContainer.innerHTML = '';
                     const iconData = allIcons[iconName];
                     
-                    // Use selective fill for simple icons, or force for complex if enabled
-                    let useSelectiveFill = !iconData.isComplex || forceComplexColor;
-                    
                     const iconElement = DataMaIcons.get(iconName, {
                         size: currentIconSize,
-                        fill: useSelectiveFill ? 'currentColor' : 'original'
+                        fill: selectiveFill && currentIconFill !== 'currentColor' ? currentIconFill : 'original'
                     });
                     
                     if (iconElement) {
@@ -1050,13 +1021,10 @@
             
             // Create icon with selective fill
             previewIcon.innerHTML = '';
-            previewIcon.classList.add('datama-selective-fill');
-            
-            let useSelectiveFill = !iconData.isComplex || forceComplexColor;
             
             const iconElement = DataMaIcons.get(selectedIcon, {
                 size: Math.max(currentIconSize, 48), // Minimum size for preview
-                fill: useSelectiveFill ? 'currentColor' : 'original'
+                fill: selectiveFill && currentIconFill !== 'currentColor' ? currentIconFill : 'original'
             });
             
             if (iconElement) {
@@ -1065,10 +1033,12 @@
             
             // Update info
             const displayName = selectedIcon.replace('-svg', '').replace(/-/g, ' ');
+            const fillMode = selectiveFill ? 'Selective Fill' : 'Original Colors';
             previewInfo.innerHTML = `
                 <strong>${displayName}</strong><br>
                 ${iconData.isComplex ? 'Complex' : 'Simple'} icon<br>
-                ${currentIconSize}px, ${Math.round(currentIconOpacity * 100)}% opacity
+                ${Math.max(currentIconSize, 48)}px, ${Math.round(currentIconOpacity * 100)}% opacity<br>
+                Mode: ${fillMode}
             `;
         }
 
@@ -1078,7 +1048,7 @@
             currentIconSize = 32;
             currentIconFill = '#000000';
             currentIconOpacity = 1;
-            forceComplexColor = false;
+            selectiveFill = true;
             
             // Reset UI controls
             document.getElementById('sidebar-size-range').value = 32;
@@ -1086,12 +1056,11 @@
             document.getElementById('sidebar-color-picker').value = '#000000';
             document.getElementById('sidebar-intensity-range').value = 1;
             document.getElementById('sidebar-intensity-value').textContent = '100%';
-            document.getElementById('sidebar-force-complex').checked = false;
+            document.getElementById('sidebar-selective-fill').checked = true;
             document.getElementById('sidebar-icon-select').value = '';
             
             // Update display
             updateColorPresets();
-            applySelectiveFillToAll();
             updateAllIcons();
             updatePreview();
             
@@ -1109,9 +1078,8 @@
             if (currentIconSize !== 24) options.push(`size: ${currentIconSize}`);
             
             // Include selective fill information
-            let useSelectiveFill = !iconData.isComplex || forceComplexColor;
-            if (useSelectiveFill) {
-                options.push(`fill: 'currentColor' // Selective fill enabled`);
+            if (selectiveFill && currentIconFill !== 'currentColor') {
+                options.push(`fill: '${currentIconFill}' // Selective fill enabled`);
             }
             
             if (options.length > 0) {
@@ -1120,9 +1088,9 @@
             
             codeText += ')';
             
-            // Add CSS variables info
-            if (useSelectiveFill) {
-                codeText += `\n// CSS: --datama-fill-color: ${currentIconFill}; --datama-fill-opacity: ${currentIconOpacity};`;
+            // Add CSS variables info if using currentColor
+            if (selectiveFill && currentIconFill === 'currentColor') {
+                codeText += `\n// CSS: color: ${currentIconFill}; opacity: ${currentIconOpacity};`;
             }
             
             // Copy to clipboard
