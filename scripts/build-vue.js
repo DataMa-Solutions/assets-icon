@@ -345,6 +345,12 @@ function generateCdnVueLibrary(iconData) {
       }
     }
     
+    // Get fill color from data-fill attribute
+    const fillColor = element.getAttribute('data-fill') || 'currentColor';
+    
+    // Smart fill: if a custom fill is provided, use selective fill automatically
+    const useSmartFill = fillColor !== 'currentColor' && fillColor !== 'original';
+    
     // Create SVG
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     const ratio = icon.ratio || { width: 1, height: 1 };
@@ -354,19 +360,38 @@ function generateCdnVueLibrary(iconData) {
     svg.setAttribute('viewBox', icon.viewBox || '0 0 24 24');
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
-    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('fill', fillColor);
     svg.setAttribute('class', 'datama-svg ' + classList.filter(cls => !cls.startsWith('datama-') || cls === 'datama').join(' '));
     
-    // Add icon content
+    // Smart fill logic: automatically use selective fill when custom color is provided
     if (icon.isComplex && icon.content) {
-      svg.innerHTML = icon.content;
+      // For complex icons with custom fill, use selective fill content if available
+      if (useSmartFill && icon.selectiveFillContent) {
+        let content = icon.selectiveFillContent;
+        // Replace currentColor with the actual fill color
+        content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
+        content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
+        svg.innerHTML = content;
+      } else {
+        // Use original content (preserve original colors or use currentColor)
+        svg.innerHTML = icon.content;
+      }
     } else if (icon.path) {
       if (icon.path.trim().startsWith('<')) {
-        svg.innerHTML = icon.path;
+        // For simple icons with custom fill, use selective fill content if available
+        if (useSmartFill && icon.selectiveFillContent) {
+          let content = icon.selectiveFillContent;
+          content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
+          content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
+          svg.innerHTML = content;
+        } else {
+          svg.innerHTML = icon.path;
+        }
       } else {
+        // Simple path: always apply the fill color
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', icon.path);
-        path.setAttribute('fill', 'currentColor');
+        path.setAttribute('fill', fillColor);
         svg.appendChild(path);
       }
     }
