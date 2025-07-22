@@ -1,5 +1,26 @@
 # Changelog - DataMa Icons
 
+## [1.0.5] - 2024-06-07
+
+### ✨ Nouvelles icônes & librairie
+- Génération complète de 133 icônes (SVG simples et complexes)
+- Mise à jour des fichiers `icons.js`, `icons.json`, et de la librairie Vue (dossier `dist/vue/`)
+- Ajout ou correction de plusieurs icônes complexes (voir README pour la liste exhaustive)
+
+### 🛠️ Technique
+- Génération automatique des fichiers de distribution (ESM, CommonJS, TypeScript, Vue)
+- Gestion améliorée des icônes complexes (propriété `content` au lieu de `path`)
+- Documentation et exemples synchronisés avec la dernière version
+
+### 📚 Documentation
+- README mis à jour (exemples, liste des icônes, procédure de build)
+- Ajout d’un rappel vers le changelog
+
+### 🔄 Compatibilité
+- Aucune rupture, rétrocompatibilité assurée
+
+---
+
 ## [1.0.4] - 2025-01-27
 
 ### 🐛 Bug Fixes

@@ -53,6 +53,10 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
+## Changelog
+
+Pour consulter l’historique complet des modifications, voir le fichier [CHANGELOG.md](./CHANGELOG.md).
+
 ## Available Icons (133)
 
 - `add-folder-svg`
@@ -207,11 +211,12 @@ interface IconData {
 
 ## Development
 
-This package is auto-generated from SVG files. To contribute:
+Ce package est généré automatiquement à partir des fichiers SVG présents dans le dossier `icons/`.
 
-1. Add your SVG files to the root directory
-2. Run `npm run build:all` to regenerate the package
-3. The CI/CD pipeline will automatically create a new release
+1. Ajoutez vos SVG dans le dossier approprié.
+2. Lancez `npm run build:all` pour régénérer la librairie, les fichiers JSON et Vue.
+3. Les fichiers de distribution sont générés dans `dist/`.
+4. Consultez le fichier [CHANGELOG.md](./CHANGELOG.md) pour suivre l’évolution du projet.
 
 ## License
 
