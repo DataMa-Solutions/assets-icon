@@ -138,38 +138,27 @@ ${iconObjects}
     let svgContent;
     if (icon.isComplex) {
       // For complex SVGs, check if selective fill is enabled
-      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none') {
-        // Only use selective fill if it exists
-        if (icon.selectiveFillContent) {
-          svgContent = icon.selectiveFillContent;
-          // Replace currentColor with actual fill color if specified
-          if (attrs.fill !== 'currentColor') {
-            svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
-            svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
-          }
-        } else {
-          // Fallback to original content if no selective fill version
-          svgContent = icon.content;
-        }
+      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none' && attrs.fill !== 'currentColor' && icon.selectiveFillContent) {
+        // Use selective fill version (includes URL replacement) when custom fill is provided
+        svgContent = icon.selectiveFillContent;
+        // Replace currentColor with actual fill color
+        svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
+        svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
       } else {
         // Use original content with all original colors and gradients
         svgContent = icon.content;
       }
     } else {
       // For simple SVGs
-      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none') {
-        // Check if they have selective fill content first
-        if (icon.selectiveFillContent) {
-          svgContent = icon.selectiveFillContent;
-          // Replace currentColor with actual fill color if specified
-          if (attrs.fill !== 'currentColor') {
-            svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
-            svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
-          }
-        } else {
-          // Simple path with fill
-          svgContent = '<path d="' + icon.path + '" fill="' + attrs.fill + '" />';
-        }
+      if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none' && attrs.fill !== 'currentColor' && icon.selectiveFillContent) {
+        // Use selective fill version (includes URL replacement) when custom fill is provided
+        svgContent = icon.selectiveFillContent;
+        // Replace currentColor with actual fill color
+        svgContent = svgContent.replace(/fill="currentColor"/g, 'fill="' + attrs.fill + '"');
+        svgContent = svgContent.replace(/stroke="currentColor"/g, 'stroke="' + attrs.fill + '"');
+      } else if (attrs.fill && attrs.fill !== 'original' && attrs.fill !== 'none' && attrs.fill !== 'currentColor') {
+        // Simple path with fill
+        svgContent = '<path d="' + icon.path + '" fill="' + attrs.fill + '" />';
       } else {
         // Original simple path without fill
         svgContent = '<path d="' + icon.path + '" />';
@@ -365,7 +354,7 @@ function generateCdnVueLibrary(iconData) {
     
     // Smart fill logic: automatically use selective fill when custom color is provided
     if (icon.isComplex && icon.content) {
-      // For complex icons with custom fill, use selective fill content if available
+      // For complex icons with custom fill, use selective fill content (includes URL replacement) if available
       if (useSmartFill && icon.selectiveFillContent) {
         let content = icon.selectiveFillContent;
         // Replace currentColor with the actual fill color
@@ -378,7 +367,7 @@ function generateCdnVueLibrary(iconData) {
       }
     } else if (icon.path) {
       if (icon.path.trim().startsWith('<')) {
-        // For simple icons with custom fill, use selective fill content if available
+        // For simple icons with custom fill, use selective fill content (includes URL replacement) if available
         if (useSmartFill && icon.selectiveFillContent) {
           let content = icon.selectiveFillContent;
           content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');

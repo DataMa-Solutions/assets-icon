@@ -1,3 +1,20 @@
+/**
+ * DataMa Icons SVG Processing Script
+ * 
+ * This script processes SVG files and creates two versions for different use cases:
+ * 
+ * 1. Original content: Preserves all original colors, gradients, and URL references
+ * 2. Selective fill content: Replaces both solid colors AND URL references (gradients/patterns) 
+ *    with currentColor for complete color customization
+ * 
+ * FEATURE: Unified Fill Logic  
+ * - When a custom fill color is provided (not 'currentColor', 'original', or 'none'):
+ *   Uses selectiveFillContent to replace ALL color references (solid colors + gradients) with the custom color
+ * - When fill is 'none', 'original', or undefined: Uses original content to preserve all original styling
+ * 
+ * This provides a simple two-state system: either fully customizable colors or original appearance.
+ */
+
 const fs = require('fs');
 const path = require('path');
 const { optimize } = require('svgo');
@@ -135,13 +152,15 @@ function shouldSkipColor(color, opacity = 1) {
   }
   */
   
-  // Skip URL references to gradients/patterns for now (will be handled separately)
-  if (color.startsWith('url(')) {
-    return true;
-  }
+  // URL references will be handled separately, don't skip them in shouldSkipColor
+  // if (color.startsWith('url(')) {
+  //   return true;
+  // }
   
   return false;
 }
+
+
 
 /**
  * Create selective fill version of complex SVG
@@ -250,10 +269,41 @@ function createSelectiveFillVersion(svgContent, dimensions) {
       return; // Skip email background rectangle
     }
     
-    // Skip colors that shouldn't be changed, but still clean up styles
-    if (shouldSkipColor(finalFill, fillOpacity)) {
+    // Handle gradients and patterns FIRST - REPLACE URL REFERENCES with currentColor for fill customization
+    if (finalFill && finalFill.startsWith('url(')) {
+      $element.attr('fill', 'currentColor');
+      // Remove conflicting style
+      if (style && styleFill && styleFill.startsWith('url(')) {
+        let newStyle = style.replace(/fill\s*:\s*url\([^)]+\)/gi, 'fill: currentColor');
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+      // Continue processing for other attributes
+    }
+    
+    // Handle stroke URL references too
+    if (finalStroke && finalStroke.startsWith('url(')) {
+      $element.attr('stroke', 'currentColor');
+      // Remove conflicting style
+      if (style && styleStroke && styleStroke.startsWith('url(')) {
+        let newStyle = style.replace(/stroke\s*:\s*url\([^)]+\)/gi, 'stroke: currentColor');
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+    }
+    
+    // Skip colors that shouldn't be changed, but still clean up styles (after URL processing)
+    if (shouldSkipColor(finalFill, fillOpacity) && !finalFill.startsWith('url(')) {
       // Clean up style attributes that contain fills we want to skip
-      if (style && styleFill && shouldSkipColor(styleFill, fillOpacity)) {
+      if (style && styleFill && shouldSkipColor(styleFill, fillOpacity) && !styleFill.startsWith('url(')) {
         let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
         // Clean up any remaining semicolons or spaces
         newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
@@ -263,11 +313,6 @@ function createSelectiveFillVersion(svgContent, dimensions) {
           $element.removeAttr('style');
         }
       }
-      return;
-    }
-    
-    // Handle gradients and patterns - for complex cases, leave the URL references
-    if (finalFill && finalFill.startsWith('url(')) {
       return;
     }
     
@@ -326,7 +371,7 @@ function createSelectiveFillVersion(svgContent, dimensions) {
       }
     }
     
-    // Also handle stroke for line elements
+    // Also handle stroke for line elements (non-URL references, URL are handled above)
     if (finalStroke && finalStroke !== 'none' && finalStroke !== 'transparent' && !finalStroke.startsWith('url(')) {
       if (finalStroke !== 'currentColor' && !shouldSkipColor(finalStroke)) {
         $element.attr('stroke', 'currentColor');

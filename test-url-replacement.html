@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test URL Replacement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        .icon-label {
+            min-width: 120px;
+            font-weight: bold;
+        }
+        .test-description {
+            background: #e8f4ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007acc;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de remplacement des URL par couleur de fill</h1>
+    
+    <div class="test-description">
+        <strong>Test :</strong> Vérifier que les références <code>url(#gradient)</code> sont correctement remplacées par la couleur de fill personnalisée.
+        <br><br>
+        <strong>Attente :</strong> Toutes les icônes doivent être colorées uniformément selon la couleur spécifiée, sans trace de <code>fill="url(#...)"</code> dans le HTML généré.
+    </div>
+
+    <div class="test-container">
+        <h2>Icônes avec gradients (couleur rouge #ff0000)</h2>
+        <div id="red-icons"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Icônes avec gradients (couleur bleue #0066cc)</h2>
+        <div id="blue-icons"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Icônes originales (aucun fill spécifié)</h2>
+        <div id="original-icons"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Inspection du HTML généré</h2>
+        <p>Ouvrez les outils de développement et inspectez les SVG ci-dessus.</p>
+        <p><strong>✅ Succès :</strong> Aucun <code>fill="url(#...)"</code> dans les icônes colorées</p>
+        <p><strong>❌ Échec :</strong> Présence de <code>fill="url(#...)"</code> dans les icônes colorées</p>
+    </div>
+
+    <script src="dist/DataMaIconsNew.js"></script>
+    <script>
+        // Icônes avec gradients à tester
+        const testIcons = [
+            'excel-svg',
+            'google-sheets-svg', 
+            'power-bi-svg',
+            'database-svg',
+            'tableau-svg',
+            'csv-svg'
+        ];
+
+        function createIconTest(iconName, fill, container) {
+            const iconElement = DataMaIcons.get(iconName, {
+                size: 48,
+                fill: fill
+            });
+
+            if (iconElement) {
+                const row = document.createElement('div');
+                row.className = 'icon-row';
+                
+                const label = document.createElement('div');
+                label.className = 'icon-label';
+                label.textContent = iconName;
+                
+                const iconContainer = document.createElement('div');
+                iconContainer.appendChild(iconElement);
+                
+                row.appendChild(label);
+                row.appendChild(iconContainer);
+                container.appendChild(row);
+
+                // Vérifier s'il y a encore des URL dans le HTML
+                const svgHTML = iconElement.outerHTML;
+                if (fill !== 'original' && svgHTML.includes('url(#')) {
+                    console.warn(`❌ ${iconName} contient encore des URL avec fill="${fill}":`, svgHTML);
+                } else if (fill !== 'original') {
+                    console.log(`✅ ${iconName} correctement traité avec fill="${fill}"`);
+                }
+            } else {
+                console.error(`Icône non trouvée : ${iconName}`);
+            }
+        }
+
+        // Tester avec différentes couleurs
+        const redContainer = document.getElementById('red-icons');
+        const blueContainer = document.getElementById('blue-icons');  
+        const originalContainer = document.getElementById('original-icons');
+
+        testIcons.forEach(iconName => {
+            createIconTest(iconName, '#ff0000', redContainer);
+            createIconTest(iconName, '#0066cc', blueContainer);
+            createIconTest(iconName, 'original', originalContainer);
+        });
+
+        console.log('🧪 Test de remplacement des URL terminé. Vérifiez les logs ci-dessus.');
+    </script>
+</body>
+</html> 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataMa Icons - Icon Catalog with Selective Fill</title>
+    <title>DataMa Icons - Icon Catalog</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -297,30 +297,9 @@
             gap: 10px;
         }
         
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255, 193, 7, 0.1);
-            border-radius: 4px;
-            border-left: 3px solid #ffc107;
-        }
+        /* Supprimer la checkbox-container et ses styles */
         
-        .checkbox-container input {
-            margin: 0;
-            accent-color: #007acc;
-        }
-        
-        .checkbox-container label {
-            margin: 0;
-            font-size: 11px;
-            color: #e0e0e0;
-            cursor: pointer;
-        }
-        
-        /* Selective Fill CSS simple */
+        /* Icon Fill CSS */
         :root {
             --datama-fill-color: currentColor;
             --datama-fill-opacity: 1;
@@ -616,11 +595,6 @@
                     <span id="sidebar-intensity-value" class="range-value">100%</span>
                 </div>
             </div>
-            
-            <div class="checkbox-container">
-                <input type="checkbox" id="sidebar-selective-fill" checked>
-                <label for="sidebar-selective-fill">Enable selective fill</label>
-            </div>
         </div>
         
         <div class="sidebar-section">
@@ -648,7 +622,7 @@
         </div>
         
         <div class="info-section">
-            <strong>💡 Tip:</strong> Selective fill automatically applies colors while preserving white elements and transparency.
+                                <strong>💡 Smart Fill:</strong> Colors are applied uniformly across the entire icon, replacing all fills including gradients. Use "Default" for original colors.
         </div>
     </div>
     
@@ -659,7 +633,7 @@
     <div class="main-content">
         <div class="header">
             <h1>🎨 DataMa Icons</h1>
-            <p>Icon catalog with advanced selective fill technology</p>
+            <p>Icon catalog with unified color customization</p>
             
             <div class="stats">
                 <div class="stat-item">
@@ -700,9 +674,8 @@
     <script>
         let allIcons = {};
         let currentIconSize = 32;
-        let currentIconFill = '#000000';
+        let currentIconFill = 'none';
         let currentIconOpacity = 1;
-        let selectiveFill = true;
         let searchTerm = '';
 
         // Category emojis
@@ -739,7 +712,7 @@
                 // Setup event listeners
                 setupEventListeners();
                 
-                        // Selective fill is now handled by JavaScript options in DataMaIcons.get()
+                        // Fill customization is now handled by JavaScript options in DataMaIcons.get()
                 
                 // Hide loading, show content
                 document.getElementById('loading').classList.add('hidden');
@@ -752,7 +725,7 @@
             }
         }
 
-        // Selective fill is now handled by JavaScript options in DataMaIcons.get()
+        // Fill customization is now handled by JavaScript options in DataMaIcons.get()
 
         // Update statistics
         function updateStats() {
@@ -923,7 +896,7 @@
                 preset.addEventListener('click', (e) => {
                     const color = e.target.dataset.color;
                     if (color === 'none') {
-                        currentIconFill = 'currentColor';
+                        currentIconFill = 'none';
                         colorPicker.value = '#000000';
                     } else {
                         currentIconFill = color;
@@ -946,14 +919,6 @@
                 updatePreview();
             });
 
-            // Selective fill checkbox
-            const selectiveFillCheckbox = document.getElementById('sidebar-selective-fill');
-            selectiveFillCheckbox.addEventListener('change', (e) => {
-                selectiveFill = e.target.checked;
-                updateAllIcons();
-                updatePreview();
-            });
-
             // Icon selector
             const iconSelect = document.getElementById('sidebar-icon-select');
             iconSelect.addEventListener('change', (e) => {
@@ -971,7 +936,7 @@
         function updateColorPresets() {
             document.querySelectorAll('.color-preset').forEach(preset => {
                 const color = preset.dataset.color;
-                if ((color === 'none' && currentIconFill === 'currentColor') || 
+                if ((color === 'none' && currentIconFill === 'none') || 
                     (color && color === currentIconFill)) {
                     preset.classList.add('active');
                 } else {
@@ -994,7 +959,7 @@
                     
                     const iconElement = DataMaIcons.get(iconName, {
                         size: currentIconSize,
-                        fill: selectiveFill && currentIconFill !== 'currentColor' ? currentIconFill : 'original'
+                        fill: currentIconFill === 'none' ? 'original' : currentIconFill
                     });
                     
                     if (iconElement) {
@@ -1019,12 +984,12 @@
             const iconData = allIcons[selectedIcon];
             if (!iconData) return;
             
-            // Create icon with selective fill
+            // Create icon with custom fill
             previewIcon.innerHTML = '';
             
             const iconElement = DataMaIcons.get(selectedIcon, {
                 size: Math.max(currentIconSize, 48), // Minimum size for preview
-                fill: selectiveFill && currentIconFill !== 'currentColor' ? currentIconFill : 'original'
+                fill: currentIconFill === 'none' ? 'original' : currentIconFill
             });
             
             if (iconElement) {
@@ -1033,7 +998,7 @@
             
             // Update info
             const displayName = selectedIcon.replace('-svg', '').replace(/-/g, ' ');
-            const fillMode = selectiveFill ? 'Selective Fill' : 'Original Colors';
+            const fillMode = currentIconFill === 'none' ? 'Original Colors' : 'Smart Fill';
             previewInfo.innerHTML = `
                 <strong>${displayName}</strong><br>
                 ${iconData.isComplex ? 'Complex' : 'Simple'} icon<br>
@@ -1046,9 +1011,8 @@
         function resetToDefaults() {
             // Reset variables
             currentIconSize = 32;
-            currentIconFill = '#000000';
+            currentIconFill = 'none';
             currentIconOpacity = 1;
-            selectiveFill = true;
             
             // Reset UI controls
             document.getElementById('sidebar-size-range').value = 32;
@@ -1056,7 +1020,6 @@
             document.getElementById('sidebar-color-picker').value = '#000000';
             document.getElementById('sidebar-intensity-range').value = 1;
             document.getElementById('sidebar-intensity-value').textContent = '100%';
-            document.getElementById('sidebar-selective-fill').checked = true;
             document.getElementById('sidebar-icon-select').value = '';
             
             // Update display
@@ -1077,9 +1040,9 @@
             const options = [];
             if (currentIconSize !== 24) options.push(`size: ${currentIconSize}`);
             
-            // Include selective fill information
-            if (selectiveFill && currentIconFill !== 'currentColor') {
-                options.push(`fill: '${currentIconFill}' // Selective fill enabled`);
+            // Include fill customization information
+            if (currentIconFill !== 'none') {
+                options.push(`fill: '${currentIconFill}' // Smart fill automatically applied`);
             }
             
             if (options.length > 0) {
@@ -1088,9 +1051,9 @@
             
             codeText += ')';
             
-            // Add CSS variables info if using currentColor
-            if (selectiveFill && currentIconFill === 'currentColor') {
-                codeText += `\n// CSS: color: ${currentIconFill}; opacity: ${currentIconOpacity};`;
+            // Add note about original colors when no fill
+            if (currentIconFill === 'none') {
+                codeText += `\n// Uses original icon colors`;
             }
             
             // Copy to clipboard

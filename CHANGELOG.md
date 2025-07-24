@@ -1,25 +1,25 @@
 # Changelog - DataMa Icons
 
-## [1.0.5] - 2024-06-07
+## [1.0.5] - 2025-01-27
 
-### ✨ Nouvelles icônes & librairie
-- Génération complète de 133 icônes (SVG simples et complexes)
-- Mise à jour des fichiers `icons.js`, `icons.json`, et de la librairie Vue (dossier `dist/vue/`)
-- Ajout ou correction de plusieurs icônes complexes (voir README pour la liste exhaustive)
+### ✨ Nouvelles fonctionnalités
+- **Gestion unifiée des couleurs de fill**: Simplification de la logique de coloration des icônes
+- **Remplacement des gradients par fill**: Les références `url(#gradient)` sont maintenant remplacées par la couleur de fill personnalisée
+- **Logique à deux états**: Soit on applique une couleur personnalisée (remplace tout), soit on conserve l'apparence originale
 
-### 🛠️ Technique
-- Génération automatique des fichiers de distribution (ESM, CommonJS, TypeScript, Vue)
-- Gestion améliorée des icônes complexes (propriété `content` au lieu de `path`)
-- Documentation et exemples synchronisés avec la dernière version
+### 🛠️ Améliorations techniques
+- **Selective fill étendu**: Le contenu `selectiveFillContent` remplace maintenant à la fois les couleurs solides ET les références URL
+- **Code simplifié**: Suppression de la triple logique (original/selective/url-replaced) au profit d'une logique binaire plus claire
+- **Meilleure customisation**: Les icônes avec gradients sont maintenant entièrement personnalisables
 
-### 📚 Documentation
-- README mis à jour (exemples, liste des icônes, procédure de build)
-- Ajout d’un rappel vers le changelog
+### 📖 Documentation
+- **Scripts de build**: Documentation mise à jour pour expliquer la nouvelle logique unifiée
+- **Commentaires de code**: Amélioration des commentaires explicatifs dans les scripts
 
 ### 🔄 Compatibilité
-- Aucune rupture, rétrocompatibilité assurée
+- Aucune rupture de compatibilité - l'API reste identique
+- Amélioration du comportement existant sans changement d'interface
 
----
 
 ## [1.0.4] - 2025-01-27
 
