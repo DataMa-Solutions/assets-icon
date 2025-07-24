@@ -292,7 +292,7 @@ git commit -m "🔖 Bump version to v$NEW_VERSION
 
 📝 Updated files with new icons and documentation
 
-$ICON_CHANGES
+$ICON_CHANGES"
 
 # Create and push tag
 echo "🏷️  Creating and pushing tag..."
