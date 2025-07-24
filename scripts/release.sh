@@ -285,14 +285,10 @@ See [CHANGELOG.md](./CHANGELOG.md) for detailed changes.
 ---
 
 
-# Commit version change and updated files
+# Commit version change and updated file
 echo "💾 Committing version change and updated files..."
 git add .
-git commit -m "🔖 Bump version to v$NEW_VERSION
-
-📝 Updated files with new icons and documentation
-
-$ICON_CHANGES"
+git commit -m "🔖 Bump version to v$NEW_VERSION" -m "📝 Updated files with new icons and documentation"
 
 # Create and push tag
 echo "🏷️  Creating and pushing tag..."
