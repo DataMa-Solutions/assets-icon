@@ -283,7 +283,7 @@ RELEASE_NOTES="${RELEASE_NOTES}\n### 📚 Full Changelog
 See [CHANGELOG.md](./CHANGELOG.md) for detailed changes.
 
 ---
-
+"
 
 # Commit version change and updated file
 echo "💾 Committing version change and updated files..."
@@ -322,4 +322,5 @@ echo "   • CDN Latest: \$GCS_CDN_URL/latest/"
 echo "   • CDN Version: \$GCS_CDN_URL/releases/$NEW_VERSION/"
 echo ""
 echo -e "${YELLOW}📺 Monitor the release progress at:${NC}"
-echo "   https://github.com/$(git config --get remote.origin.url | sed 's/.*github.com[:/]\([^/]*\/[^/]*\).*/\1/' | sed 's/\.git$//')/actions" 
+REPO_URL=$(git config --get remote.origin.url | sed 's/.*github.com[:/]\([^/]*\/[^/]*\).*/\1/' | sed 's/\.git$//')
+echo "   https://github.com/$REPO_URL/actions"
