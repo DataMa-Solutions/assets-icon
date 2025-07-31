@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 140 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 144 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (140)
+## Available Icons (144)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -82,6 +82,8 @@ Vue.use(DatamaIcons);
 | `contacts-svg` | <img src="icons/ui/contacts.svg" width="32" height="32" alt="contacts" /> |
 | `copy-svg` | <img src="icons/ui/copy.svg" width="32" height="32" alt="copy" /> |
 | `cross-svg` | <img src="icons/ui/cross.svg" width="32" height="32" alt="cross" /> |
+| `csv-outline-2-svg` | <img src="icons/sources/csv-outline-2.svg" width="32" height="32" alt="csv-outline-2" /> |
+| `csv-outline-svg` | <img src="icons/sources/csv-outline.svg" width="32" height="32" alt="csv-outline" /> |
 | `csv-svg` | <img src="icons/sources/csv.svg" width="32" height="32" alt="csv" /> |
 | `data-svg` | <img src="icons/data/data.svg" width="32" height="32" alt="data" /> |
 | `database-svg` | <img src="icons/data/database.svg" width="32" height="32" alt="database" /> |
@@ -98,6 +100,8 @@ Vue.use(DatamaIcons);
 | `drop-up-svg` | <img src="icons/navigation/drop-up.svg" width="32" height="32" alt="drop-up" /> |
 | `earth-svg` | <img src="icons/ui/earth.svg" width="32" height="32" alt="earth" /> |
 | `edit-svg` | <img src="icons/ui/edit.svg" width="32" height="32" alt="edit" /> |
+| `excel-outline-2-svg` | <img src="icons/sources/excel-outline-2.svg" width="32" height="32" alt="excel-outline-2" /> |
+| `excel-outline-svg` | <img src="icons/sources/excel-outline.svg" width="32" height="32" alt="excel-outline" /> |
 | `excel-svg` | <img src="icons/sources/excel.svg" width="32" height="32" alt="excel" /> |
 | `eyes-svg` | <img src="icons/ui/eyes.svg" width="32" height="32" alt="eyes" /> |
 | `facebook-svg` | <img src="icons/sources/facebook.svg" width="32" height="32" alt="facebook" /> |
