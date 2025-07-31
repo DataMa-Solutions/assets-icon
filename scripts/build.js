@@ -400,7 +400,26 @@ Vue.use(DatamaIcons);
 
 ## Available Icons (${iconCount})
 
-${iconNames.map(name => `- \`${name}\``).join('\n')}
+| Nom de l'icône | Aperçu |
+|:-------------- |:------:|
+${iconNames.map(name => {
+  // Remove -svg suffix if present and construct proper path
+  const cleanName = name.replace(/-svg$/, '');
+  
+  // Get the category from icon data to build correct path
+  const iconInfo = iconData[name];
+  const category = iconInfo?.category || '';
+  
+  // Construct the proper path based on category
+  let iconPath;
+  if (category) {
+    iconPath = `icons/${category}/${cleanName}.svg`;
+  } else {
+    iconPath = `icons/${cleanName}.svg`;
+  }
+  
+  return `| \`${name}\` | <img src="${iconPath}" width="32" height="32" alt="${cleanName}" /> |`;
+}).join('\n')}
 
 ## Icon Data Format
 
