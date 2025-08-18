@@ -1,3 +1,20 @@
+/*
+ * DATAMA SAS
+ * --------------
+ * NOTICE:  All information contained herein is, and remains
+ * the property of DataMa SAS and/or some open source packages used
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to DataMa SAS
+ * and its suppliers and may be covered by French and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from DataMa SAS.
+ * Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+ * Copyright (c) 2025 DATAMA SAS, All rights reserved.
+ * Generated for file : build-vue.js project project-deep-sky
+ */
+
 const fs = require('fs');
 const path = require('path');
 
@@ -39,7 +56,7 @@ function generateDataMaLibrary(iconData) {
  * <i data-datama="check"></i>
  * 
  * // Vue plugin
- * Vue.use(DataMaIcons);
+ * Vue.use(DataMaPicto);
  * 
  * // Manual replacement
  * datama.replace();
@@ -288,7 +305,7 @@ function generateCdnVueLibrary(iconData) {
 (function(global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.DatamaIcons = {}));
+  (global = global || self, factory(global.DataMaPicto = {}));
 }(this, function(exports) {
   'use strict';
 
@@ -394,7 +411,7 @@ function generateCdnVueLibrary(iconData) {
   /**
    * Process all datama icons on the page
    */
-  function processDatamaIcons() {
+  function processDataMaPicto() {
     const elements = document.querySelectorAll('i.datama, i.datama-icon[data-icon]');
     elements.forEach(convertClassIconToSvg);
   }
@@ -404,9 +421,9 @@ function generateCdnVueLibrary(iconData) {
    */
   function autoProcess() {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', processDatamaIcons);
+      document.addEventListener('DOMContentLoaded', processDataMaPicto);
     } else {
-      processDatamaIcons();
+      processDataMaPicto();
     }
     
     // Watch for dynamically added icons
@@ -442,8 +459,8 @@ function generateCdnVueLibrary(iconData) {
   const VuePlugin = {
     install(Vue, options = {}) {
       // Add global method
-      Vue.prototype.$datamaIcons = {
-        process: processDatamaIcons,
+      Vue.prototype.$DataMaPicto = {
+        process: processDataMaPicto,
         iconData: iconData
       };
       
@@ -484,7 +501,7 @@ function generateCdnVueLibrary(iconData) {
   };
 
   // Export everything
-  exports.processDatamaIcons = processDatamaIcons;
+  exports.processDataMaPicto = processDataMaPicto;
   exports.iconData = iconData;
   exports.VuePlugin = VuePlugin;
   exports.default = VuePlugin;
@@ -496,7 +513,7 @@ function generateCdnVueLibrary(iconData) {
     }
     
     // Make available globally
-    window.DatamaIcons = exports;
+    window.DataMaPicto = exports;
     
     // Auto-process icons
     autoProcess();
@@ -664,14 +681,14 @@ declare module '@datama/icons-vue' {
     toSvg(attrs?: IconAttributes): string;
   }
 
-  export interface DataMaIcons {
+  export interface DataMaPicto {
     [${iconNamesList}]: DataMaIcon;
   }
 
   export type IconName = ${iconNamesList};
   export type IconCategory = ${categoryTypes || 'string'};
 
-  export const icons: DataMaIcons;
+  export const icons: DataMaPicto;
   export function toSvg(name: IconName, attrs?: IconAttributes): string;
   export function replace(attrs?: IconAttributes): void;
   

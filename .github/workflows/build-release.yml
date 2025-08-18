@@ -96,7 +96,7 @@ jobs:
           ls -la dist/
           echo ""
           echo "📊 Checking for required files..."
-          test -f dist/DataMaIconsNew.js && echo "✅ DataMaIconsNew.js found" || echo "❌ DataMaIconsNew.js missing"
+          test -f dist/DataMaPicto.js && echo "✅ DataMaPicto.js found" || echo "❌ DataMaPicto.js missing"
           test -f dist/datama-icons-cdn.js && echo "✅ datama-icons-cdn.js found" || echo "❌ datama-icons-cdn.js missing"
           test -f dist/icons.js && echo "✅ icons.js found" || echo "❌ icons.js missing"
           test -f dist/icons.json && echo "✅ icons.json found" || echo "❌ icons.json missing"
@@ -107,7 +107,7 @@ jobs:
           mkdir -p release-assets
           
           # Copy the essential JavaScript files for direct download
-          cp dist/DataMaIconsNew.js release-assets/datama-icons-simple.js
+          cp dist/DataMaPicto.js release-assets/datama-icons-simple.js
           cp dist/datama-icons-cdn.js release-assets/datama-icons-cdn.js
           cp dist/icons.js release-assets/datama-icons-data.js
           cp dist/icons.json release-assets/datama-icons-data.json
@@ -134,7 +134,7 @@ jobs:
           mkdir -p light-integration
           
           # Copy the files needed for Light project
-          cp dist/DataMaIconsNew.js light-integration/
+          cp dist/DataMaPicto.js light-integration/
           cp dist/icons.json light-integration/
           
           # Create a deployment script for Light project
@@ -169,15 +169,15 @@ jobs:
           mkdir -p "$LIGHT_PROJECT_PATH/src/assets/icons"
           
           # Copy files
-          cp DataMaIconsNew.js "$LIGHT_PROJECT_PATH/src/resources/components/"
+          cp DataMaPicto.js "$LIGHT_PROJECT_PATH/src/resources/components/"
           cp icons.json "$LIGHT_PROJECT_PATH/src/assets/icons/"
           
           echo "✅ Icons integrated successfully!"
           echo "📄 Files copied:"
-          echo "   - DataMaIconsNew.js → src/resources/components/"
+          echo "   - DataMaPicto.js → src/resources/components/"
           echo "   - icons.json → src/assets/icons/"
           echo ""
-          echo "💡 You can now use: import { DataMaIcons } from './DataMaIconsNew.js'"
+          echo "💡 You can now use: import { DataMaPicto } from './DataMaPicto.js'"
           EOF
           
           chmod +x light-integration/integrate-icons.sh
@@ -223,7 +223,7 @@ jobs:
             <script src="datama-icons-simple.js"></script>
             <script>
               // Utiliser l'API (100% compatible avec ancien système)
-              const iconSvg = DataMaIcons.get('home-svg', { size: 24 });
+              const iconSvg = DataMaPicto.get('home-svg', { size: 24 });
               document.getElementById('myIcon').appendChild(iconSvg);
             </script>
             ```
@@ -235,8 +235,8 @@ jobs:
             ./integrate-icons.sh /chemin/vers/projet/light
             
             # 3. Dans votre code Light :
-            import { DataMaIcons } from './DataMaIconsNew.js';
-            const icon = DataMaIcons.get('home-svg');
+            import { DataMaPicto } from './DataMaPicto.js';
+            const icon = DataMaPicto.get('home-svg');
             ```
             
             **Vue.js / CDN :**

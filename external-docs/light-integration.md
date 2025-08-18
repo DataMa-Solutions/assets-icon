@@ -13,8 +13,8 @@ light/
 ├── src/
 │   ├── resources/
 │   │   └── components/
-│   │       ├── DataMaIcons.js      # Old version (maintained)
-│   │       └── DataMaIconsNew.js   # New version (recommended)
+│   │       ├── DataMaPicto.js      # Old version (maintained)
+│   │       └── DataMaPicto.js   # New version (recommended)
 │   └── assets/
 │       └── icons/
 │           └── icons.json          # Icon data (optional)
@@ -26,13 +26,13 @@ light/
 
 ```javascript
 // ✅ Recommended: New version
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaPicto } from "./DataMaPicto.js";
 
 // ✅ Compatible: Old version (maintained for compatibility)
-// import { DataMaIcons } from "./DataMaIcons.js";
+// import { DataMaPicto } from "./DataMaPicto.js";
 
 // Identical usage
-const icon = DataMaIcons.get('check-svg', { 
+const icon = DataMaPicto.get('check-svg', { 
     size: 24, 
     fill: '#28a745' 
 });
@@ -42,29 +42,29 @@ const icon = DataMaIcons.get('check-svg', {
 
 ```javascript
 // Import both versions with aliases for parallel usage
-import { DataMaIcons as DataMaIconsOld } from "./DataMaIcons.js";
-import { DataMaIcons as DataMaIconsNew } from "./DataMaIconsNew.js";
+import { DataMaPicto as DataMaPictoOld } from "./DataMaPicto.js";
+import { DataMaPicto as DataMaPicto } from "./DataMaPicto.js";
 
 // Use old version for existing code
-const oldIcon = DataMaIconsOld.get('home-svg', { size: 24 });
+const oldIcon = DataMaPictoOld.get('home-svg', { size: 24 });
 
 // Use new version for new features  
-const newIcon = DataMaIconsNew.get('home-svg', { size: 24 });
+const newIcon = DataMaPicto.get('home-svg', { size: 24 });
 
 // Both APIs are identical - seamless transition
-console.log('Old API compatible:', typeof DataMaIconsOld.get === 'function');
-console.log('New API compatible:', typeof DataMaIconsNew.get === 'function');
+console.log('Old API compatible:', typeof DataMaPictoOld.get === 'function');
+console.log('New API compatible:', typeof DataMaPicto.get === 'function');
 
 // Gradual migration: switch between versions
-const DataMaIcons = DataMaIconsNew; // Use new version
-// const DataMaIcons = DataMaIconsOld; // Keep old version
+const DataMaPicto = DataMaPicto; // Use new version
+// const DataMaPicto = DataMaPictoOld; // Keep old version
 ```
 
 ### 3. DOM Integration
 
 ```javascript
 // Create and add an icon
-const checkIcon = DataMaIcons.get('check-svg', { 
+const checkIcon = DataMaPicto.get('check-svg', { 
     size: 24, 
     fill: '#28a745',
     id: 'my-check-icon'
@@ -74,7 +74,7 @@ document.getElementById('container').appendChild(checkIcon);
 
 // Or replace existing elements
 const elements = document.querySelectorAll('[data-datama]');
-DataMaIcons.replace();
+DataMaPicto.replace();
 ```
 
 ## 🎨 Usage Patterns
@@ -83,11 +83,11 @@ DataMaIcons.replace();
 
 ```javascript
 // Simple icon
-const homeIcon = DataMaIcons.get('home-svg');
+const homeIcon = DataMaPicto.get('home-svg');
 document.body.appendChild(homeIcon);
 
 // With properties
-const settingsIcon = DataMaIcons.get('settings-svg', {
+const settingsIcon = DataMaPicto.get('settings-svg', {
     size: 32,
     fill: '#007acc',
     stroke: '#333',
@@ -95,7 +95,7 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
 });
 
 // With ID for reuse
-const userIcon = DataMaIcons.get('user-svg', {
+const userIcon = DataMaPicto.get('user-svg', {
     id: 'user-profile-icon',
     size: 20,
     fill: 'currentColor'
@@ -107,10 +107,10 @@ const userIcon = DataMaIcons.get('user-svg', {
 ```javascript
 // Navigation icons
 const navIcons = {
-    home: DataMaIcons.get('home-svg', { size: 20 }),
-    settings: DataMaIcons.get('settings-svg', { size: 20 }),
-    profile: DataMaIcons.get('user-svg', { size: 20 }),
-    logout: DataMaIcons.get('log-out-svg', { size: 20 })
+    home: DataMaPicto.get('home-svg', { size: 20 }),
+    settings: DataMaPicto.get('settings-svg', { size: 20 }),
+    profile: DataMaPicto.get('user-svg', { size: 20 }),
+    logout: DataMaPicto.get('log-out-svg', { size: 20 })
 };
 
 // Add to navigation
@@ -124,11 +124,11 @@ Object.values(navIcons).forEach(icon => {
 ```javascript
 // Action icons for buttons
 const actionIcons = {
-    add: DataMaIcons.get('plus-svg', { size: 16 }),
-    edit: DataMaIcons.get('edit-svg', { size: 16 }),
-    delete: DataMaIcons.get('trash-svg', { size: 16 }),
-    download: DataMaIcons.get('download-svg', { size: 16 }),
-    upload: DataMaIcons.get('upload-svg', { size: 16 })
+    add: DataMaPicto.get('plus-svg', { size: 16 }),
+    edit: DataMaPicto.get('edit-svg', { size: 16 }),
+    delete: DataMaPicto.get('trash-svg', { size: 16 }),
+    download: DataMaPicto.get('download-svg', { size: 16 }),
+    upload: DataMaPicto.get('upload-svg', { size: 16 })
 };
 
 // Create buttons with icons
@@ -149,19 +149,19 @@ function createActionButton(iconName, text, onClick) {
 ```javascript
 // Status icons with colors
 const statusIcons = {
-    success: DataMaIcons.get('check-svg', { 
+    success: DataMaPicto.get('check-svg', { 
         size: 24, 
         fill: '#28a745' 
     }),
-    warning: DataMaIcons.get('alert-triangle-svg', { 
+    warning: DataMaPicto.get('alert-triangle-svg', { 
         size: 24, 
         fill: '#ffc107' 
     }),
-    error: DataMaIcons.get('alert-circle-svg', { 
+    error: DataMaPicto.get('alert-circle-svg', { 
         size: 24, 
         fill: '#dc3545' 
     }),
-    info: DataMaIcons.get('info-svg', { 
+    info: DataMaPicto.get('info-svg', { 
         size: 24, 
         fill: '#17a2b8' 
     })
@@ -182,11 +182,11 @@ function showStatus(status) {
 ```javascript
 // Automatically replace all elements with data-datama
 document.addEventListener('DOMContentLoaded', () => {
-    DataMaIcons.replace();
+    DataMaPicto.replace();
 });
 
 // Or with global options
-DataMaIcons.replace({
+DataMaPicto.replace({
     size: 24,
     fill: 'currentColor'
 });
@@ -204,7 +204,7 @@ function createIcon(iconName, options = {}) {
         strokeWidth: 0
     };
     
-    return DataMaIcons.get(iconName, { ...defaultOptions, ...options });
+    return DataMaPicto.get(iconName, { ...defaultOptions, ...options });
 }
 
 // Usage
@@ -219,15 +219,15 @@ const icons = [
 
 ```javascript
 // Get all available icon names
-const allIconNames = DataMaIcons.getIconNames();
+const allIconNames = DataMaPicto.getIconNames();
 console.log('Available icons:', allIconNames);
 
 // Search by tag
-const searchResults = DataMaIcons.searchByTag('navigation');
+const searchResults = DataMaPicto.searchByTag('navigation');
 console.log('Navigation icons:', searchResults);
 
 // Get icon data
-const iconData = DataMaIcons.getIconData('check-svg');
+const iconData = DataMaPicto.getIconData('check-svg');
 console.log('Icon data:', iconData);
 ```
 
@@ -237,7 +237,7 @@ console.log('Icon data:', iconData);
 
 ```javascript
 // Compatible with Looker Studio restrictions
-const icon = DataMaIcons.get('chart-svg', { 
+const icon = DataMaPicto.get('chart-svg', { 
     size: 32,
     fill: '#4285f4'  // Google color
 });
@@ -253,7 +253,7 @@ google.script.run.withSuccessHandler(function(result) {
 
 ```javascript
 // Compatible with Power BI restrictions
-const icon = DataMaIcons.get('data-svg', { 
+const icon = DataMaPicto.get('data-svg', { 
     size: 24,
     fill: '#f2c811'  // Power BI color
 });
@@ -269,7 +269,7 @@ powerbi.extensibility.visual.createVisual((options) => {
 
 ```javascript
 // Compatible with Tableau restrictions
-const icon = DataMaIcons.get('analytics-svg', { 
+const icon = DataMaPicto.get('analytics-svg', { 
     size: 20,
     fill: '#e8743b'  // Tableau color
 });
@@ -285,7 +285,7 @@ window.tableau.extensions.initializeAsync().then(() => {
 
 ```javascript
 // Compatible with Qlik restrictions
-const icon = DataMaIcons.get('dashboard-svg', { 
+const icon = DataMaPicto.get('dashboard-svg', { 
     size: 28,
     fill: '#007acc'  // Qlik color
 });
@@ -386,7 +386,7 @@ function styleIcon(icon, options = {}) {
 
 // Usage
 const styledIcon = styleIcon(
-    DataMaIcons.get('settings-svg'),
+    DataMaPicto.get('settings-svg'),
     {
         size: 32,
         color: '#007acc',
@@ -402,16 +402,16 @@ const styledIcon = styleIcon(
 
 ```javascript
 // Import both versions with aliases
-import { DataMaIcons as DataMaIconsOld } from "./DataMaIcons.js";
-import { DataMaIcons as DataMaIconsNew } from "./DataMaIconsNew.js";
+import { DataMaPicto as DataMaPictoOld } from "./DataMaPicto.js";
+import { DataMaPicto as DataMaPicto } from "./DataMaPicto.js";
 
 // Test compatibility
-const oldIcon = DataMaIconsOld.get('check-svg', { size: 24 });
-const newIcon = DataMaIconsNew.get('check-svg', { size: 24 });
+const oldIcon = DataMaPictoOld.get('check-svg', { size: 24 });
+const newIcon = DataMaPicto.get('check-svg', { size: 24 });
 
 // Verify APIs are identical
 console.log('APIs compatible:', 
-    typeof DataMaIconsOld.get === typeof DataMaIconsNew.get
+    typeof DataMaPictoOld.get === typeof DataMaPicto.get
 );
 ```
 
@@ -420,12 +420,12 @@ console.log('APIs compatible:',
 ```javascript
 // Gradually change imports
 // In each file, replace:
-// import { DataMaIcons } from "./DataMaIcons.js";
+// import { DataMaPicto } from "./DataMaPicto.js";
 // with:
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaPicto } from "./DataMaPicto.js";
 
 // Usage remains identical
-const icon = DataMaIcons.get('home-svg', { size: 24 });
+const icon = DataMaPicto.get('home-svg', { size: 24 });
 ```
 
 ### Phase 3: Cleanup
@@ -433,7 +433,7 @@ const icon = DataMaIcons.get('home-svg', { size: 24 });
 ```javascript
 // Once migration is complete, remove old file
 // and keep only:
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaPicto } from "./DataMaPicto.js";
 ```
 
 ## 🚀 Performance Optimization
@@ -451,7 +451,7 @@ function getCachedIcon(iconName, options = {}) {
         return iconCache.get(cacheKey).cloneNode(true);
     }
     
-    const icon = DataMaIcons.get(iconName, options);
+    const icon = DataMaPicto.get(iconName, options);
     iconCache.set(cacheKey, icon);
     
     return icon.cloneNode(true);
@@ -470,7 +470,7 @@ function lazyLoadIcon(iconName, container, options = {}) {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const icon = DataMaIcons.get(iconName, options);
+                const icon = DataMaPicto.get(iconName, options);
                 entry.target.appendChild(icon);
                 observer.unobserve(entry.target);
             }
@@ -493,22 +493,22 @@ lazyLoadIcon('chart-svg', document.getElementById('chart-container'), {
 
 **Icon not displaying:**
 ```javascript
-// Check if DataMaIcons is loaded
-if (typeof DataMaIcons !== 'undefined') {
-    console.log('✅ DataMaIcons loaded');
+// Check if DataMaPicto is loaded
+if (typeof DataMaPicto !== 'undefined') {
+    console.log('✅ DataMaPicto loaded');
 } else {
-    console.error('❌ DataMaIcons not loaded');
+    console.error('❌ DataMaPicto not loaded');
 }
 
 // Check icon name
-const availableIcons = DataMaIcons.getIconNames();
+const availableIcons = DataMaPicto.getIconNames();
 console.log('Available icons:', availableIcons);
 ```
 
 **Size issue:**
 ```javascript
 // Force size with CSS
-const icon = DataMaIcons.get('check-svg', { size: 24 });
+const icon = DataMaPicto.get('check-svg', { size: 24 });
 icon.style.width = '32px';
 icon.style.height = '32px';
 ```
@@ -516,7 +516,7 @@ icon.style.height = '32px';
 **Color issue:**
 ```javascript
 // Force color with CSS
-const icon = DataMaIcons.get('check-svg');
+const icon = DataMaPicto.get('check-svg');
 icon.style.fill = '#28a745';
 icon.style.color = '#28a745';
 ```
@@ -525,10 +525,10 @@ icon.style.color = '#28a745';
 
 ```javascript
 // Enable debug mode
-DataMaIcons.debug = true;
+DataMaPicto.debug = true;
 
 // Get detailed information
-const iconData = DataMaIcons.getIconData('check-svg');
+const iconData = DataMaPicto.getIconData('check-svg');
 console.log('Icon details:', iconData);
 ```
 
@@ -553,18 +553,18 @@ export class DataMaIconComponent {
     }
     
     init() {
-        // Load DataMaIcons if not already done
-        if (typeof DataMaIcons === 'undefined') {
-            this.loadDataMaIcons();
+        // Load DataMaPicto if not already done
+        if (typeof DataMaPicto === 'undefined') {
+            this.loadDataMaPicto();
         } else {
             this.setupIcon();
         }
     }
     
-    loadDataMaIcons() {
+    loadDataMaPicto() {
         // Load dynamically if needed
         const script = document.createElement('script');
-        script.src = './DataMaIconsNew.js';
+        script.src = './DataMaPicto.js';
         script.onload = () => this.setupIcon();
         document.head.appendChild(script);
     }
@@ -577,7 +577,7 @@ export class DataMaIconComponent {
             return;
         }
         
-        const icon = DataMaIcons.get(iconName, {
+        const icon = DataMaPicto.get(iconName, {
             size: this.options.size,
             fill: this.options.fill,
             stroke: this.options.stroke,

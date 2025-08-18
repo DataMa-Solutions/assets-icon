@@ -236,7 +236,7 @@ echo "Testing CDN endpoints..."
 curl -s https://storage.googleapis.com/$BUCKET_NAME/latest/version.json | jq .
 
 # Test main libraries
-curl -I https://storage.googleapis.com/$BUCKET_NAME/latest/DataMaIconsNew.js
+curl -I https://storage.googleapis.com/$BUCKET_NAME/latest/DataMaPicto.js
 curl -I https://storage.googleapis.com/$BUCKET_NAME/latest/datama-icons-cdn.js
 
 # Test icon data
@@ -353,7 +353,7 @@ After deployment, your multi-environment CDN will have this structure:
 https://storage.googleapis.com/your-staging-bucket/
 ├── latest/                            # 🎯 Always the newest staging version
 │   ├── datama-icons-cdn.js           # Vue.js CDN library
-│   ├── DataMaIconsNew.js             # Vanilla JS library  
+│   ├── DataMaPicto.js             # Vanilla JS library  
 │   ├── icons.json                    # Raw icon data
 │   ├── dist/vue/                     # Complete Vue components
 │   └── version.json                  # Version metadata with staging info
@@ -368,14 +368,14 @@ https://storage.googleapis.com/your-staging-bucket/
 https://storage.googleapis.com/your-production-bucket/
 ├── latest/                     # 🎯 Always the newest production version
 │   ├── datama-icons-cdn.js    # Vue.js CDN library
-│   ├── DataMaIconsNew.js      # Vanilla JS library  
+│   ├── DataMaPicto.js      # Vanilla JS library  
 │   ├── icons.json             # Raw icon data
 │   ├── dist/vue/              # Complete Vue components
 │   └── version.json           # Version metadata with production info
 ├── releases/
 │   ├── 1.1.0/                 # Clean releases (from tags)
 │   │   ├── datama-icons-cdn.js
-│   │   ├── DataMaIconsNew.js
+│   │   ├── DataMaPicto.js
 │   │   └── ...
 │   ├── 1.1.0-main.20240319.143022/ # Development builds (from main)
 │   └── 1.2.0/
@@ -432,20 +432,20 @@ https://storage.googleapis.com/your-production-bucket/
 
 **🧪 Staging:**
 ```html
-<script src="https://ressources2.datama.io/assets/js/icons/latest/DataMaIconsNew.js"></script>
+<script src="https://ressources2.datama.io/assets/js/icons/latest/DataMaPicto.js"></script>
 <script>
 // Use the API (100% compatible with legacy system)
-const icon = DataMaIcons.get('home-svg', { size: 24, fill: '#007acc' });
+const icon = DataMaPicto.get('home-svg', { size: 24, fill: '#007acc' });
 document.getElementById('container').appendChild(icon);
 </script>
 ```
 
 **🚀 Production:**
 ```html
-<script src="https://ressources.datama.io/assets/js/icons/latest/DataMaIconsNew.js"></script>
+<script src="https://ressources.datama.io/assets/js/icons/latest/DataMaPicto.js"></script>
 <script>
 // Use the API (100% compatible with legacy system)
-const icon = DataMaIcons.get('home-svg', { size: 24, fill: '#007acc' });
+const icon = DataMaPicto.get('home-svg', { size: 24, fill: '#007acc' });
 document.getElementById('container').appendChild(icon);
 </script>
 ```
@@ -458,9 +458,9 @@ npm install @datama/icons
 
 ```javascript
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
+import DataMaPicto from '@datama/icons/vue';
 
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 ```
 
 ## 🔧 Advanced Configuration
@@ -522,7 +522,7 @@ Expected response:
 curl -I https://storage.googleapis.com/your-bucket/latest/datama-icons-cdn.js
 
 # Test vanilla JS library  
-curl -I https://storage.googleapis.com/your-bucket/latest/DataMaIconsNew.js
+curl -I https://storage.googleapis.com/your-bucket/latest/DataMaPicto.js
 ```
 
 ## 🚀 Multi-Environment Release Process
