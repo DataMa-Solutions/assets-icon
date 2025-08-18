@@ -134,7 +134,7 @@ jobs:
           cp package.json release/
           cp dist/icons.js release/
           cp dist/icons.json release/
-          cp dist/DataMaIconsNew.js release/
+          cp dist/DataMaPicto.js release/
           cp dist/datama-icons-cdn.js release/
           cp README.md release/
           cp -r dist release/

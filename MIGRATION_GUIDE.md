@@ -5,7 +5,7 @@ This guide explains how to use and integrate the new `@datama/icons` icon librar
 ## 🎯 Overview
 
 The `assets-icon` system generates icons in multiple formats:
-- **For Native JS**: `DataMaIconsNew.js` - Compatible with the legacy `DataMaIcons.get()` API
+- **For Native JS**: `DataMaPicto.js` - Compatible with the legacy `DataMaPicto.get()` API
 - **For Vue.js**: CDN system with `<i>` tags (Font Awesome style)
 - **For NPM**: Complete package with Vue components
 
@@ -15,7 +15,7 @@ The `assets-icon` system generates icons in multiple formats:
 assets-icon/
 ├── icons/                      # Source SVG icons organized by categories
 ├── dist/
-│   ├── DataMaIconsNew.js      # 🎯 For native JS projects (light/)
+│   ├── DataMaPicto.js      # 🎯 For native JS projects (light/)
 │   ├── datama-icons-cdn.js    # 🎯 For Vue.js (CDN)
 │   ├── icons.json             # 🎯 Icon data
 │   └── vue/                   # Complete Vue components
@@ -26,7 +26,7 @@ assets-icon/
 
 ### Automatic Process
 
-The build automatically generates `DataMaIconsNew.js` and copies it to the `light/` project:
+The build automatically generates `DataMaPicto.js` and copies it to the `light/` project:
 
 ```bash
 cd assets-icon/
@@ -34,8 +34,8 @@ npm run build:all
 ```
 
 This will:
-1. ✅ Generate `dist/DataMaIconsNew.js`
-2. ✅ Automatically copy to `light/src/resources/components/DataMaIconsNew.js`
+1. ✅ Generate `dist/DataMaPicto.js`
+2. ✅ Automatically copy to `light/src/resources/components/DataMaPicto.js`
 3. ✅ Copy `icons.json` to `light/src/assets/icons/icons.json`
 
 ### Integration in light/
@@ -43,25 +43,25 @@ This will:
 1. **Import the new system** (without breaking the existing one):
 ```javascript
 // In your light/ components
-import { DataMaIcons } from "./DataMaIconsNew.js";  // New version
-// import { DataMaIcons } from "./DataMaIcons.js";  // Old version (kept)
+import { DataMaPicto } from "./DataMaPicto.js";  // New version
+// import { DataMaPicto } from "./DataMaPicto.js";  // Old version (kept)
 
 // Identical usage
-const icon = DataMaIcons.get('home-svg', { id: 'my-icon' });
+const icon = DataMaPicto.get('home-svg', { id: 'my-icon' });
 ```
 
 2. **Backward compatibility maintained**:
-   - Same API: `DataMaIcons.get(iconName, options)`
-   - Same export name: `DataMaIcons`
+   - Same API: `DataMaPicto.get(iconName, options)`
+   - Same export name: `DataMaPicto`
    - Same SVG structure returned
 
 3. **New features available**:
 ```javascript
 // Automatic color management
-const greenCheck = DataMaIcons.get('check-svg', { fill: '#28a745' });
+const greenCheck = DataMaPicto.get('check-svg', { fill: '#28a745' });
 
 // Force color on complex icons (use with caution)
-const coloredLogo = DataMaIcons.get('datama-svg', { 
+const coloredLogo = DataMaPicto.get('datama-svg', { 
   fill: '#007acc',
   forceComplexColor: true 
 });
@@ -72,19 +72,19 @@ const coloredLogo = DataMaIcons.get('datama-svg', {
 **Phase 1 - Test** (No changes required):
 ```javascript
 // Current imports continue to work
-import { DataMaIcons } from "./DataMaIcons.js";
+import { DataMaPicto } from "./DataMaPicto.js";
 ```
 
 **Phase 2 - Migration** (When ready):
 ```javascript
 // Simply change the import
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaPicto } from "./DataMaPicto.js";
 ```
 
 **Phase 3 - Cleanup** (Later):
 ```javascript
-// Remove old DataMaIcons.js file
-// Update all imports to DataMaIconsNew.js
+// Remove old DataMaPicto.js file
+// Update all imports to DataMaPicto.js
 ```
 
 ## 🌐 For Vue.js Projects (CDN)
@@ -119,7 +119,7 @@ import { DataMaIcons } from "./DataMaIconsNew.js";
 export default {
   mounted() {
     // Icons are automatically processed when DOM is ready
-    window.DataMaIconsCDN?.init();
+    window.DataMaPictoCDN?.init();
   }
 }
 ```
@@ -175,9 +175,9 @@ npm install @datama/icons
 ```javascript
 // main.js
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
+import DataMaPicto from '@datama/icons/vue';
 
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 ```
 
 ### Usage in Components
@@ -229,7 +229,7 @@ All Vue components support:
 
 ## 🔄 API Reference
 
-### `DataMaIcons.get(iconName, options)`
+### `DataMaPicto.get(iconName, options)`
 
 **Parameters:**
 - `iconName` (string): Icon name with `-svg` suffix (e.g., 'check-svg')
@@ -246,22 +246,22 @@ All Vue components support:
 
 ```javascript
 // Simple icon with color
-const icon1 = DataMaIcons.get('check-svg', { 
+const icon1 = DataMaPicto.get('check-svg', { 
   size: 32, 
   fill: '#28a745' 
 });
 
 // Complex icon (original colors)
-const icon2 = DataMaIcons.get('datama-svg', { size: 48 });
+const icon2 = DataMaPicto.get('datama-svg', { size: 48 });
 
 // Force color on complex icon
-const icon3 = DataMaIcons.get('settings-svg', {
+const icon3 = DataMaPicto.get('settings-svg', {
   fill: '#007acc',
   forceComplexColor: true
 });
 
 // Custom ID and classes
-const icon4 = DataMaIcons.get('download-svg', {
+const icon4 = DataMaPicto.get('download-svg', {
   id: 'download-btn',
   className: 'toolbar-icon',
   fill: '#007acc'
@@ -312,10 +312,10 @@ npm run build:svg        # SVG processing only
 
 ```javascript
 // Enable debug logging
-DataMaIcons.debug = true;
+DataMaPicto.debug = true;
 
 // Get detailed information
-const iconData = DataMaIcons.getIconData('check-svg');
+const iconData = DataMaPicto.getIconData('check-svg');
 console.log(iconData.isComplex); // false for simple icons
 ```
 
@@ -348,9 +348,9 @@ npm run deploy:cdn
 
 **Issue**: Icons not displaying
 ```javascript
-// Solution: Check if DataMaIcons is loaded
-if (typeof DataMaIcons !== 'undefined') {
-  const icon = DataMaIcons.get('check-svg');
+// Solution: Check if DataMaPicto is loaded
+if (typeof DataMaPicto !== 'undefined') {
+  const icon = DataMaPicto.get('check-svg');
   document.body.appendChild(icon);
 }
 ```
@@ -358,10 +358,10 @@ if (typeof DataMaIcons !== 'undefined') {
 **Issue**: Colors not applying
 ```javascript
 // Check if icon is complex
-const iconData = DataMaIcons.getIconData('icon-name');
+const iconData = DataMaPicto.getIconData('icon-name');
 if (iconData.isComplex) {
   // Use forceComplexColor if needed
-  const icon = DataMaIcons.get('icon-name', { 
+  const icon = DataMaPicto.get('icon-name', { 
     fill: '#color',
     forceComplexColor: true 
   });
@@ -371,7 +371,7 @@ if (iconData.isComplex) {
 **Issue**: Vue components not working
 ```javascript
 // Ensure proper installation
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 
 // Check component registration
 console.log(Vue.options.components); // Should include icon components
@@ -383,7 +383,7 @@ console.log(Vue.options.components); // Should include icon components
 ```javascript
 // Preload frequently used icons
 ['check-svg', 'x-svg', 'download-svg'].forEach(icon => {
-  DataMaIcons.get(icon); // Cached for future use
+  DataMaPicto.get(icon); // Cached for future use
 });
 ```
 

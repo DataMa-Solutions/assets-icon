@@ -1,3 +1,20 @@
+/*
+ * DATAMA SAS
+ * --------------
+ * NOTICE:  All information contained herein is, and remains
+ * the property of DataMa SAS and/or some open source packages used
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to DataMa SAS
+ * and its suppliers and may be covered by French and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from DataMa SAS.
+ * Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+ * Copyright (c) 2025 DATAMA SAS, All rights reserved.
+ * Generated for file : build.js project project-deep-sky
+ */
+
 const fs = require('fs');
 const path = require('path');
 const { buildSvgData } = require('./build-svg');
@@ -57,11 +74,11 @@ ${iconNames.map(iconName => {
 }).join('\n')}
 
 // Plugin
-declare const DatamaIcons: {
+declare const DataMaPicto: {
   install(Vue: any, options?: any): void;
 };
 
-export default DatamaIcons;
+export default DataMaPicto;
 `;
 
   return definitions;
@@ -110,227 +127,173 @@ export default DataMaLightIcons;
 const DataMaLightIcons = ${iconDataJson};
 
 /**
- * Create SVG element from icon data
+ * DataMaPicto class
+ * Latest way to generate icons
  */
-function createSVG(iconData, options = {}) {
-    const {
-        size = 24,
-        width = size,
-        height = size,
-        fill = 'currentColor',
-        stroke = 'none',
-        strokeWidth = 0,
-        className = ''
-    } = options;
+export class DataMaPicto {
+    /**
+     * Add icon data to Datama
+     * @param options
+     */
+    static replace(options = {}) {
+        const elements = document.querySelectorAll('[data-datama]');
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', iconData.viewBox || '0 0 24 24');
-    svg.setAttribute('width', width);
-    svg.setAttribute('height', height);
-    svg.setAttribute('fill', fill);
-    svg.setAttribute('stroke', stroke);
-    svg.setAttribute('stroke-width', strokeWidth);
-    
-    if (className) {
-        svg.className = className;
+        elements.forEach(element => {
+            const iconName = element.getAttribute('data-datama');
+            const iconData = DataMaLightIcons[iconName];
+
+            if (!iconData) {
+                console.warn(\`Icon not found: ${iconName}\`);
+                return;
+            }
+
+            // Get options from element attributes or global options
+            const elementOptions = {
+                size: element.getAttribute('data-size') || options.size,
+                width: element.getAttribute('data-width') || options.width,
+                height: element.getAttribute('data-height') || options.height,
+                fill: element.getAttribute('data-fill') || options.fill,
+                stroke: element.getAttribute('data-stroke') || options.stroke,
+                strokeWidth: element.getAttribute('data-stroke-width') || options.strokeWidth,
+                className: element.className
+            };
+
+            const svg = this.createSVG(iconData, elementOptions);
+
+            // Replace the element with the SVG
+            element.parentNode.replaceChild(svg, element);
+        });
     }
-    
-    if (iconData.isComplex && iconData.content) {
-        // For complex icons, check if selective fill is requested and available
-        if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
-            // Use selective fill version (includes URL replacement) when custom fill is provided
-            let content = iconData.selectiveFillContent;
-            if (fill !== 'currentColor') {
-                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
-                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
-            }
-            svg.innerHTML = content;
-        } else {
-            // Use original content with all original colors and gradients
-            svg.innerHTML = iconData.content;
+
+    /**
+     * Return icon node
+     * @param iconName
+     * @param props
+     * @return {SVGSVGElement|null}
+     */
+    static get(iconName, props = {}) {
+        const iconData = DataMaLightIcons[iconName];
+        if (!iconData) {
+            console.warn('Icon not found:', iconName);
+            return null;
         }
-    } else if (!iconData.isComplex && iconData.path) {
-        // For simple icons, check if we should use selective fill or plain path
-        if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
-            // Use selective fill version (includes URL replacement) for simple icons when custom fill is provided
-            let content = iconData.selectiveFillContent;
-            if (fill !== 'currentColor') {
-                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
-                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+        return DataMaPicto.createSVG(iconData, props);
+    }
+
+    /**
+     * Create SVG element from icon data
+     */
+    static createSVG(iconData, options = {}) {
+        const {
+            size = 24,
+            width = size,
+            height = size,
+            fill = 'currentColor',
+            stroke = 'none',
+            strokeWidth = 0,
+            className = '',
+            forceComplexColor = false  // New option to force color on complex icons
+        } = options;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', iconData.viewBox || '0 0 24 24');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('fill', fill);
+        svg.setAttribute('stroke', stroke);
+        svg.setAttribute('stroke-width', strokeWidth);
+
+        if (className) {
+            svg.className = className;
+        }
+
+        if (iconData.isComplex && iconData.content) {
+            // For complex icons, use the content HTML and preserve original colors
+            // Complex icons often have intentional colors, gradients, masks, etc.
+            svg.innerHTML = iconData.content;
+
+            // Apply custom color only if explicitly requested via forceComplexColor
+            if (forceComplexColor && fill !== 'currentColor') {
+                const childElements = svg.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, g');
+                childElements.forEach(child => {
+                    // Only override if the element doesn't have explicit fill="none" or stroke-only styling
+                    const currentFill = child.getAttribute('fill');
+                    const currentStroke = child.getAttribute('stroke');
+
+                    // If element has no fill or has a color fill (not 'none'), apply the new color
+                    if (!currentFill || (currentFill !== 'none' && currentFill !== 'transparent')) {
+                        child.setAttribute('fill', fill);
+                    }
+
+                    // Also apply to stroke if it's currently a color and not 'none'
+                    if (currentStroke && currentStroke !== 'none' && currentStroke !== 'transparent' && currentStroke !== 'currentColor') {
+                        child.setAttribute('stroke', fill);
+                    }
+                });
             }
-            svg.innerHTML = content;
-        } else {
+        } else if (iconData.path) {
             // For simple icons, create a path element
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', iconData.path);
             path.setAttribute('fill', fill);
             svg.appendChild(path);
         }
-    } else {
-        // Fallback for malformed icon data
-        console.warn(\`Malformed icon data for icon. isComplex: \${iconData.isComplex}, hasContent: \${!!iconData.content}, hasPath: \${!!iconData.path}\`);
-        if (iconData.content) {
-            svg.innerHTML = iconData.content;
-        } else if (iconData.path) {
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', iconData.path);
-            path.setAttribute('fill', fill);
-            svg.appendChild(path);
-        }
+
+        return svg;
     }
-    
-    return svg;
-}
 
-/**
- * Apply selective fill to icons
- * Uses pre-processed selective fill content when available
- */
-function applySelectiveFill(svg, fillColor) {
-    // This function is now mainly for fallback cases
-    // Most of the work is done at build time in the selective fill content
-    const elements = svg.querySelectorAll('[fill="currentColor"], [stroke="currentColor"]');
-    
-    elements.forEach(element => {
-        const currentFill = element.getAttribute('fill');
-        const currentStroke = element.getAttribute('stroke');
-        
-        if (currentFill === 'currentColor') {
-            element.setAttribute('fill', fillColor);
-        }
-        
-        if (currentStroke === 'currentColor') {
-            element.setAttribute('stroke', fillColor);
-        }
-    });
-}
-
-/**
- * Replace all elements with data-datama attributes
- */
-function replace(options = {}) {
-    const elements = document.querySelectorAll('[data-datama]');
-    
-    elements.forEach(element => {
-        const iconName = element.getAttribute('data-datama');
+    toSvg(iconName, options = {}) {
         const iconData = DataMaLightIcons[iconName];
-        
-        if (!iconData) {
-            console.warn(\`Icon not found: \${iconName}\`);
-            return;
-        }
-        
-        // Get options from element attributes or global options
-        const elementOptions = {
-            size: element.getAttribute('data-size') || options.size,
-            width: element.getAttribute('data-width') || options.width,
-            height: element.getAttribute('data-height') || options.height,
-            fill: element.getAttribute('data-fill') || options.fill,
-            stroke: element.getAttribute('data-stroke') || options.stroke,
-            strokeWidth: element.getAttribute('data-stroke-width') || options.strokeWidth,
-            className: element.className,
-            forceComplexColor: element.getAttribute('data-force-complex-color') === 'true' || options.forceComplexColor,
-            selectiveFill: element.getAttribute('data-selective-fill') !== 'false' && options.selectiveFill !== false
-        };
-        
-        const svg = createSVG(iconData, elementOptions);
-        
-        // Replace the element with the SVG
-        element.parentNode.replaceChild(svg, element);
-    });
-}
 
-/**
- * Generate SVG string for an icon
- */
-function toSvg(iconName, options = {}) {
-    const iconData = DataMaLightIcons[iconName];
-    
-    if (!iconData) {
-        console.warn(\`Icon not found: \${iconName}\`);
-        return '';
+        if (!iconData) {
+            console.warn(\`Icon not found: ${iconName}\`);
+            return '';
+        }
+
+        const svg = this.createSVG(iconData, options);
+        return svg.outerHTML;
     }
-    
-    const svg = createSVG(iconData, options);
-    return svg.outerHTML;
-}
 
-/**
- * Get icon data
- */
-function getIcon(iconName) {
-    return DataMaLightIcons[iconName];
-}
-
-/**
- * Get all available icon names
- */
-function getIconNames() {
-    return Object.keys(DataMaLightIcons);
-}
-
-// Main API object
-const DataMaIcons = {
-    get: function(iconName, props = {}) {
-        const iconData = DataMaLightIcons[iconName];
-        if (!iconData) {
-            console.warn('Icon not found:', iconName);
-            return null;
-        }
-        return createSVG(iconData, props);
-    },
-    replace: replace,
-    toSvg: toSvg,
-    getIcon: getIcon,
-    getIconNames: getIconNames,
-    getAvailableIcons: function() {
-        return Object.keys(DataMaLightIcons);
-    },
-    getIconData: function(iconName) {
+    getIcon(iconName) {
         return DataMaLightIcons[iconName];
-    },
-    searchByTag: function(tag) {
-        return Object.keys(DataMaLightIcons).filter(iconName => 
-            DataMaLightIcons[iconName].tags && 
+    }
+
+    getIconNames() {
+        return Object.keys(DataMaLightIcons);
+    }
+
+    getAvailableIcons() {
+        return Object.keys(DataMaLightIcons);
+    }
+
+    getIconData(iconName) {
+        return DataMaLightIcons[iconName];
+    }
+
+    searchByTag(tag) {
+        return Object.keys(DataMaLightIcons).filter(iconName =>
+            DataMaLightIcons[iconName].tags &&
             DataMaLightIcons[iconName].tags.includes(tag)
         );
     }
-};
+}
 
 // Create global API (browser only)
 if (typeof window !== 'undefined') {
-    window.DataMaIcons = DataMaIcons;
+    window.DataMaPicto = DataMaPicto;
 
     // Auto-replace on DOMContentLoaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            replace();
+            DataMaPicto.replace();
         });
     } else {
         // DOM already loaded
-        replace();
+        DataMaPicto.replace();
     }
-}
-
-console.log('DataMa Icons vanilla JS API loaded (NEW VERSION)');
-console.log(\`Available icons: \${Object.keys(DataMaLightIcons).length}\`);
-
-// Export compatible ES Modules et script classique
-if (typeof module !== 'undefined' && module.exports) {
-    // Node.js / CommonJS
-    module.exports = DataMaIcons;
-    module.exports.DataMaLightIcons = DataMaLightIcons;
-    module.exports.replace = replace;
-    module.exports.toSvg = toSvg;
-    module.exports.getIcon = getIcon;
-    module.exports.getIconNames = getIconNames;
-    module.exports.default = DataMaIcons;
-} else if (typeof define === 'function' && define.amd) {
-    // AMD
-    define([], function() { return DataMaIcons; });
 }`;
   
-  fs.writeFileSync(path.join(distDir, 'DataMaIconsNew.js'), vanillaJsApi);
+  fs.writeFileSync(path.join(distDir, 'DataMaPicto.js'), vanillaJsApi);
   
   console.log('✅ Generated main distribution files');
 }
@@ -371,9 +334,9 @@ console.log(checkIcon.path); // SVG path data
 
 \`\`\`javascript
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
+import DataMaPicto from '@datama/icons/vue';
 
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 \`\`\`
 
 \`\`\`vue
@@ -467,9 +430,9 @@ npm install @datama/icons
 
 \`\`\`javascript
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
+import DataMaPicto from '@datama/icons/vue';
 
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 \`\`\`
 
 This package contains ${iconCount} icon components ready to use in your Vue 2 application.
@@ -524,7 +487,7 @@ async function build() {
     console.log('   - dist/index.js (CommonJS)');
     console.log('   - dist/index.esm.js (ES modules)');
     console.log('   - dist/index.d.ts (TypeScript definitions)');
-    console.log('   - dist/DataMaIconsNew.js (Vanilla JavaScript API NEW VERSION)');
+    console.log('   - dist/DataMaPicto.js (Vanilla JavaScript API NEW VERSION)');
     
   } catch (error) {
     console.error('❌ Build failed:', error.message);

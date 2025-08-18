@@ -1,3 +1,20 @@
+<!--
+  ~ DATAMA SAS
+  ~ --------------
+  ~ NOTICE:  All information contained herein is, and remains
+  ~ the property of DataMa SAS and/or some open source packages used
+  ~ if any.  The intellectual and technical concepts contained
+  ~ herein are proprietary to DataMa SAS
+  ~ and its suppliers and may be covered by French and Foreign Patents,
+  ~ patents in process, and are protected by trade secret or copyright law.
+  ~ Dissemination of this information or reproduction of this material
+  ~ is strictly forbidden unless prior written permission is obtained
+  ~ from DataMa SAS.
+  ~ Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+  ~ Copyright (c) 2025 DATAMA SAS, All rights reserved.
+  ~ Generated for file : example-integration.html project project-deep-sky
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,14 +144,14 @@
         
         <div class="code">
 // Load script
-&lt;script src="dist/DataMaIconsNew.js"&gt;&lt;/script&gt;
+&lt;script src="dist/DataMaPicto.js"&gt;&lt;/script&gt;
 
 // Basic usage
-const homeIcon = DataMaIcons.get('home-svg');
+const homeIcon = DataMaPicto.get('home-svg');
 document.body.appendChild(homeIcon);
 
 // With properties
-const settingsIcon = DataMaIcons.get('settings-svg', {
+const settingsIcon = DataMaPicto.get('settings-svg', {
     size: 32,
     className: 'my-custom-class'
 });
@@ -236,7 +253,7 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
     </div>
 
     <!-- Load scripts at the end -->
-    <script src="dist/DataMaIconsNew.js"></script>
+    <script src="dist/DataMaPicto.js"></script>
     <script src="dist/datama-icons-cdn.js"></script>
     
     <script>
@@ -244,13 +261,13 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
         function testNativeAPI() {
             try {
                 // Test basic icon creation
-                const homeIcon = DataMaIcons.get('home-svg');
+                const homeIcon = DataMaPicto.get('home-svg');
                 if (homeIcon) {
                     document.getElementById('basic-icon').appendChild(homeIcon);
                 }
                 
                 // Test with properties
-                const settingsIcon = DataMaIcons.get('settings-svg', {
+                const settingsIcon = DataMaPicto.get('settings-svg', {
                     size: 32,
                     className: 'my-icon'
                 });
@@ -259,22 +276,22 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
                 }
                 
                 // Test search by tag
-                const navigationIcons = DataMaIcons.searchByTag('navigation');
+                const navigationIcons = DataMaPicto.searchByTag('navigation');
                 if (navigationIcons.length > 0) {
-                    const navIcon = DataMaIcons.get(navigationIcons[0]);
+                    const navIcon = DataMaPicto.get(navigationIcons[0]);
                     if (navIcon) {
                         document.getElementById('tag-icon').appendChild(navIcon);
                     }
                 }
                 
                 document.getElementById('api-status').innerHTML = '<span class="success">✅ Working</span>';
-                document.getElementById('icon-count').textContent = DataMaIcons.getAvailableIcons().length + ' icons available';
+                document.getElementById('icon-count').textContent = DataMaPicto.getAvailableIcons().length + ' icons available';
                 
                 // Add some action icons via JavaScript API
                 const jsApiContainer = document.getElementById('js-api-icons');
                 const actionIcons = ['edit-svg', 'copy-svg', 'trash-2-svg', 'save-svg', 'download-svg'];
                 actionIcons.forEach(iconName => {
-                    const icon = DataMaIcons.get(iconName, { size: 24 });
+                    const icon = DataMaPicto.get(iconName, { size: 24 });
                     if (icon) {
                         jsApiContainer.appendChild(icon);
                     }
@@ -290,9 +307,9 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
         function testNewMethods() {
             const output = document.getElementById('new-methods-output');
             try {
-                const availableIcons = DataMaIcons.getAvailableIcons();
-                const navigationIcons = DataMaIcons.searchByTag('navigation');
-                const homeIconData = DataMaIcons.getIconData('home-svg');
+                const availableIcons = DataMaPicto.getAvailableIcons();
+                const navigationIcons = DataMaPicto.searchByTag('navigation');
+                const homeIconData = DataMaPicto.getIconData('home-svg');
                 
                 output.innerHTML = `
 Available icons: ${availableIcons.length}
@@ -309,9 +326,9 @@ Tags for home-svg: ${homeIconData ? homeIconData.tags.join(', ') : 'N/A'}
         // Test CDN system
         function testCDN() {
             try {
-                if (window.DatamaIcons && window.DatamaIcons.processDatamaIcons) {
+                if (window.DataMaPicto && window.DataMaPicto.processDataMaPicto) {
                     // Process any remaining icons
-                    window.DatamaIcons.processDatamaIcons();
+                    window.DataMaPicto.processDataMaPicto();
                     document.getElementById('cdn-status').innerHTML = '<span class="success">✅ CDN Loaded</span>';
                 } else {
                     document.getElementById('cdn-status').innerHTML = '<span class="error">❌ CDN Not Loaded</span>';
@@ -333,8 +350,8 @@ Tags for home-svg: ${homeIconData ? homeIconData.tags.join(', ') : 'N/A'}
             container.appendChild(newIcon);
             
             // Process the new icon if CDN is available
-            if (window.DatamaIcons && window.DatamaIcons.processDatamaIcons) {
-                window.DatamaIcons.processDatamaIcons();
+            if (window.DataMaPicto && window.DataMaPicto.processDataMaPicto) {
+                window.DataMaPicto.processDataMaPicto();
             }
         }
         

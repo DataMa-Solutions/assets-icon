@@ -1,5 +1,22 @@
 #!/bin/bash
 
+#
+# DATAMA SAS
+# --------------
+# NOTICE:  All information contained herein is, and remains
+# the property of DataMa SAS and/or some open source packages used
+# if any.  The intellectual and technical concepts contained
+# herein are proprietary to DataMa SAS
+# and its suppliers and may be covered by French and Foreign Patents,
+# patents in process, and are protected by trade secret or copyright law.
+# Dissemination of this information or reproduction of this material
+# is strictly forbidden unless prior written permission is obtained
+# from DataMa SAS.
+# Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+# Copyright (c) 2025 DATAMA SAS, All rights reserved.
+# Generated for file : release.sh project project-deep-sky
+#
+
 # DataMa Icons Release Script
 # Usage: ./scripts/release.sh [patch|minor|major|<version>]
 
@@ -196,7 +213,7 @@ Autres fichiers :
 <script src=\"datama-icons-simple.js\"></script>
 <script>
   // Utiliser l'API (100% compatible avec ancien système)
-  const iconSvg = DataMaIcons.get('home-svg', { size: 24 });
+  const iconSvg = DataMaPicto.get('home-svg', { size: 24 });
   document.getElementById('myIcon').appendChild(iconSvg);
 </script>
 \`\`\`
@@ -219,8 +236,8 @@ Autres fichiers :
 ./integrate-icons.sh /chemin/vers/projet/light
 
 # 3. Dans votre code Light :
-import { DataMaIcons } from './DataMaIconsNew.js';
-const icon = DataMaIcons.get('home-svg');
+import { DataMaPicto } from './DataMaPicto.js';
+const icon = DataMaPicto.get('home-svg');
 \`\`\`
 
 ### 📦 URLs de téléchargement direct
@@ -244,7 +261,7 @@ npm install @datama/icons@$NEW_VERSION
 
 Or use via CDN:
 \`\`\`html
-<script src=\"https://cdn.jsdelivr.net/npm/@datama/icons@$NEW_VERSION/dist/DataMaIconsNew.js\"></script>
+<script src=\"https://cdn.jsdelivr.net/npm/@datama/icons@$NEW_VERSION/dist/DataMaPicto.js\"></script>
 \`\`\`
 
 $ICON_CHANGES

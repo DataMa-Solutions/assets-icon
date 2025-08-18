@@ -25,7 +25,7 @@
 
 ### 🐛 Bug Fixes
 - **Fixed JavaScript error**: Resolved "Expected moveto path command" error in complex icons
-- **Improved error handling**: Added robust error handling in DataMaIconsNew.js for SVG path processing
+- **Improved error handling**: Added robust error handling in DataMaPicto.js for SVG path processing
 - **Enhanced icon rendering**: Better handling of complex SVG paths and stroke elements
 
 ### 🎨 UI/UX Improvements
@@ -66,13 +66,13 @@ None - Fully backward compatible
 #### Enhanced API
 ```javascript
 // Simple icon - color applied automatically
-DataMaIcons.get('check-svg', { fill: '#007acc' })
+DataMaPicto.get('check-svg', { fill: '#007acc' })
 
 // Complex icon - original colors preserved
-DataMaIcons.get('datama-svg', { size: 32 })
+DataMaPicto.get('datama-svg', { size: 32 })
 
 // Complex icon - forced color when needed
-DataMaIcons.get('datama-svg', { 
+DataMaPicto.get('datama-svg', { 
   fill: '#007acc', 
   forceComplexColor: true 
 })
@@ -101,14 +101,14 @@ DataMaIcons.get('datama-svg', {
 #### Advanced Usage Example
 ```javascript
 // Test complex icon with forced color
-const complexIcon = DataMaIcons.get('settings-svg', {
+const complexIcon = DataMaPicto.get('settings-svg', {
   size: 48,
   fill: '#007acc',
   forceComplexColor: true
 });
 
 // Simple icon with automatic color
-const simpleIcon = DataMaIcons.get('check-svg', {
+const simpleIcon = DataMaPicto.get('check-svg', {
   size: 24,
   fill: '#28a745'
 });
@@ -185,14 +185,14 @@ None - Fully backward compatible
 #### Vue Integration
 ```javascript
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
-Vue.use(DatamaIcons);
+import DataMaPicto from '@datama/icons/vue';
+Vue.use(DataMaPicto);
 ```
 
 #### Vanilla JavaScript Usage
 ```javascript
-import { DataMaIcons } from './DataMaIconsNew.js';
-const icon = DataMaIcons.get('check-svg', { size: 24 });
+import { DataMaPicto } from './DataMaPicto.js';
+const icon = DataMaPicto.get('check-svg', { size: 24 });
 ```
 
 ### 🏗️ Build System

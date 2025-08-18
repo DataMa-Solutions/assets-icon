@@ -317,7 +317,7 @@ document.querySelectorAll('[data-icon-name]').forEach(el => {
 **Icon not displaying:**
 ```javascript
 // Check if script is loaded
-if (typeof window.DatamaIcons !== 'undefined') {
+if (typeof window.DataMaPicto !== 'undefined') {
   console.log('✅ DataMa Icons loaded')
 } else {
   console.error('❌ DataMa Icons not loaded')
@@ -327,7 +327,7 @@ if (typeof window.DatamaIcons !== 'undefined') {
 **Wrong icon name:**
 ```javascript
 // Check available names
-console.log('Available icons:', window.DatamaIcons?.getIconNames?.())
+console.log('Available icons:', window.DataMaPicto?.getIconNames?.())
 ```
 
 **CORS issue:**
@@ -340,8 +340,8 @@ console.log('Available icons:', window.DatamaIcons?.getIconNames?.())
 
 ```javascript
 // Enable debug mode
-if (window.DatamaIcons) {
-  window.DatamaIcons.debug = true
+if (window.DataMaPicto) {
+  window.DataMaPicto.debug = true
   console.log('Debug mode enabled')
 }
 ```

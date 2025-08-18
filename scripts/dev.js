@@ -1,3 +1,20 @@
+/*
+ * DATAMA SAS
+ * --------------
+ * NOTICE:  All information contained herein is, and remains
+ * the property of DataMa SAS and/or some open source packages used
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to DataMa SAS
+ * and its suppliers and may be covered by French and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from DataMa SAS.
+ * Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+ * Copyright (c) 2025 DATAMA SAS, All rights reserved.
+ * Generated for file : dev.js project project-deep-sky
+ */
+
 const fs = require('fs');
 const path = require('path');
 const { buildSvgData } = require('./build-svg');
@@ -91,8 +108,8 @@ function devBuild() {
   
   console.log('\n   ⚡ Vue 2 usage:');
   console.log('   ```javascript');
-  console.log('   import DatamaIcons from "@datama/icons/vue";');
-  console.log('   Vue.use(DatamaIcons);');
+  console.log('   import DataMaPicto from "@datama/icons/vue";');
+  console.log('   Vue.use(DataMaPicto);');
   console.log('   ```');
   console.log('   ```vue');
   console.log('   <IconCheck :size="24" fill="blue" />');

@@ -26,9 +26,9 @@ console.log(checkIcon.path); // SVG path data
 
 ```javascript
 import Vue from 'vue';
-import DatamaIcons from '@datama/icons/vue';
+import DataMaPicto from '@datama/icons/vue';
 
-Vue.use(DatamaIcons);
+Vue.use(DataMaPicto);
 ```
 
 ```vue
