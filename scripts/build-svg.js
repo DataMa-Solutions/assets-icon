@@ -163,6 +163,26 @@ function shouldSkipColor(color, opacity = 1) {
 
 
 /**
+ * Fix malformed SVG path data - DISABLED for now
+ * @param {string} pathData - SVG path data
+ * @returns {string} - Fixed path data
+ */
+function fixMalformedPath(pathData) {
+  // DISABLE ALL FIXES FOR NOW - they were too aggressive
+  return pathData;
+}
+
+/**
+ * Fix malformed paths in HTML content - DISABLED for now
+ * @param {string} content - HTML content with SVG paths
+ * @returns {string} - Fixed content
+ */
+function fixMalformedPathsInContent(content) {
+  // DISABLE ALL FIXES FOR NOW - they were too aggressive
+  return content;
+}
+
+/**
  * Create selective fill version of complex SVG
  * @param {string} svgContent - Raw SVG content
  * @param {object} dimensions - Normalized dimensions
@@ -394,6 +414,9 @@ function createSelectiveFillVersion(svgContent, dimensions) {
     content = `<g transform="${dimensions.scaleTransform}">${content}</g>`;
   }
   
+  // Fix any malformed paths in the selective fill content
+  content = fixMalformedPathsInContent(content);
+  
   return content;
 }
 
@@ -495,9 +518,29 @@ function extractSvgData(svgContent, filename, category = '') {
     
     hasMultipleColors = colors.size > 1;
     
-    // Check for nested groups or complex structure
+    // Check for nested groups or complex structure (including groups with transforms)
     const nestedGroups = $svg.find('g g');
     const hasNestedStructure = nestedGroups.length > 0;
+    
+    // Check for any groups with transform attributes (these should be treated as complex)
+    const transformGroups = $svg.find('g[transform]');
+    const hasTransformGroups = transformGroups.length > 0;
+    
+    // Check for malformed path data (sequences like "q-.448-.407-.931-.774" without proper spacing)
+    let hasMalformedPaths = false;
+    $svg.find('path').each((i, element) => {
+      const $path = $(element);
+      const d = $path.attr('d');
+      if (d) {
+        // Look for patterns like letter followed by multiple negative numbers without spaces
+        // e.g., "q-.448-.407-.931" or "t-.651-1.452q-.217"
+        const malformedPattern = /[a-zA-Z]-\d+\.\d*-\d+\.\d*-\d+|[a-zA-Z]-\d+-\d+-\d+|[qQtTlLhHvVcCsSaAzZ]-[\d\.-]+[qQtTlLhHvVcCsSaAzZ]/;
+        if (malformedPattern.test(d)) {
+          hasMalformedPaths = true;
+          return false; // Break out of each loop
+        }
+      }
+    });
     
     // Check for fill-rule or clip-rule attributes (indicates complex path operations)
     const complexPaths = $svg.find('[fill-rule], [clip-rule]');
@@ -518,7 +561,7 @@ function extractSvgData(svgContent, filename, category = '') {
       needsScaling = (currentWidth !== 24 || currentHeight !== 24);
     }
     
-    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages;
+    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages || hasTransformGroups || hasMalformedPaths;
     
     let processedContent;
     
@@ -531,9 +574,14 @@ function extractSvgData(svgContent, filename, category = '') {
       if (dimensions.scaleTransform) {
         // Wrap content in a group with scale transform
         let originalContent = $svg.html();
+        // Fix any malformed paths in the content
+        originalContent = fixMalformedPathsInContent(originalContent);
         processedContent = `<g transform="${dimensions.scaleTransform}">${originalContent}</g>`;
       } else {
-        processedContent = $svg.html();
+        let originalContent = $svg.html();
+        // Fix any malformed paths in the content
+        originalContent = fixMalformedPathsInContent(originalContent);
+        processedContent = originalContent;
       }
     } else {
       // For simple SVGs, preserve the order by processing elements in document order
