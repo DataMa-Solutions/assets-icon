@@ -97,6 +97,67 @@ function normalizeSvgViewBox($svg) {
 
 
 /**
+ * Convert style attributes to direct attributes (style="fill: #XXX" to fill="#XXX")
+ * @param {string} svgContent - Raw SVG content
+ * @returns {string} - SVG content with style attributes converted
+ */
+function convertStyleToDirectAttributes(svgContent) {
+  const $ = cheerio.load(svgContent, { xmlMode: true });
+  
+  // Find all elements with style attributes
+  $('[style]').each((i, element) => {
+    const $element = $(element);
+    const styleAttr = $element.attr('style');
+    
+    if (!styleAttr) return;
+    
+    // Parse style attribute and extract individual properties
+    const styles = {};
+    const declarations = styleAttr.split(';').filter(decl => decl.trim());
+    
+    declarations.forEach(declaration => {
+      const colonIndex = declaration.indexOf(':');
+      if (colonIndex === -1) return;
+      
+      const property = declaration.substring(0, colonIndex).trim().toLowerCase();
+      const value = declaration.substring(colonIndex + 1).trim();
+      
+      if (value) {
+        styles[property] = value;
+      }
+    });
+    
+    // Convert specific style properties to direct attributes
+    const propertiesToConvert = ['fill', 'stroke', 'opacity', 'fill-opacity', 'stroke-opacity', 'stroke-width'];
+    let modifiedStyle = styleAttr;
+    
+    propertiesToConvert.forEach(property => {
+      if (styles[property]) {
+        // Only set as direct attribute if not already present
+        if (!$element.attr(property)) {
+          $element.attr(property, styles[property]);
+        }
+        
+        // Remove from style attribute
+        const regex = new RegExp(`\\s*${property.replace('-', '\\-')}\\s*:\\s*[^;]+;?`, 'gi');
+        modifiedStyle = modifiedStyle.replace(regex, '');
+      }
+    });
+    
+    // Clean up style attribute
+    modifiedStyle = modifiedStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+    
+    if (modifiedStyle) {
+      $element.attr('style', modifiedStyle);
+    } else {
+      $element.removeAttr('style');
+    }
+  });
+  
+  return $.html();
+}
+
+/**
  * Extract color from CSS style string
  * @param {string} styleString - Style attribute value
  * @param {string} property - CSS property to extract (fill or stroke)
@@ -163,12 +224,286 @@ function shouldSkipColor(color, opacity = 1) {
 
 
 /**
+ * Fix malformed SVG path data - DISABLED for now
+ * @param {string} pathData - SVG path data
+ * @returns {string} - Fixed path data
+ */
+function fixMalformedPath(pathData) {
+  // DISABLE ALL FIXES FOR NOW - they were too aggressive
+  return pathData;
+}
+
+/**
+ * Fix malformed paths in HTML content - DISABLED for now
+ * @param {string} content - HTML content with SVG paths
+ * @returns {string} - Fixed content
+ */
+function fixMalformedPathsInContent(content) {
+  // DISABLE ALL FIXES FOR NOW - they were too aggressive
+  return content;
+}
+
+/**
+ * Create inverted fill version of complex SVG (white becomes colored, colored becomes white)
+ * @param {string} svgContent - Raw SVG content
+ * @param {object} dimensions - Normalized dimensions
+ * @param {boolean} isOutlineIcon - Whether this is an outline-style icon
+ * @returns {string} - Processed content with inverted fill logic
+ */
+function createInvertFillVersion(svgContent, dimensions, isOutlineIcon = false) {
+  // Convert style attributes to direct attributes before processing
+  svgContent = convertStyleToDirectAttributes(svgContent);
+  
+  const $ = cheerio.load(svgContent, { xmlMode: true });
+  const $svg = $('svg');
+  
+  $svg.attr('viewBox', dimensions.viewBox);
+  $svg.attr('width', dimensions.width);  
+  $svg.attr('height', dimensions.height);
+  
+  // Remove style tags and class-based styling
+  $svg.find('style').remove();
+  
+  // Handle gradients in invert mode - replace gradients with currentColor
+  $svg.find('defs linearGradient, defs radialGradient').each((i, gradientElement) => {
+    const $gradient = $(gradientElement);
+    const gradientId = $gradient.attr('id');
+    
+    if (gradientId) {
+      // Find all elements using this gradient and replace with currentColor
+      $svg.find(`[fill="url(#${gradientId})"], [stroke="url(#${gradientId})"]`).each((j, element) => {
+        const $element = $(element);
+        if ($element.attr('fill') && $element.attr('fill').includes(gradientId)) {
+          $element.attr('fill', 'currentColor');
+        }
+        if ($element.attr('stroke') && $element.attr('stroke').includes(gradientId)) {
+          $element.attr('stroke', 'currentColor');
+        }
+      });
+    }
+  });
+  
+  // Use the passed isOutlineIcon parameter (no need to re-detect)
+  
+  // Process all relevant elements for invert logic
+  $svg.find('path, rect, circle, ellipse, polygon, polyline, use, g').each((i, element) => {
+    const $element = $(element);
+    const fill = $element.attr('fill');
+    const stroke = $element.attr('stroke');
+    const style = $element.attr('style');
+    const fillOpacity = parseFloat($element.attr('fill-opacity') || '1');
+    const tagName = element.tagName.toLowerCase();
+    
+    // Remove class attribute since we removed the styles
+    $element.removeAttr('class');
+    
+    // Extract colors from style attribute
+    const styleFill = extractColorFromStyle(style, 'fill');
+    const styleStroke = extractColorFromStyle(style, 'stroke');
+    
+    // Determine final fill and stroke values
+    const finalFill = fill || styleFill;
+    const finalStroke = stroke || styleStroke;
+    
+    // Special handling for gradients (url() references) in invert mode
+    if (finalFill && finalFill.startsWith('url(')) {
+      // In invert mode, gradients (which are typically colored content) become white
+      $element.attr('fill', 'white');
+      if (style && styleFill && styleFill.startsWith('url(')) {
+        let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+      return; // Skip normal processing for gradient elements
+    }
+    
+    // ADAPTIVE INVERT LOGIC: Different logic for outline icons vs colored icons
+    if (isOutlineIcon) {
+      // For outline icons: treat missing fill as black, invert both black and white
+      if (isWhiteColor(finalFill)) {
+        $element.attr('fill', 'currentColor');
+        if (style && styleFill && isWhiteColor(styleFill)) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (!finalFill || isBlackColor(finalFill)) {
+        // No fill (defaults to black) OR explicit black fill -> becomes white
+        // For outline icons, explicitly set white fill for elements without fill
+        $element.attr('fill', 'white');
+        if (style && styleFill && isBlackColor(styleFill)) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalFill && !isWhiteColor(finalFill) && !isBlackColor(finalFill)) {
+        // For outline icons, any other color becomes white
+        $element.attr('fill', 'white');
+        if (style && styleFill) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      }
+    } else {
+      // For colored icons: white becomes colored, all other colors become white
+      if (isWhiteColor(finalFill)) {
+        $element.attr('fill', 'currentColor');
+        if (style && styleFill && isWhiteColor(styleFill)) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalFill && finalFill !== 'none' && finalFill !== 'transparent' && !finalFill.startsWith('url(')) {
+        $element.attr('fill', 'white');
+        if (style && styleFill) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      }
+    }
+    
+    // Handle stroke with same adaptive logic
+    if (isOutlineIcon) {
+      // For outline icons: invert both black and white strokes
+      if (isWhiteColor(finalStroke)) {
+        $element.attr('stroke', 'currentColor');
+        if (style && styleStroke && isWhiteColor(styleStroke)) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (!finalStroke || isBlackColor(finalStroke)) {
+        $element.attr('stroke', 'white');
+        if (style && styleStroke && isBlackColor(styleStroke)) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalStroke && !isWhiteColor(finalStroke) && !isBlackColor(finalStroke)) {
+        // For outline icons, any other stroke color becomes white
+        $element.attr('stroke', 'white');
+        if (style && styleStroke) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      }
+    } else {
+      // For colored icons: white becomes colored, all other colors become white
+      if (isWhiteColor(finalStroke)) {
+        $element.attr('stroke', 'currentColor');
+        if (style && styleStroke && isWhiteColor(styleStroke)) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalStroke && finalStroke !== 'none' && finalStroke !== 'transparent' && !finalStroke.startsWith('url(')) {
+        $element.attr('stroke', 'white');
+        if (style && styleStroke) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      }
+    }
+  });
+  
+  let content = $svg.html();
+  if (dimensions.scaleTransform) {
+    content = `<g transform="${dimensions.scaleTransform}">${content}</g>`;
+  }
+  
+  return content;
+}
+
+/**
+ * Check if a color is white
+ * @param {string} color - Color value
+ * @returns {boolean} - True if color is white
+ */
+function isWhiteColor(color) {
+  if (!color) return false;
+  
+  const lowerColor = color.toLowerCase().trim();
+  return (lowerColor === '#ffffff' || 
+          lowerColor === '#fff' || 
+          lowerColor === 'white' ||
+          lowerColor === 'rgb(255,255,255)' ||
+          lowerColor === 'rgb(255, 255, 255)');
+}
+
+/**
+ * Check if a color is black
+ * @param {string} color - Color value
+ * @returns {boolean} - True if color is black
+ */
+function isBlackColor(color) {
+  if (!color) return false;
+  
+  const lowerColor = color.toLowerCase().trim();
+  return (lowerColor === '#000000' || 
+          lowerColor === '#000' || 
+          lowerColor === 'black' ||
+          lowerColor === 'rgb(0,0,0)' ||
+          lowerColor === 'rgb(0, 0, 0)');
+}
+
+/**
  * Create selective fill version of complex SVG
  * @param {string} svgContent - Raw SVG content
  * @param {object} dimensions - Normalized dimensions
  * @returns {string} - Processed content with selective fill logic
  */
 function createSelectiveFillVersion(svgContent, dimensions) {
+  // Convert style attributes to direct attributes before processing
+  svgContent = convertStyleToDirectAttributes(svgContent);
+  
   const $ = cheerio.load(svgContent, { xmlMode: true });
   const $svg = $('svg');
   
@@ -394,6 +729,9 @@ function createSelectiveFillVersion(svgContent, dimensions) {
     content = `<g transform="${dimensions.scaleTransform}">${content}</g>`;
   }
   
+  // Fix any malformed paths in the selective fill content
+  content = fixMalformedPathsInContent(content);
+  
   return content;
 }
 
@@ -437,6 +775,9 @@ function isBackgroundPath(d) {
  */
 function extractSvgData(svgContent, filename, category = '') {
   try {
+    // Convert style attributes to direct attributes before processing
+    svgContent = convertStyleToDirectAttributes(svgContent);
+    
     // Load SVG with cheerio
     const $ = cheerio.load(svgContent, { xmlMode: true });
     const $svg = $('svg');
@@ -495,9 +836,29 @@ function extractSvgData(svgContent, filename, category = '') {
     
     hasMultipleColors = colors.size > 1;
     
-    // Check for nested groups or complex structure
+    // Check for nested groups or complex structure (including groups with transforms)
     const nestedGroups = $svg.find('g g');
     const hasNestedStructure = nestedGroups.length > 0;
+    
+    // Check for any groups with transform attributes (these should be treated as complex)
+    const transformGroups = $svg.find('g[transform]');
+    const hasTransformGroups = transformGroups.length > 0;
+    
+    // Check for malformed path data (sequences like "q-.448-.407-.931-.774" without proper spacing)
+    let hasMalformedPaths = false;
+    $svg.find('path').each((i, element) => {
+      const $path = $(element);
+      const d = $path.attr('d');
+      if (d) {
+        // Look for patterns like letter followed by multiple negative numbers without spaces
+        // e.g., "q-.448-.407-.931" or "t-.651-1.452q-.217"
+        const malformedPattern = /[a-zA-Z]-\d+\.\d*-\d+\.\d*-\d+|[a-zA-Z]-\d+-\d+-\d+|[qQtTlLhHvVcCsSaAzZ]-[\d\.-]+[qQtTlLhHvVcCsSaAzZ]/;
+        if (malformedPattern.test(d)) {
+          hasMalformedPaths = true;
+          return false; // Break out of each loop
+        }
+      }
+    });
     
     // Check for fill-rule or clip-rule attributes (indicates complex path operations)
     const complexPaths = $svg.find('[fill-rule], [clip-rule]');
@@ -518,7 +879,35 @@ function extractSvgData(svgContent, filename, category = '') {
       needsScaling = (currentWidth !== 24 || currentHeight !== 24);
     }
     
-    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages;
+    const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages || hasTransformGroups || hasMalformedPaths;
+    
+    // Detect if this is an outline-style icon (only black/white colors)
+    const explicitColors = [];
+    $svg.find('path, rect, circle, ellipse, polygon, polyline').each((i, element) => {
+      const $element = $(element);
+      const fill = $element.attr('fill');
+      const stroke = $element.attr('stroke');
+      const style = $element.attr('style');
+      const styleFill = extractColorFromStyle(style, 'fill');
+      const styleStroke = extractColorFromStyle(style, 'stroke');
+      const finalFill = fill || styleFill;
+      const finalStroke = stroke || styleStroke;
+      
+      // Count explicit colors (ignore elements without color - they default to black)
+      // Skip url() gradients for outline detection
+      if (finalFill && finalFill !== 'none' && finalFill !== 'transparent' && !finalFill.startsWith('url(')) {
+        explicitColors.push(finalFill.toLowerCase());
+      }
+      if (finalStroke && finalStroke !== 'none' && finalStroke !== 'transparent' && !finalStroke.startsWith('url(')) {
+        explicitColors.push(finalStroke.toLowerCase());
+      }
+    });
+    
+    const uniqueExplicitColors = [...new Set(explicitColors)];
+    const isOutlineIcon = uniqueExplicitColors.length <= 2 && 
+      (uniqueExplicitColors.length === 0 || // No explicit colors (all black by default)
+       uniqueExplicitColors.every(color => isWhiteColor(color)) || // Only white colors
+       uniqueExplicitColors.every(color => isWhiteColor(color) || isBlackColor(color))); // Only white and/or black colors
     
     let processedContent;
     
@@ -531,9 +920,14 @@ function extractSvgData(svgContent, filename, category = '') {
       if (dimensions.scaleTransform) {
         // Wrap content in a group with scale transform
         let originalContent = $svg.html();
+        // Fix any malformed paths in the content
+        originalContent = fixMalformedPathsInContent(originalContent);
         processedContent = `<g transform="${dimensions.scaleTransform}">${originalContent}</g>`;
       } else {
-        processedContent = $svg.html();
+        let originalContent = $svg.html();
+        // Fix any malformed paths in the content
+        originalContent = fixMalformedPathsInContent(originalContent);
+        processedContent = originalContent;
       }
     } else {
       // For simple SVGs, preserve the order by processing elements in document order
@@ -597,6 +991,8 @@ function extractSvgData(svgContent, filename, category = '') {
       // Create selective fill version for complex icons, but skip those with embedded images
       if (!hasEmbeddedImages) {
         iconData.selectiveFillContent = createSelectiveFillVersion(svgContent, dimensions);
+        // Also create invert fill version for all complex icons
+        iconData.invertFillContent = createInvertFillVersion(svgContent, dimensions, isOutlineIcon);
       }
     } else {
       iconData.path = processedContent;
@@ -627,10 +1023,12 @@ function extractSvgData(svgContent, filename, category = '') {
         });
         
         iconData.selectiveFillContent = $svg.html();
+        iconData.invertFillContent = createInvertFillVersion(svgContent, dimensions, isOutlineIcon);
       }
       // Create selective fill version for simple icons that have colors or are in sources category
       else if (category === 'sources' || hasMultipleColors || colors.size > 0) {
         iconData.selectiveFillContent = createSelectiveFillVersion(svgContent, dimensions);
+        iconData.invertFillContent = createInvertFillVersion(svgContent, dimensions, isOutlineIcon);
       }
     }
 

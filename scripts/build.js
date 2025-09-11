@@ -120,7 +120,8 @@ function createSVG(iconData, options = {}) {
         fill = 'currentColor',
         stroke = 'none',
         strokeWidth = 0,
-        className = ''
+        className = '',
+        invert = false
     } = options;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -136,8 +137,16 @@ function createSVG(iconData, options = {}) {
     }
     
     if (iconData.isComplex && iconData.content) {
-        // For complex icons, check if selective fill is requested and available
-        if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
+        // Check if invert mode is requested
+        if (options.invert && iconData.invertFillContent) {
+            // Use invert fill version
+            let content = iconData.invertFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             // Use selective fill version (includes URL replacement) when custom fill is provided
             let content = iconData.selectiveFillContent;
             if (fill !== 'currentColor') {
@@ -150,8 +159,16 @@ function createSVG(iconData, options = {}) {
             svg.innerHTML = iconData.content;
         }
     } else if (!iconData.isComplex && iconData.path) {
-        // For simple icons, check if we should use selective fill or plain path
-        if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
+        // Check if invert mode is requested
+        if (options.invert && iconData.invertFillContent) {
+            // Use invert fill version
+            let content = iconData.invertFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             // Use selective fill version (includes URL replacement) for simple icons when custom fill is provided
             let content = iconData.selectiveFillContent;
             if (fill !== 'currentColor') {
@@ -230,7 +247,8 @@ function replace(options = {}) {
             strokeWidth: element.getAttribute('data-stroke-width') || options.strokeWidth,
             className: element.className,
             forceComplexColor: element.getAttribute('data-force-complex-color') === 'true' || options.forceComplexColor,
-            selectiveFill: element.getAttribute('data-selective-fill') !== 'false' && options.selectiveFill !== false
+            selectiveFill: element.getAttribute('data-selective-fill') !== 'false' && options.selectiveFill !== false,
+            invert: element.getAttribute('data-invert') === 'true' || options.invert === true
         };
         
         const svg = createSVG(iconData, elementOptions);
