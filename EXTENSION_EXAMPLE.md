@@ -42,7 +42,7 @@ https://github.com/DataMa-Solutions/assets-icon/releases/download/v1.0.0/datama-
     
     <script>
         // Icons are automatically replaced!
-        console.log('DataMa Icons loaded:', DataMaIcons.getIconNames().length, 'icons available');
+        console.log('DataMa Icons loaded:', DataMaPicto.getIconNames().length, 'icons available');
     </script>
 </body>
 </html>
@@ -52,7 +52,7 @@ https://github.com/DataMa-Solutions/assets-icon/releases/download/v1.0.0/datama-
 
 ```javascript
 // Method 1: Get icons directly
-const homeIcon = DataMaIcons.get('home-svg', {
+const homeIcon = DataMaPicto.get('home-svg', {
     size: 24,
     fill: '#007acc'
 });
@@ -62,7 +62,7 @@ const container = document.getElementById('my-container');
 container.appendChild(homeIcon);
 
 // Method 3: CSS-style insertion
-const iconHtml = DataMaIcons.getHtml('settings-svg', {
+const iconHtml = DataMaPicto.getHtml('settings-svg', {
     size: 20,
     fill: 'currentColor'
 });
@@ -89,7 +89,7 @@ class MyPowerBIVisual {
                 .classed('toolbar-button', true)
                 .on('click', () => this.handleAction(iconName));
                 
-            const icon = DataMaIcons.get(iconName, { size: 20 });
+            const icon = DataMaPicto.get(iconName, { size: 20 });
             button.node().appendChild(icon);
         });
     }
@@ -120,7 +120,7 @@ function initializeUI() {
         button.className = 'action-button';
         button.onclick = () => handleAction(action.action);
         
-        const icon = DataMaIcons.get(action.name, { size: 18 });
+        const icon = DataMaPicto.get(action.name, { size: 18 });
         button.appendChild(icon);
         button.appendChild(document.createTextNode(action.label));
         
@@ -158,7 +158,7 @@ function addIconsToConfig() {
     const sections = document.querySelectorAll('.config-section');
     sections.forEach((section, index) => {
         const iconNames = ['settings-svg', 'data-svg', 'chart-svg'];
-        const icon = DataMaIcons.get(iconNames[index] || 'settings-svg', { 
+        const icon = DataMaPicto.get(iconNames[index] || 'settings-svg', { 
             size: 16, 
             fill: '#4285f4' 
         });
@@ -214,7 +214,7 @@ function adaptIconsToTheme(theme) {
     // Update all simple icons with new color
     document.querySelectorAll('.datama-icon[data-type="simple"]').forEach(iconEl => {
         const iconName = iconEl.dataset.icon;
-        const newIcon = DataMaIcons.get(iconName, { 
+        const newIcon = DataMaPicto.get(iconName, { 
             size: iconEl.dataset.size || 24,
             fill: fill 
         });
@@ -242,7 +242,7 @@ class IconManager {
             return this.iconCache.get(cacheKey);
         }
         
-        const icon = DataMaIcons.get(iconName, options);
+        const icon = DataMaPicto.get(iconName, options);
         this.iconCache.set(cacheKey, icon);
         this.loadedIcons.add(iconName);
         
@@ -274,7 +274,7 @@ const REQUIRED_ICONS = [
 
 // Validate that all required icons are available
 function validateRequiredIcons() {
-    const availableIcons = DataMaIcons.getIconNames();
+    const availableIcons = DataMaPicto.getIconNames();
     const missingIcons = REQUIRED_ICONS.filter(icon => 
         !availableIcons.includes(icon)
     );
@@ -293,14 +293,14 @@ function validateRequiredIcons() {
 
 ```javascript
 // Enable debug mode to see icon loading details
-DataMaIcons.debug = true;
+DataMaPicto.debug = true;
 
 // Test icon loading
-console.log('Available icons:', DataMaIcons.getIconNames());
-console.log('Icon count:', DataMaIcons.getIconNames().length);
+console.log('Available icons:', DataMaPicto.getIconNames());
+console.log('Icon count:', DataMaPicto.getIconNames().length);
 
 // Test specific icon
-const testIcon = DataMaIcons.get('settings-svg', { size: 24 });
+const testIcon = DataMaPicto.get('settings-svg', { size: 24 });
 console.log('Test icon created:', testIcon ? 'Success' : 'Failed');
 ```
 
@@ -309,7 +309,7 @@ console.log('Test icon created:', testIcon ? 'Success' : 'Failed');
 ```javascript
 function safeGetIcon(iconName, options = {}, fallback = null) {
     try {
-        return DataMaIcons.get(iconName, options);
+        return DataMaPicto.get(iconName, options);
     } catch (error) {
         console.warn(`Failed to load icon ${iconName}:`, error);
         
@@ -374,15 +374,15 @@ const icon = safeGetIcon('non-existent-svg', { size: 20 }, 'settings-svg');
 
 ```javascript
 // Check if the library supports features you need
-if (DataMaIcons.version && DataMaIcons.version >= '1.1.0') {
+if (DataMaPicto.version && DataMaPicto.version >= '1.1.0') {
     // Use newer features like forceComplexColor
-    const icon = DataMaIcons.get('logo-svg', { 
+    const icon = DataMaPicto.get('logo-svg', { 
         fill: '#007acc',
         forceComplexColor: true 
     });
 } else {
     // Fallback for older versions
-    const icon = DataMaIcons.get('logo-svg', { size: 24 });
+    const icon = DataMaPicto.get('logo-svg', { size: 24 });
 }
 ```
 
@@ -391,21 +391,21 @@ if (DataMaIcons.version && DataMaIcons.version >= '1.1.0') {
 ```javascript
 // Defensive coding for library updates
 function createDataMaIcon(iconName, options = {}) {
-    // Check if DataMaIcons is available
-    if (typeof DataMaIcons === 'undefined') {
+    // Check if DataMaPicto is available
+    if (typeof DataMaPicto === 'undefined') {
         console.error('DataMa Icons library not loaded');
         return null;
     }
     
     // Check if icon exists
-    if (!DataMaIcons.getIconNames().includes(iconName)) {
+    if (!DataMaPicto.getIconNames().includes(iconName)) {
         console.warn(`Icon ${iconName} not found in library`);
         return null;
     }
     
     // Create icon with error handling
     try {
-        return DataMaIcons.get(iconName, options);
+        return DataMaPicto.get(iconName, options);
     } catch (error) {
         console.error(`Error creating icon ${iconName}:`, error);
         return null;

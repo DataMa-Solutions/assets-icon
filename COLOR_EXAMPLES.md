@@ -7,33 +7,33 @@ Quick guide with practical examples for using colors in DataMa Icons.
 ### 1. Simple Icons (Recommended)
 ```javascript
 // ✅ User interface icons
-DataMaIcons.get('check-svg', { fill: '#28a745' })      // Green validation
-DataMaIcons.get('x-svg', { fill: '#dc3545' })          // Red close
-DataMaIcons.get('download-svg', { fill: '#007acc' })   // Blue action
+DataMaPicto.get('check-svg', { fill: '#28a745' })      // Green validation
+DataMaPicto.get('x-svg', { fill: '#dc3545' })          // Red close
+DataMaPicto.get('download-svg', { fill: '#007acc' })   // Blue action
 
 // ✅ Navigation icons
-DataMaIcons.get('arrow-left-svg', { fill: '#6c757d' }) // Gray navigation
-DataMaIcons.get('chevron-down-svg', { fill: 'currentColor' }) // Inherits from parent
+DataMaPicto.get('arrow-left-svg', { fill: '#6c757d' }) // Gray navigation
+DataMaPicto.get('chevron-down-svg', { fill: 'currentColor' }) // Inherits from parent
 ```
 
 ### 2. Complex Icons (Original)
 ```javascript
 // ✅ Logos and illustrations (keep original colors)
-DataMaIcons.get('datama-svg')                          // DataMa logo
-DataMaIcons.get('illustration-data-svg')               // Complex illustration
-DataMaIcons.get('logo-tableau-svg')                    // Partner logo
+DataMaPicto.get('datama-svg')                          // DataMa logo
+DataMaPicto.get('illustration-data-svg')               // Complex illustration
+DataMaPicto.get('logo-tableau-svg')                    // Partner logo
 ```
 
 ### 3. Complex Icons with Forced Color
 ```javascript
 // ⚠️ Use sparingly - may break design
-DataMaIcons.get('settings-svg', { 
+DataMaPicto.get('settings-svg', { 
   fill: '#ffc107', 
   forceComplexColor: true 
 });
 
 // ⚠️ Example: uniform dark theme
-DataMaIcons.get('profile-svg', { 
+DataMaPicto.get('profile-svg', { 
   fill: '#ffffff', 
   forceComplexColor: true 
 });
@@ -45,17 +45,17 @@ DataMaIcons.get('profile-svg', {
 ```javascript
 // Toolbar
 const toolbar = [
-  DataMaIcons.get('save-svg', { fill: '#28a745', size: 20 }),
-  DataMaIcons.get('edit-svg', { fill: '#007acc', size: 20 }),
-  DataMaIcons.get('trash-2-svg', { fill: '#dc3545', size: 20 })
+  DataMaPicto.get('save-svg', { fill: '#28a745', size: 20 }),
+  DataMaPicto.get('edit-svg', { fill: '#007acc', size: 20 }),
+  DataMaPicto.get('trash-2-svg', { fill: '#dc3545', size: 20 })
 ];
 
 // Status indicators
 const statusIcons = {
-  success: DataMaIcons.get('check-svg', { fill: '#28a745' }),
-  warning: DataMaIcons.get('alert-triangle-svg', { fill: '#ffc107' }),
-  error: DataMaIcons.get('alert-circle-svg', { fill: '#dc3545' }),
-  info: DataMaIcons.get('help-circle-svg', { fill: '#17a2b8' })
+  success: DataMaPicto.get('check-svg', { fill: '#28a745' }),
+  warning: DataMaPicto.get('alert-triangle-svg', { fill: '#ffc107' }),
+  error: DataMaPicto.get('alert-circle-svg', { fill: '#dc3545' }),
+  info: DataMaPicto.get('help-circle-svg', { fill: '#17a2b8' })
 };
 ```
 
@@ -76,21 +76,21 @@ const darkTheme = {
 };
 
 // Apply theme colors
-DataMaIcons.get('datama-svg', { size: 32 }); // Keep original
-DataMaIcons.get('gauge-svg', { fill: lightTheme.primary });
+DataMaPicto.get('datama-svg', { size: 32 }); // Keep original
+DataMaPicto.get('gauge-svg', { fill: lightTheme.primary });
 ```
 
 ### Brand Context
 ```javascript
 // Company branding
-DataMaIcons.get('datama-svg', { size: 48 }); // Always original colors
+DataMaPicto.get('datama-svg', { size: 48 }); // Always original colors
 
 // Partner logos
-DataMaIcons.get('logo-tableau-svg', { size: 32 }); // Original colors
-DataMaIcons.get('logo-power-bi-svg', { size: 32 }); // Original colors
+DataMaPicto.get('logo-tableau-svg', { size: 32 }); // Original colors
+DataMaPicto.get('logo-power-bi-svg', { size: 32 }); // Original colors
 
 // Generic actions with brand colors
-DataMaIcons.get('download-svg', { fill: '#007acc', size: 24 });
+DataMaPicto.get('download-svg', { fill: '#007acc', size: 24 });
 ```
 
 ## 🧪 Testing and Debugging
@@ -99,8 +99,8 @@ DataMaIcons.get('download-svg', { fill: '#007acc', size: 24 });
 ```javascript
 // Test if icon accepts colors well
 const testIcon = (iconName, color = '#007acc') => {
-  const simple = DataMaIcons.get(iconName, { fill: color });
-  const forced = DataMaIcons.get(iconName, { 
+  const simple = DataMaPicto.get(iconName, { fill: color });
+  const forced = DataMaPicto.get(iconName, { 
     fill: color, 
     forceComplexColor: true 
   });
@@ -117,10 +117,10 @@ const testIcon = (iconName, color = '#007acc') => {
 ### Debug Mode
 ```javascript
 // Enable debug logging
-DataMaIcons.debug = true;
+DataMaPicto.debug = true;
 
 // Test icon creation
-const icon = DataMaIcons.get('complex-icon-svg', { 
+const icon = DataMaPicto.get('complex-icon-svg', { 
   fill: '#007acc',
   forceComplexColor: true 
 });
