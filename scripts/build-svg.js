@@ -305,6 +305,22 @@ function createInvertFillVersion(svgContent, dimensions, isOutlineIcon = false) 
     const finalFill = fill || styleFill;
     const finalStroke = stroke || styleStroke;
     
+    // Special handling for gradients (url() references) in invert mode
+    if (finalFill && finalFill.startsWith('url(')) {
+      // In invert mode, gradients (which are typically colored content) become white
+      $element.attr('fill', 'white');
+      if (style && styleFill && styleFill.startsWith('url(')) {
+        let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+        newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+        if (newStyle) {
+          $element.attr('style', newStyle);
+        } else {
+          $element.removeAttr('style');
+        }
+      }
+      return; // Skip normal processing for gradient elements
+    }
+    
     // ADAPTIVE INVERT LOGIC: Different logic for outline icons vs colored icons
     if (isOutlineIcon) {
       // For outline icons: treat missing fill as black, invert both black and white
@@ -321,8 +337,21 @@ function createInvertFillVersion(svgContent, dimensions, isOutlineIcon = false) 
         }
       } else if (!finalFill || isBlackColor(finalFill)) {
         // No fill (defaults to black) OR explicit black fill -> becomes white
+        // For outline icons, explicitly set white fill for elements without fill
         $element.attr('fill', 'white');
         if (style && styleFill && isBlackColor(styleFill)) {
+          let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalFill && !isWhiteColor(finalFill) && !isBlackColor(finalFill)) {
+        // For outline icons, any other color becomes white
+        $element.attr('fill', 'white');
+        if (style && styleFill) {
           let newStyle = style.replace(/fill\s*:\s*[^;]+;?/gi, '');
           newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
           if (newStyle) {
@@ -376,6 +405,18 @@ function createInvertFillVersion(svgContent, dimensions, isOutlineIcon = false) 
       } else if (!finalStroke || isBlackColor(finalStroke)) {
         $element.attr('stroke', 'white');
         if (style && styleStroke && isBlackColor(styleStroke)) {
+          let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
+          newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+          if (newStyle) {
+            $element.attr('style', newStyle);
+          } else {
+            $element.removeAttr('style');
+          }
+        }
+      } else if (finalStroke && !isWhiteColor(finalStroke) && !isBlackColor(finalStroke)) {
+        // For outline icons, any other stroke color becomes white
+        $element.attr('stroke', 'white');
+        if (style && styleStroke) {
           let newStyle = style.replace(/stroke\s*:\s*[^;]+;?/gi, '');
           newStyle = newStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
           if (newStyle) {
@@ -841,24 +882,32 @@ function extractSvgData(svgContent, filename, category = '') {
     const isComplex = complexElements.length > 0 || hasMultipleColors || hasNestedStructure || hasComplexPaths || needsScaling || hasEmbeddedImages || hasTransformGroups || hasMalformedPaths;
     
     // Detect if this is an outline-style icon (only black/white colors)
-    const explicitFills = [];
+    const explicitColors = [];
     $svg.find('path, rect, circle, ellipse, polygon, polyline').each((i, element) => {
       const $element = $(element);
       const fill = $element.attr('fill');
+      const stroke = $element.attr('stroke');
       const style = $element.attr('style');
       const styleFill = extractColorFromStyle(style, 'fill');
+      const styleStroke = extractColorFromStyle(style, 'stroke');
       const finalFill = fill || styleFill;
+      const finalStroke = stroke || styleStroke;
       
-      // Count explicit fills (ignore elements without fill - they default to black)
-      if (finalFill && finalFill !== 'none' && finalFill !== 'transparent') {
-        explicitFills.push(finalFill.toLowerCase());
+      // Count explicit colors (ignore elements without color - they default to black)
+      // Skip url() gradients for outline detection
+      if (finalFill && finalFill !== 'none' && finalFill !== 'transparent' && !finalFill.startsWith('url(')) {
+        explicitColors.push(finalFill.toLowerCase());
+      }
+      if (finalStroke && finalStroke !== 'none' && finalStroke !== 'transparent' && !finalStroke.startsWith('url(')) {
+        explicitColors.push(finalStroke.toLowerCase());
       }
     });
     
-    const uniqueExplicitFills = [...new Set(explicitFills)];
-    const isOutlineIcon = uniqueExplicitFills.length <= 1 && 
-      (uniqueExplicitFills.length === 0 || // No explicit fills (all black by default)
-       uniqueExplicitFills.every(color => isWhiteColor(color))); // Only white fills
+    const uniqueExplicitColors = [...new Set(explicitColors)];
+    const isOutlineIcon = uniqueExplicitColors.length <= 2 && 
+      (uniqueExplicitColors.length === 0 || // No explicit colors (all black by default)
+       uniqueExplicitColors.every(color => isWhiteColor(color)) || // Only white colors
+       uniqueExplicitColors.every(color => isWhiteColor(color) || isBlackColor(color))); // Only white and/or black colors
     
     let processedContent;
     
