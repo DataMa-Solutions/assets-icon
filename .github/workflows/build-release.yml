@@ -191,78 +191,24 @@ jobs:
           echo "📦 Created Light integration package"
           ls -la light-integration/
 
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          # Generate release notes using centralized script
+          chmod +x scripts/generate-release-notes.sh
+          RELEASE_NOTES=$(./scripts/generate-release-notes.sh "${{ steps.version.outputs.version }}" "" "github-actions")
+          # Escape for GitHub Actions output
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         # Only create GitHub releases for actual version tags
         if: steps.environment.outputs.is_release == 'true'
         uses: softprops/action-gh-release@v1
         with:
           name: DataMa Icons ${{ steps.version.outputs.version }}
-          body: |
-            ## 🎨 DataMa Icons ${{ steps.version.outputs.version }}
-            
-            Bibliothèque d'icônes DataMa avec **118 icônes** organisées en **7 catégories**.
-            
-            ### 📥 Téléchargement direct
-            
-            **Pour les extensions et projets JS :**
-            - `datama-icons-simple.js` - API JavaScript vanilla compatible (2MB)
-            - `datama-icons-cdn.js` - Système CDN Font Awesome-style (2MB)
-            
-            **Pour le projet Light :**
-            - `datama-icons-light-integration-${{ steps.version.outputs.version }}.zip` - Package d'intégration avec script automatique
-            
-            **Autres fichiers :**
-            - `datama-icons-data.js` - Données des icônes (ES modules)
-            - `datama-icons-data.json` - Données des icônes (JSON)
-            
-            ### 🚀 Utilisation rapide
-            
-            **Extensions JS / Projets vanilla :**
-            ```html
-            <!-- Inclure dans votre extension -->
-            <script src="datama-icons-simple.js"></script>
-            <script>
-              // Utiliser l'API (100% compatible avec ancien système)
-              const iconSvg = DataMaIcons.get('home-svg', { size: 24 });
-              document.getElementById('myIcon').appendChild(iconSvg);
-            </script>
-            ```
-            
-            **Projet Light :**
-            ```bash
-            # 1. Télécharger datama-icons-light-integration-x.x.x.zip
-            # 2. Extraire et exécuter :
-            ./integrate-icons.sh /chemin/vers/projet/light
-            
-            # 3. Dans votre code Light :
-            import { DataMaIcons } from './DataMaIconsNew.js';
-            const icon = DataMaIcons.get('home-svg');
-            ```
-            
-            **Vue.js / CDN :**
-            ```html
-            <script src="datama-icons-cdn.js"></script>
-            <!-- Font Awesome style -->
-            <i class="datama datama-home"></i>
-            <i class="datama datama-settings" data-size="32"></i>
-            ```
-            
-            ### 📦 URLs de téléchargement direct
-            
-            Vous pouvez télécharger les fichiers directement depuis :
-            ```
-            https://github.com/DataMa-Solutions/assets-icon/releases/download/${{ steps.version.outputs.version }}/datama-icons-simple.js
-            ```
-            
-            ### 🎯 Categories disponibles
-            
-            - 💼 **Actions** - Contrôles d'interface utilisateur
-            - 📊 **Data** - Visualisation de données  
-            - 🎨 **Illustrations** - Illustrations complexes
-            - 💡 **Light** - Icônes simples et cohérentes
-            - 🏢 **Logos** - Logos de marques
-            - 🧭 **Navigation** - Icônes de navigation
-            - 🎛️ **UI** - Éléments d'interface
+          body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
           files: |
             release-assets/*
         env:

@@ -200,13 +200,17 @@ jobs:
           gsutil -m cp -r release/* $BUCKET_BASE_PATH/latest/
           
           # Create a version manifest with environment info
+          TOTAL_ICONS=$(find icons -name "*.svg" 2>/dev/null | wc -l | tr -d ' ' || echo "150")
+          CATEGORIES=$(find icons -type d -mindepth 1 -maxdepth 1 2>/dev/null | wc -l | tr -d ' ' || echo "8")
+          
           cat > version.json << EOF
           {
             "version": "$VERSION",
             "environment": "$ENVIRONMENT",
             "is_release": $IS_RELEASE,
             "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "icon_count": 118,
+            "icon_count": $TOTAL_ICONS,
+            "category_count": $CATEGORIES,
             "commit_sha": "${{ github.sha }}",
             "branch": "${{ github.ref_name }}"
           }
