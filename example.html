@@ -297,7 +297,70 @@
             gap: 10px;
         }
         
-        /* Supprimer la checkbox-container et ses styles */
+        /* Checkbox styles */
+        .checkbox-control {
+            margin-top: 8px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13px;
+            color: #d0d0d0;
+            position: relative;
+        }
+        
+        .sidebar-checkbox {
+            display: none;
+        }
+        
+        .checkmark {
+            width: 16px;
+            height: 16px;
+            background: #444;
+            border: 1px solid #666;
+            border-radius: 3px;
+            margin-right: 8px;
+            position: relative;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 4px;
+            top: 1px;
+            width: 6px;
+            height: 10px;
+            border: solid #007acc;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .sidebar-checkbox:checked ~ .checkmark {
+            background: #1a1a1a;
+            border-color: #007acc;
+        }
+        
+        .sidebar-checkbox:checked ~ .checkmark::after {
+            display: block;
+        }
+        
+        .checkbox-container:hover .checkmark {
+            border-color: #007acc;
+        }
+        
+        .checkbox-label {
+            transition: color 0.2s ease;
+        }
+        
+        .sidebar-checkbox:checked ~ .checkbox-label {
+            color: #007acc;
+        }
         
         /* Icon Fill CSS */
         :root {
@@ -595,6 +658,17 @@
                     <span id="sidebar-intensity-value" class="range-value">100%</span>
                 </div>
             </div>
+            
+            <div class="sidebar-control">
+                <label class="sidebar-label">Options</label>
+                <div class="checkbox-control">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="sidebar-invert-checkbox" class="sidebar-checkbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Invert Colors</span>
+                    </label>
+                </div>
+            </div>
         </div>
         
         <div class="sidebar-section">
@@ -676,6 +750,7 @@
         let currentIconSize = 32;
         let currentIconFill = 'none';
         let currentIconOpacity = 1;
+        let currentIconInvert = false;
         let searchTerm = '';
 
         // Category emojis
@@ -919,6 +994,14 @@
                 updatePreview();
             });
 
+            // Invert checkbox control
+            const invertCheckbox = document.getElementById('sidebar-invert-checkbox');
+            invertCheckbox.addEventListener('change', (e) => {
+                currentIconInvert = e.target.checked;
+                updateAllIcons();
+                updatePreview();
+            });
+            
             // Icon selector
             const iconSelect = document.getElementById('sidebar-icon-select');
             iconSelect.addEventListener('change', (e) => {
@@ -959,7 +1042,8 @@
                     
                     const iconElement = DataMaIcons.get(iconName, {
                         size: currentIconSize,
-                        fill: currentIconFill === 'none' ? 'original' : currentIconFill
+                        fill: currentIconFill === 'none' ? 'original' : currentIconFill,
+                        invert: currentIconInvert
                     });
                     
                     if (iconElement) {
@@ -989,7 +1073,8 @@
             
             const iconElement = DataMaIcons.get(selectedIcon, {
                 size: Math.max(currentIconSize, 48), // Minimum size for preview
-                fill: currentIconFill === 'none' ? 'original' : currentIconFill
+                fill: currentIconFill === 'none' ? 'original' : currentIconFill,
+                invert: currentIconInvert
             });
             
             if (iconElement) {
@@ -999,11 +1084,12 @@
             // Update info
             const displayName = selectedIcon.replace('-svg', '').replace(/-/g, ' ');
             const fillMode = currentIconFill === 'none' ? 'Original Colors' : 'Smart Fill';
+            const invertMode = currentIconInvert ? ' (Inverted)' : '';
             previewInfo.innerHTML = `
                 <strong>${displayName}</strong><br>
                 ${iconData.isComplex ? 'Complex' : 'Simple'} icon<br>
                 ${Math.max(currentIconSize, 48)}px, ${Math.round(currentIconOpacity * 100)}% opacity<br>
-                Mode: ${fillMode}
+                Mode: ${fillMode}${invertMode}
             `;
         }
 
@@ -1013,6 +1099,7 @@
             currentIconSize = 32;
             currentIconFill = 'none';
             currentIconOpacity = 1;
+            currentIconInvert = false;
             
             // Reset UI controls
             document.getElementById('sidebar-size-range').value = 32;
@@ -1020,6 +1107,7 @@
             document.getElementById('sidebar-color-picker').value = '#000000';
             document.getElementById('sidebar-intensity-range').value = 1;
             document.getElementById('sidebar-intensity-value').textContent = '100%';
+            document.getElementById('sidebar-invert-checkbox').checked = false;
             document.getElementById('sidebar-icon-select').value = '';
             
             // Update display
@@ -1043,6 +1131,11 @@
             // Include fill customization information
             if (currentIconFill !== 'none') {
                 options.push(`fill: '${currentIconFill}' // Smart fill automatically applied`);
+            }
+            
+            // Include invert option if enabled
+            if (currentIconInvert) {
+                options.push(`invert: true // Invert colors: white becomes colored, colored becomes white`);
             }
             
             if (options.length > 0) {
