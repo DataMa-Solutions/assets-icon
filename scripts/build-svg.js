@@ -97,6 +97,67 @@ function normalizeSvgViewBox($svg) {
 
 
 /**
+ * Convert style attributes to direct attributes (style="fill: #XXX" to fill="#XXX")
+ * @param {string} svgContent - Raw SVG content
+ * @returns {string} - SVG content with style attributes converted
+ */
+function convertStyleToDirectAttributes(svgContent) {
+  const $ = cheerio.load(svgContent, { xmlMode: true });
+  
+  // Find all elements with style attributes
+  $('[style]').each((i, element) => {
+    const $element = $(element);
+    const styleAttr = $element.attr('style');
+    
+    if (!styleAttr) return;
+    
+    // Parse style attribute and extract individual properties
+    const styles = {};
+    const declarations = styleAttr.split(';').filter(decl => decl.trim());
+    
+    declarations.forEach(declaration => {
+      const colonIndex = declaration.indexOf(':');
+      if (colonIndex === -1) return;
+      
+      const property = declaration.substring(0, colonIndex).trim().toLowerCase();
+      const value = declaration.substring(colonIndex + 1).trim();
+      
+      if (value) {
+        styles[property] = value;
+      }
+    });
+    
+    // Convert specific style properties to direct attributes
+    const propertiesToConvert = ['fill', 'stroke', 'opacity', 'fill-opacity', 'stroke-opacity', 'stroke-width'];
+    let modifiedStyle = styleAttr;
+    
+    propertiesToConvert.forEach(property => {
+      if (styles[property]) {
+        // Only set as direct attribute if not already present
+        if (!$element.attr(property)) {
+          $element.attr(property, styles[property]);
+        }
+        
+        // Remove from style attribute
+        const regex = new RegExp(`\\s*${property.replace('-', '\\-')}\\s*:\\s*[^;]+;?`, 'gi');
+        modifiedStyle = modifiedStyle.replace(regex, '');
+      }
+    });
+    
+    // Clean up style attribute
+    modifiedStyle = modifiedStyle.replace(/;+/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '').trim();
+    
+    if (modifiedStyle) {
+      $element.attr('style', modifiedStyle);
+    } else {
+      $element.removeAttr('style');
+    }
+  });
+  
+  return $.html();
+}
+
+/**
  * Extract color from CSS style string
  * @param {string} styleString - Style attribute value
  * @param {string} property - CSS property to extract (fill or stroke)
@@ -189,6 +250,9 @@ function fixMalformedPathsInContent(content) {
  * @returns {string} - Processed content with selective fill logic
  */
 function createSelectiveFillVersion(svgContent, dimensions) {
+  // Convert style attributes to direct attributes before processing
+  svgContent = convertStyleToDirectAttributes(svgContent);
+  
   const $ = cheerio.load(svgContent, { xmlMode: true });
   const $svg = $('svg');
   
@@ -460,6 +524,9 @@ function isBackgroundPath(d) {
  */
 function extractSvgData(svgContent, filename, category = '') {
   try {
+    // Convert style attributes to direct attributes before processing
+    svgContent = convertStyleToDirectAttributes(svgContent);
+    
     // Load SVG with cheerio
     const $ = cheerio.load(svgContent, { xmlMode: true });
     const $svg = $('svg');
