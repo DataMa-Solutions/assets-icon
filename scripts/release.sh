@@ -109,6 +109,12 @@ else
     COMMIT_RANGE="$LAST_TAG..HEAD"
 fi
 
+# Get commits with conventional naming
+FEAT_COMMITS=$(git log --pretty=format:"- %s" $COMMIT_RANGE | grep "^- feat:" || echo "")
+FIX_COMMITS=$(git log --pretty=format:"- %s" $COMMIT_RANGE | grep "^- fix:" || echo "")
+DOCS_COMMITS=$(git log --pretty=format:"- %s" $COMMIT_RANGE | grep "^- docs:" || echo "")
+OTHER_COMMITS=$(git log --pretty=format:"- %s" $COMMIT_RANGE | grep -v "^- \(feat\|fix\|docs\):" || echo "")
+
 # Generate icon changes summary
 ICON_CHANGES=""
 NEW_ICONS=""
@@ -147,9 +153,9 @@ fi
 # Get contributors for this release
 CONTRIBUTORS=$(git log --pretty=format:"%an <%ae>" $COMMIT_RANGE | sort | uniq)
 
-# Get total icon count from the build
-TOTAL_ICONS=$(node -p "Object.keys(require('./dist/icons.json')).length" 2>/dev/null || echo "133")
-CATEGORIES=$(node -p "Object.keys(Object.values(require('./dist/icons.json')).reduce((acc, icon) => { acc[icon.category] = true; return acc; }, {})).length" 2>/dev/null || echo "8")
+# Get total icon count from the build - dynamically count actual SVG files
+TOTAL_ICONS=$(find icons -name "*.svg" | wc -l | tr -d ' ')
+CATEGORIES=$(find icons -type d -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')
 
 # Get PR information and contributors with GitHub handles
 PR_INFO=""
@@ -204,12 +210,13 @@ Autres fichiers :
 **Vue.js / CDN :**
 \`\`\`html
 <script src=\"datama-icons-cdn.js\"></script>
-<!-- Font Awesome style -->
-<i class=\"datama datama-home\"></i>
-<i class=\"datama datama-settings\" data-size=\"32\"></i>
-
-<!-- Nouvelle syntaxe avec data-icon -->
+<!-- Syntaxe recommandée avec data-icon -->
 <i class=\"datama-icon\" data-icon=\"home-svg\" data-size=\"20\"></i>
+<i class=\"datama-icon\" data-icon=\"settings-svg\" data-size=\"32\"></i>
+<i class=\"datama-icon\" data-icon=\"excel-svg\"></i>
+
+<!-- Mode invert disponible -->
+<i class=\"datama-icon\" data-icon=\"journey-svg\" data-invert=\"true\"></i>
 \`\`\`
 
 **Projet Light :**
@@ -248,6 +255,14 @@ Or use via CDN:
 \`\`\`
 
 $ICON_CHANGES
+
+### 📝 Commits inclus dans cette release
+
+$(if [ ! -z "$FEAT_COMMITS" ]; then echo "#### ✨ Nouvelles fonctionnalités"; echo "$FEAT_COMMITS"; echo ""; fi)
+$(if [ ! -z "$FIX_COMMITS" ]; then echo "#### 🐛 Corrections"; echo "$FIX_COMMITS"; echo ""; fi)  
+$(if [ ! -z "$DOCS_COMMITS" ]; then echo "#### 📚 Documentation"; echo "$DOCS_COMMITS"; echo ""; fi)
+$(if [ ! -z "$OTHER_COMMITS" ]; then echo "#### 🔄 Autres changements"; echo "$OTHER_COMMITS"; echo ""; fi)
+
 $PR_INFO
 ### 👥 Contributors
 "

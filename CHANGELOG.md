@@ -1,5 +1,43 @@
 # Changelog - DataMa Icons
 
+## [1.0.6] - 2025-01-XX
+
+### ✨ Nouvelles fonctionnalités
+- **Mode invert pour les icônes**: Nouvelle option pour inverser les couleurs des icônes (fix: upgraded invert mode)
+- **Nouvelles icônes**: Ajout de 4 nouvelles icônes pour les bases de données (csv-outline, csv-outline-2, excel-outline, excel-outline-2, mariadb, mysql, openai, postgresql)
+
+### 🎨 Améliorations des icônes
+- **Refonte upload**: Amélioration des icônes `upload-svg` et `upload-1-svg` pour une meilleure cohérence visuelle
+- **Refonte journey**: Redesign complet de l'icône `journey-svg` pour une meilleure lisibilité
+- **Correction Redshift**: Amélioration de l'icône `redshift-svg`
+
+### 🛠️ Améliorations techniques
+- **Suppression des backgrounds**: Nettoyage des arrière-plans parasites sur certaines icônes
+- **Correction d'erreurs console**: Résolution de plusieurs erreurs JavaScript dans le traitement des icônes
+- **Amélioration du script de build**: Optimisation du processus de génération
+
+### 📊 Statistiques
+- **150 icônes** organisées en **8 catégories** (mise à jour du chiffre)
+- Support complet du mode invert
+- Nouvelles icônes de bases de données
+
+### 🔄 Commits inclus
+- `feat:` Mode invert pour les icônes
+- `feat:` Ajout de 4 nouvelles icônes et amélioration de redshift
+- `feat:` Ajout de nouvelles icônes et amélioration du script de build
+- `fix:` Amélioration du mode invert
+- `fix:` Suppression des backgrounds parasites
+- `fix:` Correction des icônes non fonctionnelles
+- `fix:` Résolution d'erreurs console
+- `fix:` Correction de l'icône journey
+- `fix:` Correction de l'icône redshift
+
+### 🔄 Compatibilité
+- Aucune rupture de compatibilité - l'API reste identique
+- Nouvelles options disponibles sans impact sur l'existant
+
+---
+
 ## [1.0.5] - 2025-01-27
 
 ### ✨ Nouvelles fonctionnalités
