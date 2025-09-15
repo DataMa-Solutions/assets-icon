@@ -97,6 +97,7 @@ jobs:
           echo ""
           echo "📊 Checking for required files..."
           test -f dist/DataMaIconsNew.js && echo "✅ DataMaIconsNew.js found" || echo "❌ DataMaIconsNew.js missing"
+          test -f dist/DataMaIconsNew.esm.js && echo "✅ DataMaIconsNew.esm.js found" || echo "❌ DataMaIconsNew.esm.js missing"
           test -f dist/datama-icons-cdn.js && echo "✅ datama-icons-cdn.js found" || echo "❌ datama-icons-cdn.js missing"
           test -f dist/icons.js && echo "✅ icons.js found" || echo "❌ icons.js missing"
           test -f dist/icons.json && echo "✅ icons.json found" || echo "❌ icons.json missing"
@@ -108,6 +109,7 @@ jobs:
           
           # Copy the essential JavaScript files for direct download
           cp dist/DataMaIconsNew.js release-assets/datama-icons-simple.js
+          cp dist/DataMaIconsNew.esm.js release-assets/datama-icons-esm.js
           cp dist/datama-icons-cdn.js release-assets/datama-icons-cdn.js
           cp dist/icons.js release-assets/datama-icons-data.js
           cp dist/icons.json release-assets/datama-icons-data.json
@@ -135,6 +137,7 @@ jobs:
           
           # Copy the files needed for Light project
           cp dist/DataMaIconsNew.js light-integration/
+          cp dist/DataMaIconsNew.esm.js light-integration/
           cp dist/icons.json light-integration/
           
           # Create a deployment script for Light project
@@ -170,11 +173,13 @@ jobs:
           
           # Copy files
           cp DataMaIconsNew.js "$LIGHT_PROJECT_PATH/src/resources/components/"
+          cp DataMaIconsNew.esm.js "$LIGHT_PROJECT_PATH/src/resources/components/"
           cp icons.json "$LIGHT_PROJECT_PATH/src/assets/icons/"
           
           echo "✅ Icons integrated successfully!"
           echo "📄 Files copied:"
           echo "   - DataMaIconsNew.js → src/resources/components/"
+          echo "   - DataMaIconsNew.esm.js → src/resources/components/"
           echo "   - icons.json → src/assets/icons/"
           echo ""
           echo "💡 You can now use: import { DataMaIcons } from './DataMaIconsNew.js'"
