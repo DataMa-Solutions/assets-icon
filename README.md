@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 144 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 148 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -10,57 +10,16 @@ npm install @datama/icons
 
 ## Usage
 
-### NEW: JavaScript API (Recommended)
-
-The library now includes a new JavaScript API (`DataMaIconsNew`) with improved functionality:
-
-#### For ES6 Modules (import/export) - DataMa Light Project
+### As JSON data (for vanilla JS projects)
 
 ```javascript
-// Use the ES6 module version for projects with import/export
-import { DataMaIconsNew } from '@datama/icons/dist/DataMaIconsNew.esm.js';
-
-// Create an icon element
-const cogIcon = DataMaIconsNew.get('cog-svg', {
-    size: 32,
-    fill: '#007acc'
-});
-document.body.appendChild(cogIcon);
-
-// Search icons by tag
-const navigationIcons = DataMaIconsNew.searchByTag('navigation');
-console.log('Navigation icons:', navigationIcons);
-```
-
-#### For Script Tags (vanilla HTML)
-
-```html
-<!-- Load the vanilla JS version -->
-<script src="node_modules/@datama/icons/dist/DataMaIconsNew.js"></script>
-
-<script>
-// Create an icon element
-const homeIcon = DataMaIconsNew.get('home-svg', {
-    size: 24,
-    fill: 'currentColor'
-});
-document.getElementById('my-container').appendChild(homeIcon);
-
-// Get all available icons
-console.log('Available icons:', DataMaIconsNew.getAvailableIcons());
-</script>
-```
-
-### Legacy: As JSON data (for vanilla JS projects)
-
-```javascript
-import { DataMaLightIconsNew } from '@datama/icons';
+import { DataMaLightIcons } from '@datama/icons';
 // or
-const { DataMaLightIconsNew } = require('@datama/icons');
+const { DataMaLightIcons } = require('@datama/icons');
 
 // Use icon data
-const checkIcon = DataMaLightIconsNew['check-svg'];
-console.log(checkIcon.content); // SVG content data
+const checkIcon = DataMaLightIcons.check;
+console.log(checkIcon.path); // SVG path data
 ```
 
 ### As Vue 2 components
@@ -94,42 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-### DataMaIconsNew API Methods
-
-The new JavaScript API provides these methods:
-
-```javascript
-// Get an icon as DOM element
-DataMaIconsNew.get(iconName, options)
-
-// Get all available icon names
-DataMaIconsNew.getAvailableIcons()
-
-// Search icons by tag
-DataMaIconsNew.searchByTag(tagName)
-
-// Get icon raw data
-DataMaIconsNew.getIconData(iconName)
-
-// Generate SVG as string
-DataMaIconsNew.toSvg(iconName, options)
-
-// Replace data-datama attributes in DOM
-DataMaIconsNew.replace(options)
-```
-
-#### Options for `get()` and `toSvg()` methods:
-
-- `size`: Number (default: 24) - Sets both width and height
-- `width`: Number - Override width specifically  
-- `height`: Number - Override height specifically
-- `fill`: String (default: 'currentColor') - Icon color, use 'original' for original colors
-- `stroke`: String (default: 'none') - Stroke color
-- `strokeWidth`: Number (default: 0) - Stroke width
-- `className`: String - CSS class name(s)
-- `invert`: Boolean (default: false) - Invert colors (white ↔ colored)
-
-## Available Icons (144)
+## Available Icons (148)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -153,7 +77,8 @@ DataMaIconsNew.replace(options)
 | `chevron-right-svg` | <img src="icons/light/chevron-right.svg" width="32" height="32" alt="chevron-right" /> |
 | `chevron-up-svg` | <img src="icons/light/chevron-up.svg" width="32" height="32" alt="chevron-up" /> |
 | `close-svg` | <img src="icons/light/close.svg" width="32" height="32" alt="close" /> |
-| `cog-svg` | <img src="icons/light/cog.svg" width="32" height="32" alt="cog" /> |
+| `cog-svg` | <img src="icons/settings/cog.svg" width="32" height="32" alt="cog" /> |
+| `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
 | `compare-svg` | <img src="icons/data/compare.svg" width="32" height="32" alt="compare" /> |
 | `contacts-svg` | <img src="icons/ui/contacts.svg" width="32" height="32" alt="contacts" /> |
 | `copy-svg` | <img src="icons/ui/copy.svg" width="32" height="32" alt="copy" /> |
@@ -223,6 +148,9 @@ DataMaIconsNew.replace(options)
 | `lock-svg` | <img src="icons/ui/lock.svg" width="32" height="32" alt="lock" /> |
 | `looker-svg` | <img src="icons/sources/looker.svg" width="32" height="32" alt="looker" /> |
 | `magnifier-svg` | <img src="icons/light/magnifier.svg" width="32" height="32" alt="magnifier" /> |
+| `manage-billing-svg` | <img src="icons/settings/manage-billing.svg" width="32" height="32" alt="manage-billing" /> |
+| `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
+| `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
 | `maximize-2-svg` | <img src="icons/light/maximize-2.svg" width="32" height="32" alt="maximize-2" /> |
 | `minus-svg` | <img src="icons/light/minus.svg" width="32" height="32" alt="minus" /> |
@@ -278,85 +206,29 @@ DataMaIconsNew.replace(options)
 | `x-svg` | <img src="icons/light/x.svg" width="32" height="32" alt="x" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
 
-## File Structure
-
-The package includes multiple distribution formats:
-
-- **`DataMaIconsNew.js`** - Vanilla JavaScript for `<script>` tags
-- **`DataMaIconsNew.esm.js`** - ES6 module for `import/export` (use this for DataMa Light project)
-- **`icons.json`** - Raw icon data as JSON
-- **`vue/`** - Vue 2 components
-
 ## Icon Data Format
 
 Each icon contains:
 
 ```typescript
 interface IconData {
-  height: number;        // SVG height (usually 24)
-  width: number;         // SVG width (usually 24) 
-  viewBox: string;       // SVG viewBox
-  isComplex: boolean;    // Whether icon has complex styling
-  category: string;      // Icon category (actions, data, light, ui, etc.)
-  content: string;       // SVG content for complex icons
-  path?: string;         // SVG path data for simple icons
-  tags: string[];        // Search tags
-  originalDimensions: {  // Original SVG dimensions
+  height: number;        // SVG height (usually 1024)
+  path: string;         // SVG path data
+  tags: string[];       // Search tags
+  ratio?: {             // Aspect ratio (optional)
     width: number;
     height: number;
   };
 }
 ```
 
-## Migration from Legacy API
-
-If you're migrating from the old API:
-
-```javascript
-// OLD
-const iconData = DataMaLightIcons['check'];
-// Create your own SVG element
-
-// NEW
-const iconElement = DataMaIconsNew.get('check-svg', { size: 24 });
-// Ready-to-use DOM element
-```
-
 ## Development
 
 This package is auto-generated from SVG files. To contribute:
 
-1. Add your SVG files to the `icons/` directory (organized by category)
+1. Add your SVG files to the root directory
 2. Run `npm run build:all` to regenerate the package
 3. The CI/CD pipeline will automatically create a new release
-
-### Development Commands
-
-```bash
-npm run build:svg     # Process SVG files
-npm run build:json    # Generate JSON data
-npm run build:vue     # Generate Vue components  
-npm run build         # Generate distribution files
-npm run build:all     # Full build process
-```
-
-## Important Notes
-
-### For DataMa Light Project
-
-Always use the **ES6 module version** (`DataMaIconsNew.esm.js`) when working with the DataMa Light project:
-
-```javascript
-// ✅ Correct for DataMa Light
-import { DataMaIconsNew } from '../components/DataMaIconsNew.esm.js';
-
-// ❌ Don't use this in DataMa Light (causes import errors)
-import { DataMaIconsNew } from '../components/DataMaIconsNew.js';
-```
-
-### Icon Naming Convention
-
-All icons follow the pattern `{name}-svg` (e.g., `cog-svg`, `home-svg`, `settings-svg`)
 
 ## License
 
