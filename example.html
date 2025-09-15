@@ -767,7 +767,7 @@
         // Initialize the page
         async function loadIcons() {
             try {
-                console.log('DataMa Icons loaded:', DataMaIcons);
+                console.log('DataMa Icons loaded:', DataMaIconsNew);
                 
                 // Load icon data
                 const response = await fetch('dist/icons.json');
@@ -1040,7 +1040,7 @@
                     iconContainer.innerHTML = '';
                     const iconData = allIcons[iconName];
                     
-                    const iconElement = DataMaIcons.get(iconName, {
+                    const iconElement = DataMaIconsNew.get(iconName, {
                         size: currentIconSize,
                         fill: currentIconFill === 'none' ? 'original' : currentIconFill,
                         invert: currentIconInvert
@@ -1071,7 +1071,7 @@
             // Create icon with custom fill
             previewIcon.innerHTML = '';
             
-            const iconElement = DataMaIcons.get(selectedIcon, {
+            const iconElement = DataMaIconsNew.get(selectedIcon, {
                 size: Math.max(currentIconSize, 48), // Minimum size for preview
                 fill: currentIconFill === 'none' ? 'original' : currentIconFill,
                 invert: currentIconInvert
@@ -1123,7 +1123,7 @@
         function copyIconCode(iconName) {
             const iconData = allIcons[iconName];
             
-            let codeText = `DataMaIcons.get('${iconName}'`;
+            let codeText = `DataMaIconsNew.get('${iconName}'`;
             
             const options = [];
             if (currentIconSize !== 24) options.push(`size: ${currentIconSize}`);

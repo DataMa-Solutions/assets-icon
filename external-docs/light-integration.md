@@ -13,11 +13,11 @@ light/
 ├── src/
 │   ├── resources/
 │   │   └── components/
-│   │       ├── DataMaIcons.js      # Old version (maintained)
-│   │       └── DataMaIconsNew.js   # New version (recommended)
+│   │       ├── DataMaIcons.js          # Old version (maintained)
+│   │       └── DataMaIconsNew.esm.js   # New version (recommended for ES6 modules)
 │   └── assets/
 │       └── icons/
-│           └── icons.json          # Icon data (optional)
+│           └── icons.json              # Icon data (optional)
 ```
 
 ## 🚀 Quick Start
@@ -25,14 +25,14 @@ light/
 ### 1. Import in your components
 
 ```javascript
-// ✅ Recommended: New version
-import { DataMaIcons } from "./DataMaIconsNew.js";
+// ✅ Recommended: New version (ES6 module)
+import { DataMaIconsNew } from "./DataMaIconsNew.esm.js";
 
 // ✅ Compatible: Old version (maintained for compatibility)
 // import { DataMaIcons } from "./DataMaIcons.js";
 
-// Identical usage
-const icon = DataMaIcons.get('check-svg', { 
+// Usage with new API
+const icon = DataMaIconsNew.get('cog-svg', { 
     size: 24, 
     fill: '#28a745' 
 });
@@ -43,7 +43,7 @@ const icon = DataMaIcons.get('check-svg', {
 ```javascript
 // Import both versions with aliases for parallel usage
 import { DataMaIcons as DataMaIconsOld } from "./DataMaIcons.js";
-import { DataMaIcons as DataMaIconsNew } from "./DataMaIconsNew.js";
+import { DataMaIconsNew } from "./DataMaIconsNew.esm.js";
 
 // Use old version for existing code
 const oldIcon = DataMaIconsOld.get('home-svg', { size: 24 });
@@ -51,30 +51,30 @@ const oldIcon = DataMaIconsOld.get('home-svg', { size: 24 });
 // Use new version for new features  
 const newIcon = DataMaIconsNew.get('home-svg', { size: 24 });
 
-// Both APIs are identical - seamless transition
+// Both APIs are compatible - seamless transition
 console.log('Old API compatible:', typeof DataMaIconsOld.get === 'function');
 console.log('New API compatible:', typeof DataMaIconsNew.get === 'function');
 
-// Gradual migration: switch between versions
-const DataMaIcons = DataMaIconsNew; // Use new version
+// Gradual migration: switch to new version
+const DataMaIcons = DataMaIconsNew; // Use new version (recommended)
 // const DataMaIcons = DataMaIconsOld; // Keep old version
 ```
 
 ### 3. DOM Integration
 
 ```javascript
-// Create and add an icon
-const checkIcon = DataMaIcons.get('check-svg', { 
+// Create and add an icon with new API
+const checkIcon = DataMaIconsNew.get('check-svg', { 
     size: 24, 
     fill: '#28a745',
-    id: 'my-check-icon'
+    className: 'my-check-icon'
 });
 
 document.getElementById('container').appendChild(checkIcon);
 
 // Or replace existing elements
 const elements = document.querySelectorAll('[data-datama]');
-DataMaIcons.replace();
+DataMaIconsNew.replace();
 ```
 
 ## 🎨 Usage Patterns
@@ -83,20 +83,20 @@ DataMaIcons.replace();
 
 ```javascript
 // Simple icon
-const homeIcon = DataMaIcons.get('home-svg');
+const homeIcon = DataMaIconsNew.get('home-svg');
 document.body.appendChild(homeIcon);
 
 // With properties
-const settingsIcon = DataMaIcons.get('settings-svg', {
+const settingsIcon = DataMaIconsNew.get('cog-svg', {
     size: 32,
     fill: '#007acc',
     stroke: '#333',
     strokeWidth: 1
 });
 
-// With ID for reuse
-const userIcon = DataMaIcons.get('user-svg', {
-    id: 'user-profile-icon',
+// With class name for styling
+const userIcon = DataMaIconsNew.get('profile-svg', {
+    className: 'user-profile-icon',
     size: 20,
     fill: 'currentColor'
 });
@@ -107,10 +107,10 @@ const userIcon = DataMaIcons.get('user-svg', {
 ```javascript
 // Navigation icons
 const navIcons = {
-    home: DataMaIcons.get('home-svg', { size: 20 }),
-    settings: DataMaIcons.get('settings-svg', { size: 20 }),
-    profile: DataMaIcons.get('user-svg', { size: 20 }),
-    logout: DataMaIcons.get('log-out-svg', { size: 20 })
+    home: DataMaIconsNew.get('home-svg', { size: 20 }),
+    settings: DataMaIconsNew.get('settings-svg', { size: 20 }),
+    profile: DataMaIconsNew.get('user-svg', { size: 20 }),
+    logout: DataMaIconsNew.get('log-out-svg', { size: 20 })
 };
 
 // Add to navigation
@@ -124,11 +124,11 @@ Object.values(navIcons).forEach(icon => {
 ```javascript
 // Action icons for buttons
 const actionIcons = {
-    add: DataMaIcons.get('plus-svg', { size: 16 }),
-    edit: DataMaIcons.get('edit-svg', { size: 16 }),
-    delete: DataMaIcons.get('trash-svg', { size: 16 }),
-    download: DataMaIcons.get('download-svg', { size: 16 }),
-    upload: DataMaIcons.get('upload-svg', { size: 16 })
+    add: DataMaIconsNew.get('plus-svg', { size: 16 }),
+    edit: DataMaIconsNew.get('edit-svg', { size: 16 }),
+    delete: DataMaIconsNew.get('trash-svg', { size: 16 }),
+    download: DataMaIconsNew.get('download-svg', { size: 16 }),
+    upload: DataMaIconsNew.get('upload-svg', { size: 16 })
 };
 
 // Create buttons with icons
@@ -149,19 +149,19 @@ function createActionButton(iconName, text, onClick) {
 ```javascript
 // Status icons with colors
 const statusIcons = {
-    success: DataMaIcons.get('check-svg', { 
+    success: DataMaIconsNew.get('check-svg', { 
         size: 24, 
         fill: '#28a745' 
     }),
-    warning: DataMaIcons.get('alert-triangle-svg', { 
+    warning: DataMaIconsNew.get('alert-triangle-svg', { 
         size: 24, 
         fill: '#ffc107' 
     }),
-    error: DataMaIcons.get('alert-circle-svg', { 
+    error: DataMaIconsNew.get('alert-circle-svg', { 
         size: 24, 
         fill: '#dc3545' 
     }),
-    info: DataMaIcons.get('info-svg', { 
+    info: DataMaIconsNew.get('info-svg', { 
         size: 24, 
         fill: '#17a2b8' 
     })
@@ -182,11 +182,11 @@ function showStatus(status) {
 ```javascript
 // Automatically replace all elements with data-datama
 document.addEventListener('DOMContentLoaded', () => {
-    DataMaIcons.replace();
+    DataMaIconsNew.replace();
 });
 
 // Or with global options
-DataMaIcons.replace({
+DataMaIconsNew.replace({
     size: 24,
     fill: 'currentColor'
 });
@@ -204,7 +204,7 @@ function createIcon(iconName, options = {}) {
         strokeWidth: 0
     };
     
-    return DataMaIcons.get(iconName, { ...defaultOptions, ...options });
+    return DataMaIconsNew.get(iconName, { ...defaultOptions, ...options });
 }
 
 // Usage
@@ -219,15 +219,15 @@ const icons = [
 
 ```javascript
 // Get all available icon names
-const allIconNames = DataMaIcons.getIconNames();
+const allIconNames = DataMaIconsNew.getIconNames();
 console.log('Available icons:', allIconNames);
 
 // Search by tag
-const searchResults = DataMaIcons.searchByTag('navigation');
+const searchResults = DataMaIconsNew.searchByTag('navigation');
 console.log('Navigation icons:', searchResults);
 
 // Get icon data
-const iconData = DataMaIcons.getIconData('check-svg');
+const iconData = DataMaIconsNew.getIconData('check-svg');
 console.log('Icon data:', iconData);
 ```
 
@@ -237,7 +237,7 @@ console.log('Icon data:', iconData);
 
 ```javascript
 // Compatible with Looker Studio restrictions
-const icon = DataMaIcons.get('chart-svg', { 
+const icon = DataMaIconsNew.get('chart-svg', { 
     size: 32,
     fill: '#4285f4'  // Google color
 });
@@ -253,7 +253,7 @@ google.script.run.withSuccessHandler(function(result) {
 
 ```javascript
 // Compatible with Power BI restrictions
-const icon = DataMaIcons.get('data-svg', { 
+const icon = DataMaIconsNew.get('data-svg', { 
     size: 24,
     fill: '#f2c811'  // Power BI color
 });
@@ -269,7 +269,7 @@ powerbi.extensibility.visual.createVisual((options) => {
 
 ```javascript
 // Compatible with Tableau restrictions
-const icon = DataMaIcons.get('analytics-svg', { 
+const icon = DataMaIconsNew.get('analytics-svg', { 
     size: 20,
     fill: '#e8743b'  // Tableau color
 });
@@ -285,7 +285,7 @@ window.tableau.extensions.initializeAsync().then(() => {
 
 ```javascript
 // Compatible with Qlik restrictions
-const icon = DataMaIcons.get('dashboard-svg', { 
+const icon = DataMaIconsNew.get('dashboard-svg', { 
     size: 28,
     fill: '#007acc'  // Qlik color
 });
@@ -386,7 +386,7 @@ function styleIcon(icon, options = {}) {
 
 // Usage
 const styledIcon = styleIcon(
-    DataMaIcons.get('settings-svg'),
+    DataMaIconsNew.get('settings-svg'),
     {
         size: 32,
         color: '#007acc',
@@ -422,10 +422,10 @@ console.log('APIs compatible:',
 // In each file, replace:
 // import { DataMaIcons } from "./DataMaIcons.js";
 // with:
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaIconsNew } from "./DataMaIconsNew.esm.js";
 
-// Usage remains identical
-const icon = DataMaIcons.get('home-svg', { size: 24 });
+// Usage with new API (note the different variable name)
+const icon = DataMaIconsNew.get('home-svg', { size: 24 });
 ```
 
 ### Phase 3: Cleanup
@@ -433,7 +433,10 @@ const icon = DataMaIcons.get('home-svg', { size: 24 });
 ```javascript
 // Once migration is complete, remove old file
 // and keep only:
-import { DataMaIcons } from "./DataMaIconsNew.js";
+import { DataMaIconsNew } from "./DataMaIconsNew.esm.js";
+
+// Note: The new API uses DataMaIconsNew (not DataMaIcons)
+const icon = DataMaIconsNew.get('home-svg', { size: 24 });
 ```
 
 ## 🚀 Performance Optimization
@@ -451,7 +454,7 @@ function getCachedIcon(iconName, options = {}) {
         return iconCache.get(cacheKey).cloneNode(true);
     }
     
-    const icon = DataMaIcons.get(iconName, options);
+    const icon = DataMaIconsNew.get(iconName, options);
     iconCache.set(cacheKey, icon);
     
     return icon.cloneNode(true);
@@ -470,7 +473,7 @@ function lazyLoadIcon(iconName, container, options = {}) {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const icon = DataMaIcons.get(iconName, options);
+                const icon = DataMaIconsNew.get(iconName, options);
                 entry.target.appendChild(icon);
                 observer.unobserve(entry.target);
             }
@@ -493,22 +496,22 @@ lazyLoadIcon('chart-svg', document.getElementById('chart-container'), {
 
 **Icon not displaying:**
 ```javascript
-// Check if DataMaIcons is loaded
-if (typeof DataMaIcons !== 'undefined') {
-    console.log('✅ DataMaIcons loaded');
+// Check if DataMaIconsNew is loaded
+if (typeof DataMaIconsNew !== 'undefined') {
+    console.log('✅ DataMaIconsNew loaded');
 } else {
-    console.error('❌ DataMaIcons not loaded');
+    console.error('❌ DataMaIconsNew not loaded');
 }
 
 // Check icon name
-const availableIcons = DataMaIcons.getIconNames();
+const availableIcons = DataMaIconsNew.getIconNames();
 console.log('Available icons:', availableIcons);
 ```
 
 **Size issue:**
 ```javascript
 // Force size with CSS
-const icon = DataMaIcons.get('check-svg', { size: 24 });
+const icon = DataMaIconsNew.get('check-svg', { size: 24 });
 icon.style.width = '32px';
 icon.style.height = '32px';
 ```
@@ -516,7 +519,7 @@ icon.style.height = '32px';
 **Color issue:**
 ```javascript
 // Force color with CSS
-const icon = DataMaIcons.get('check-svg');
+const icon = DataMaIconsNew.get('check-svg');
 icon.style.fill = '#28a745';
 icon.style.color = '#28a745';
 ```
@@ -524,12 +527,12 @@ icon.style.color = '#28a745';
 ### Debug Mode
 
 ```javascript
-// Enable debug mode
-DataMaIcons.debug = true;
-
 // Get detailed information
-const iconData = DataMaIcons.getIconData('check-svg');
+const iconData = DataMaIconsNew.getIconData('check-svg');
 console.log('Icon details:', iconData);
+
+// List all available methods
+console.log('Available methods:', Object.keys(DataMaIconsNew));
 ```
 
 ## 📚 Complete Example
@@ -553,18 +556,18 @@ export class DataMaIconComponent {
     }
     
     init() {
-        // Load DataMaIcons if not already done
-        if (typeof DataMaIcons === 'undefined') {
-            this.loadDataMaIcons();
+        // Load DataMaIconsNew if not already done
+        if (typeof DataMaIconsNew === 'undefined') {
+            this.loadDataMaIconsNew();
         } else {
             this.setupIcon();
         }
     }
     
-    loadDataMaIcons() {
+    loadDataMaIconsNew() {
         // Load dynamically if needed
         const script = document.createElement('script');
-        script.src = './DataMaIconsNew.js';
+        script.src = './DataMaIconsNew.js'; // Vanilla JS version for dynamic loading
         script.onload = () => this.setupIcon();
         document.head.appendChild(script);
     }
@@ -577,7 +580,7 @@ export class DataMaIconComponent {
             return;
         }
         
-        const icon = DataMaIcons.get(iconName, {
+        const icon = DataMaIconsNew.get(iconName, {
             size: this.options.size,
             fill: this.options.fill,
             stroke: this.options.stroke,

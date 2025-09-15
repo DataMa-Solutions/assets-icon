@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 144 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 148 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (144)
+## Available Icons (148)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -77,7 +77,8 @@ Vue.use(DatamaIcons);
 | `chevron-right-svg` | <img src="icons/light/chevron-right.svg" width="32" height="32" alt="chevron-right" /> |
 | `chevron-up-svg` | <img src="icons/light/chevron-up.svg" width="32" height="32" alt="chevron-up" /> |
 | `close-svg` | <img src="icons/light/close.svg" width="32" height="32" alt="close" /> |
-| `cog-svg` | <img src="icons/light/cog.svg" width="32" height="32" alt="cog" /> |
+| `cog-svg` | <img src="icons/settings/cog.svg" width="32" height="32" alt="cog" /> |
+| `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
 | `compare-svg` | <img src="icons/data/compare.svg" width="32" height="32" alt="compare" /> |
 | `contacts-svg` | <img src="icons/ui/contacts.svg" width="32" height="32" alt="contacts" /> |
 | `copy-svg` | <img src="icons/ui/copy.svg" width="32" height="32" alt="copy" /> |
@@ -147,6 +148,9 @@ Vue.use(DatamaIcons);
 | `lock-svg` | <img src="icons/ui/lock.svg" width="32" height="32" alt="lock" /> |
 | `looker-svg` | <img src="icons/sources/looker.svg" width="32" height="32" alt="looker" /> |
 | `magnifier-svg` | <img src="icons/light/magnifier.svg" width="32" height="32" alt="magnifier" /> |
+| `manage-billing-svg` | <img src="icons/settings/manage-billing.svg" width="32" height="32" alt="manage-billing" /> |
+| `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
+| `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
 | `maximize-2-svg` | <img src="icons/light/maximize-2.svg" width="32" height="32" alt="maximize-2" /> |
 | `minus-svg` | <img src="icons/light/minus.svg" width="32" height="32" alt="minus" /> |

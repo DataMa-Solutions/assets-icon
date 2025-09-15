@@ -130,11 +130,11 @@
 &lt;script src="dist/DataMaIconsNew.js"&gt;&lt;/script&gt;
 
 // Basic usage
-const homeIcon = DataMaIcons.get('home-svg');
+const homeIcon = DataMaIconsNew.get('home-svg');
 document.body.appendChild(homeIcon);
 
 // With properties
-const settingsIcon = DataMaIcons.get('settings-svg', {
+const settingsIcon = DataMaIconsNew.get('settings-svg', {
     size: 32,
     className: 'my-custom-class'
 });
@@ -244,13 +244,13 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
         function testNativeAPI() {
             try {
                 // Test basic icon creation
-                const homeIcon = DataMaIcons.get('home-svg');
+                const homeIcon = DataMaIconsNew.get('home-svg');
                 if (homeIcon) {
                     document.getElementById('basic-icon').appendChild(homeIcon);
                 }
                 
                 // Test with properties
-                const settingsIcon = DataMaIcons.get('settings-svg', {
+                const settingsIcon = DataMaIconsNew.get('settings-svg', {
                     size: 32,
                     className: 'my-icon'
                 });
@@ -259,22 +259,22 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
                 }
                 
                 // Test search by tag
-                const navigationIcons = DataMaIcons.searchByTag('navigation');
+                const navigationIcons = DataMaIconsNew.searchByTag('navigation');
                 if (navigationIcons.length > 0) {
-                    const navIcon = DataMaIcons.get(navigationIcons[0]);
+                    const navIcon = DataMaIconsNew.get(navigationIcons[0]);
                     if (navIcon) {
                         document.getElementById('tag-icon').appendChild(navIcon);
                     }
                 }
                 
                 document.getElementById('api-status').innerHTML = '<span class="success">✅ Working</span>';
-                document.getElementById('icon-count').textContent = DataMaIcons.getAvailableIcons().length + ' icons available';
+                document.getElementById('icon-count').textContent = DataMaIconsNew.getAvailableIcons().length + ' icons available';
                 
                 // Add some action icons via JavaScript API
                 const jsApiContainer = document.getElementById('js-api-icons');
                 const actionIcons = ['edit-svg', 'copy-svg', 'trash-2-svg', 'save-svg', 'download-svg'];
                 actionIcons.forEach(iconName => {
-                    const icon = DataMaIcons.get(iconName, { size: 24 });
+                    const icon = DataMaIconsNew.get(iconName, { size: 24 });
                     if (icon) {
                         jsApiContainer.appendChild(icon);
                     }
@@ -290,9 +290,9 @@ const settingsIcon = DataMaIcons.get('settings-svg', {
         function testNewMethods() {
             const output = document.getElementById('new-methods-output');
             try {
-                const availableIcons = DataMaIcons.getAvailableIcons();
-                const navigationIcons = DataMaIcons.searchByTag('navigation');
-                const homeIconData = DataMaIcons.getIconData('home-svg');
+                const availableIcons = DataMaIconsNew.getAvailableIcons();
+                const navigationIcons = DataMaIconsNew.searchByTag('navigation');
+                const homeIconData = DataMaIconsNew.getIconData('home-svg');
                 
                 output.innerHTML = `
 Available icons: ${availableIcons.length}
