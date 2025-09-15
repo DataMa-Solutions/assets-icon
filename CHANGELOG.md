@@ -1,5 +1,31 @@
 # Changelog - DataMa Icons
 
+## [1.0.9] - 2025-09-15
+
+### ✨ Nouvelles fonctionnalités
+- **Feat:** added 1 icon - basketball
+- **Feat:** added icons and edited old wrong icons
+- **Nouvelles icônes**: Ajout de 5 nouvelles icônes (basketball, book, bookmark, help-circle, plus-circle)
+
+### 🛠️ Améliorations techniques
+- **Icônes améliorées**: Redesign de 3 icônes (check, cross, plus)
+
+### 📊 Statistiques
+- **159 icônes** organisées en **9 catégories**
+- Support complet du mode invert et nouvelles fonctionnalités
+
+### 🔄 Commits inclus
+- feat: added 1 icon - basketball
+- feat: added icons and edited old wrong icons
+- merge: align staging with main v1.0.8
+
+### 🔄 Compatibilité
+- Aucune rupture de compatibilité - l'API reste identique
+- Nouvelles options disponibles sans impact sur l'existant
+
+---
+
+
 ## [1.0.8] - 2025-09-15
 
 ### ✨ Nouvelles fonctionnalités
