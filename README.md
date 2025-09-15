@@ -10,16 +10,57 @@ npm install @datama/icons
 
 ## Usage
 
-### As JSON data (for vanilla JS projects)
+### NEW: JavaScript API (Recommended)
+
+The library now includes a new JavaScript API (`DataMaIconsNew`) with improved functionality:
+
+#### For ES6 Modules (import/export) - DataMa Light Project
 
 ```javascript
-import { DataMaLightIcons } from '@datama/icons';
+// Use the ES6 module version for projects with import/export
+import { DataMaIconsNew } from '@datama/icons/dist/DataMaIconsNew.esm.js';
+
+// Create an icon element
+const cogIcon = DataMaIconsNew.get('cog-svg', {
+    size: 32,
+    fill: '#007acc'
+});
+document.body.appendChild(cogIcon);
+
+// Search icons by tag
+const navigationIcons = DataMaIconsNew.searchByTag('navigation');
+console.log('Navigation icons:', navigationIcons);
+```
+
+#### For Script Tags (vanilla HTML)
+
+```html
+<!-- Load the vanilla JS version -->
+<script src="node_modules/@datama/icons/dist/DataMaIconsNew.js"></script>
+
+<script>
+// Create an icon element
+const homeIcon = DataMaIconsNew.get('home-svg', {
+    size: 24,
+    fill: 'currentColor'
+});
+document.getElementById('my-container').appendChild(homeIcon);
+
+// Get all available icons
+console.log('Available icons:', DataMaIconsNew.getAvailableIcons());
+</script>
+```
+
+### Legacy: As JSON data (for vanilla JS projects)
+
+```javascript
+import { DataMaLightIconsNew } from '@datama/icons';
 // or
-const { DataMaLightIcons } = require('@datama/icons');
+const { DataMaLightIconsNew } = require('@datama/icons');
 
 // Use icon data
-const checkIcon = DataMaLightIcons.check;
-console.log(checkIcon.path); // SVG path data
+const checkIcon = DataMaLightIconsNew['check-svg'];
+console.log(checkIcon.content); // SVG content data
 ```
 
 ### As Vue 2 components
@@ -52,6 +93,41 @@ Vue.use(DatamaIcons);
 - `stroke`: String (default: 'none')
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
+
+### DataMaIconsNew API Methods
+
+The new JavaScript API provides these methods:
+
+```javascript
+// Get an icon as DOM element
+DataMaIconsNew.get(iconName, options)
+
+// Get all available icon names
+DataMaIconsNew.getAvailableIcons()
+
+// Search icons by tag
+DataMaIconsNew.searchByTag(tagName)
+
+// Get icon raw data
+DataMaIconsNew.getIconData(iconName)
+
+// Generate SVG as string
+DataMaIconsNew.toSvg(iconName, options)
+
+// Replace data-datama attributes in DOM
+DataMaIconsNew.replace(options)
+```
+
+#### Options for `get()` and `toSvg()` methods:
+
+- `size`: Number (default: 24) - Sets both width and height
+- `width`: Number - Override width specifically  
+- `height`: Number - Override height specifically
+- `fill`: String (default: 'currentColor') - Icon color, use 'original' for original colors
+- `stroke`: String (default: 'none') - Stroke color
+- `strokeWidth`: Number (default: 0) - Stroke width
+- `className`: String - CSS class name(s)
+- `invert`: Boolean (default: false) - Invert colors (white ↔ colored)
 
 ## Available Icons (144)
 
@@ -202,29 +278,85 @@ Vue.use(DatamaIcons);
 | `x-svg` | <img src="icons/light/x.svg" width="32" height="32" alt="x" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
 
+## File Structure
+
+The package includes multiple distribution formats:
+
+- **`DataMaIconsNew.js`** - Vanilla JavaScript for `<script>` tags
+- **`DataMaIconsNew.esm.js`** - ES6 module for `import/export` (use this for DataMa Light project)
+- **`icons.json`** - Raw icon data as JSON
+- **`vue/`** - Vue 2 components
+
 ## Icon Data Format
 
 Each icon contains:
 
 ```typescript
 interface IconData {
-  height: number;        // SVG height (usually 1024)
-  path: string;         // SVG path data
-  tags: string[];       // Search tags
-  ratio?: {             // Aspect ratio (optional)
+  height: number;        // SVG height (usually 24)
+  width: number;         // SVG width (usually 24) 
+  viewBox: string;       // SVG viewBox
+  isComplex: boolean;    // Whether icon has complex styling
+  category: string;      // Icon category (actions, data, light, ui, etc.)
+  content: string;       // SVG content for complex icons
+  path?: string;         // SVG path data for simple icons
+  tags: string[];        // Search tags
+  originalDimensions: {  // Original SVG dimensions
     width: number;
     height: number;
   };
 }
 ```
 
+## Migration from Legacy API
+
+If you're migrating from the old API:
+
+```javascript
+// OLD
+const iconData = DataMaLightIcons['check'];
+// Create your own SVG element
+
+// NEW
+const iconElement = DataMaIconsNew.get('check-svg', { size: 24 });
+// Ready-to-use DOM element
+```
+
 ## Development
 
 This package is auto-generated from SVG files. To contribute:
 
-1. Add your SVG files to the root directory
+1. Add your SVG files to the `icons/` directory (organized by category)
 2. Run `npm run build:all` to regenerate the package
 3. The CI/CD pipeline will automatically create a new release
+
+### Development Commands
+
+```bash
+npm run build:svg     # Process SVG files
+npm run build:json    # Generate JSON data
+npm run build:vue     # Generate Vue components  
+npm run build         # Generate distribution files
+npm run build:all     # Full build process
+```
+
+## Important Notes
+
+### For DataMa Light Project
+
+Always use the **ES6 module version** (`DataMaIconsNew.esm.js`) when working with the DataMa Light project:
+
+```javascript
+// ✅ Correct for DataMa Light
+import { DataMaIconsNew } from '../components/DataMaIconsNew.esm.js';
+
+// ❌ Don't use this in DataMa Light (causes import errors)
+import { DataMaIconsNew } from '../components/DataMaIconsNew.js';
+```
+
+### Icon Naming Convention
+
+All icons follow the pattern `{name}-svg` (e.g., `cog-svg`, `home-svg`, `settings-svg`)
 
 ## License
 

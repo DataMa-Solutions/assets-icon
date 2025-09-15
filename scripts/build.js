@@ -107,7 +107,7 @@ export default DataMaLightIcons;
  */
 
 // Icon data embedded
-const DataMaLightIcons = ${iconDataJson};
+const DataMaLightIconsNew = ${iconDataJson};
 
 /**
  * Create SVG element from icon data
@@ -230,7 +230,7 @@ function replace(options = {}) {
     
     elements.forEach(element => {
         const iconName = element.getAttribute('data-datama');
-        const iconData = DataMaLightIcons[iconName];
+        const iconData = DataMaLightIconsNew[iconName];
         
         if (!iconData) {
             console.warn(\`Icon not found: \${iconName}\`);
@@ -262,7 +262,7 @@ function replace(options = {}) {
  * Generate SVG string for an icon
  */
 function toSvg(iconName, options = {}) {
-    const iconData = DataMaLightIcons[iconName];
+    const iconData = DataMaLightIconsNew[iconName];
     
     if (!iconData) {
         console.warn(\`Icon not found: \${iconName}\`);
@@ -277,20 +277,20 @@ function toSvg(iconName, options = {}) {
  * Get icon data
  */
 function getIcon(iconName) {
-    return DataMaLightIcons[iconName];
+    return DataMaLightIconsNew[iconName];
 }
 
 /**
  * Get all available icon names
  */
 function getIconNames() {
-    return Object.keys(DataMaLightIcons);
+    return Object.keys(DataMaLightIconsNew);
 }
 
 // Main API object
-const DataMaIcons = {
+const DataMaIconsNew = {
     get: function(iconName, props = {}) {
-        const iconData = DataMaLightIcons[iconName];
+        const iconData = DataMaLightIconsNew[iconName];
         if (!iconData) {
             console.warn('Icon not found:', iconName);
             return null;
@@ -302,22 +302,22 @@ const DataMaIcons = {
     getIcon: getIcon,
     getIconNames: getIconNames,
     getAvailableIcons: function() {
-        return Object.keys(DataMaLightIcons);
+        return Object.keys(DataMaLightIconsNew);
     },
     getIconData: function(iconName) {
-        return DataMaLightIcons[iconName];
+        return DataMaLightIconsNew[iconName];
     },
     searchByTag: function(tag) {
-        return Object.keys(DataMaLightIcons).filter(iconName => 
-            DataMaLightIcons[iconName].tags && 
-            DataMaLightIcons[iconName].tags.includes(tag)
+        return Object.keys(DataMaLightIconsNew).filter(iconName => 
+            DataMaLightIconsNew[iconName].tags && 
+            DataMaLightIconsNew[iconName].tags.includes(tag)
         );
     }
 };
 
 // Create global API (browser only)
 if (typeof window !== 'undefined') {
-    window.DataMaIcons = DataMaIcons;
+    window.DataMaIconsNew = DataMaIconsNew;
 
     // Auto-replace on DOMContentLoaded
     if (document.readyState === 'loading') {
@@ -331,24 +331,217 @@ if (typeof window !== 'undefined') {
 }
 
 console.log('DataMa Icons vanilla JS API loaded (NEW VERSION)');
-console.log(\`Available icons: \${Object.keys(DataMaLightIcons).length}\`);
+console.log(\`Available icons: \${Object.keys(DataMaLightIconsNew).length}\`);
 
 // Export compatible ES Modules et script classique
 if (typeof module !== 'undefined' && module.exports) {
     // Node.js / CommonJS
-    module.exports = DataMaIcons;
-    module.exports.DataMaLightIcons = DataMaLightIcons;
+    module.exports = DataMaIconsNew;
+    module.exports.DataMaLightIconsNew = DataMaLightIconsNew;
     module.exports.replace = replace;
     module.exports.toSvg = toSvg;
     module.exports.getIcon = getIcon;
     module.exports.getIconNames = getIconNames;
-    module.exports.default = DataMaIcons;
+    module.exports.default = DataMaIconsNew;
 } else if (typeof define === 'function' && define.amd) {
     // AMD
-    define([], function() { return DataMaIcons; });
+    define([], function() { return DataMaIconsNew; });
 }`;
   
   fs.writeFileSync(path.join(distDir, 'DataMaIconsNew.js'), vanillaJsApi);
+  
+  // Create ES6 module version
+  const es6Module = `/**
+ * DataMa Icons - ES6 Module (NEW VERSION)
+ * For use with import/export syntax
+ */
+
+// Icon data embedded
+const DataMaLightIconsNew = ${iconDataJson};
+
+/**
+ * Create SVG element from icon data
+ */
+function createSVG(iconData, options = {}) {
+    const {
+        size = 24,
+        width = size,
+        height = size,
+        fill = 'currentColor',
+        stroke = 'none',
+        strokeWidth = 0,
+        className = '',
+        invert = false
+    } = options;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', iconData.viewBox || '0 0 24 24');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.setAttribute('fill', fill);
+    svg.setAttribute('stroke', stroke);
+    svg.setAttribute('stroke-width', strokeWidth);
+    
+    if (className) {
+        svg.className = className;
+    }
+    
+    if (iconData.isComplex && iconData.content) {
+        // Check if invert mode is requested
+        if (options.invert && iconData.invertFillContent) {
+            let content = iconData.invertFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
+            let content = iconData.selectiveFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else {
+            svg.innerHTML = iconData.content;
+        }
+    } else if (!iconData.isComplex && iconData.path) {
+        if (options.invert && iconData.invertFillContent) {
+            let content = iconData.invertFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
+            let content = iconData.selectiveFillContent;
+            if (fill !== 'currentColor') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
+        } else {
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', iconData.path);
+            path.setAttribute('fill', fill);
+            svg.appendChild(path);
+        }
+    } else {
+        console.warn(\`Malformed icon data for icon. isComplex: \${iconData.isComplex}, hasContent: \${!!iconData.content}, hasPath: \${!!iconData.path}\`);
+        if (iconData.content) {
+            svg.innerHTML = iconData.content;
+        } else if (iconData.path) {
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', iconData.path);
+            path.setAttribute('fill', fill);
+            svg.appendChild(path);
+        }
+    }
+    
+    return svg;
+}
+
+/**
+ * Replace all elements with data-datama attributes
+ */
+function replace(options = {}) {
+    const elements = document.querySelectorAll('[data-datama]');
+    
+    elements.forEach(element => {
+        const iconName = element.getAttribute('data-datama');
+        const iconData = DataMaLightIconsNew[iconName];
+        
+        if (!iconData) {
+            console.warn(\`Icon not found: \${iconName}\`);
+            return;
+        }
+        
+        const elementOptions = {
+            size: element.getAttribute('data-size') || options.size,
+            width: element.getAttribute('data-width') || options.width,
+            height: element.getAttribute('data-height') || options.height,
+            fill: element.getAttribute('data-fill') || options.fill,
+            stroke: element.getAttribute('data-stroke') || options.stroke,
+            strokeWidth: element.getAttribute('data-stroke-width') || options.strokeWidth,
+            className: element.className,
+            forceComplexColor: element.getAttribute('data-force-complex-color') === 'true' || options.forceComplexColor,
+            selectiveFill: element.getAttribute('data-selective-fill') !== 'false' && options.selectiveFill !== false,
+            invert: element.getAttribute('data-invert') === 'true' || options.invert === true
+        };
+        
+        const svg = createSVG(iconData, elementOptions);
+        element.parentNode.replaceChild(svg, element);
+    });
+}
+
+/**
+ * Generate SVG string for an icon
+ */
+function toSvg(iconName, options = {}) {
+    const iconData = DataMaLightIconsNew[iconName];
+    
+    if (!iconData) {
+        console.warn(\`Icon not found: \${iconName}\`);
+        return '';
+    }
+    
+    const svg = createSVG(iconData, options);
+    return svg.outerHTML;
+}
+
+/**
+ * Get icon data
+ */
+function getIcon(iconName) {
+    return DataMaLightIconsNew[iconName];
+}
+
+/**
+ * Get all available icon names
+ */
+function getIconNames() {
+    return Object.keys(DataMaLightIconsNew);
+}
+
+// Main API object
+const DataMaIconsNew = {
+    get: function(iconName, props = {}) {
+        const iconData = DataMaLightIconsNew[iconName];
+        if (!iconData) {
+            console.warn('Icon not found:', iconName);
+            return null;
+        }
+        return createSVG(iconData, props);
+    },
+    replace: replace,
+    toSvg: toSvg,
+    getIcon: getIcon,
+    getIconNames: getIconNames,
+    getAvailableIcons: function() {
+        return Object.keys(DataMaLightIconsNew);
+    },
+    getIconData: function(iconName) {
+        return DataMaLightIconsNew[iconName];
+    },
+    searchByTag: function(tag) {
+        return Object.keys(DataMaLightIconsNew).filter(iconName => 
+            DataMaLightIconsNew[iconName].tags && 
+            DataMaLightIconsNew[iconName].tags.includes(tag)
+        );
+    }
+};
+
+// ES6 Modules exports
+export { DataMaIconsNew };
+export { DataMaLightIconsNew };
+export { replace };
+export { toSvg };
+export { getIcon };
+export { getIconNames };
+export default DataMaIconsNew;
+`;
+  
+  fs.writeFileSync(path.join(distDir, 'DataMaIconsNew.esm.js'), es6Module);
   
   console.log('✅ Generated main distribution files');
 }
@@ -543,6 +736,7 @@ async function build() {
     console.log('   - dist/index.esm.js (ES modules)');
     console.log('   - dist/index.d.ts (TypeScript definitions)');
     console.log('   - dist/DataMaIconsNew.js (Vanilla JavaScript API NEW VERSION)');
+    console.log('   - dist/DataMaIconsNew.esm.js (ES6 Module API NEW VERSION)');
     
   } catch (error) {
     console.error('❌ Build failed:', error.message);
