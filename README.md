@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 148 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 151 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (148)
+## Available Icons (151)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -69,6 +69,8 @@ Vue.use(DatamaIcons);
 | `arrow-up-right-svg` | <img src="icons/light/arrow-up-right.svg" width="32" height="32" alt="arrow-up-right" /> |
 | `assess-svg` | <img src="icons/data/assess.svg" width="32" height="32" alt="assess" /> |
 | `balance-scale-svg` | <img src="icons/light/balance-scale.svg" width="32" height="32" alt="balance-scale" /> |
+| `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
+| `bookmark-svg` | <img src="icons/ui/bookmark.svg" width="32" height="32" alt="bookmark" /> |
 | `books-svg` | <img src="icons/light/books.svg" width="32" height="32" alt="books" /> |
 | `chat-svg` | <img src="icons/light/chat.svg" width="32" height="32" alt="chat" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
@@ -124,7 +126,7 @@ Vue.use(DatamaIcons);
 | `groups-svg` | <img src="icons/ui/groups.svg" width="32" height="32" alt="groups" /> |
 | `handshake-svg` | <img src="icons/light/handshake.svg" width="32" height="32" alt="handshake" /> |
 | `heart-svg` | <img src="icons/light/heart.svg" width="32" height="32" alt="heart" /> |
-| `help-circle-svg` | <img src="icons/light/help-circle.svg" width="32" height="32" alt="help-circle" /> |
+| `help-circle-svg` | <img src="icons/ui/help-circle.svg" width="32" height="32" alt="help-circle" /> |
 | `home-svg` | <img src="icons/ui/home.svg" width="32" height="32" alt="home" /> |
 | `illustration-analyze-slack-etc-svg` | <img src="icons/illustrations/illustration-analyze-slack-etc.svg" width="32" height="32" alt="illustration-analyze-slack-etc" /> |
 | `illustration-analyze-svg` | <img src="icons/illustrations/illustration-analyze.svg" width="32" height="32" alt="illustration-analyze" /> |
@@ -165,6 +167,7 @@ Vue.use(DatamaIcons);
 | `piano-svg` | <img src="icons/sources/piano.svg" width="32" height="32" alt="piano" /> |
 | `pivot-svg` | <img src="icons/data/pivot.svg" width="32" height="32" alt="pivot" /> |
 | `play-svg` | <img src="icons/light/play.svg" width="32" height="32" alt="play" /> |
+| `plus-circle-svg` | <img src="icons/ui/plus-circle.svg" width="32" height="32" alt="plus-circle" /> |
 | `plus-svg` | <img src="icons/ui/plus.svg" width="32" height="32" alt="plus" /> |
 | `postgresql-svg` | <img src="icons/sources/postgresql.svg" width="32" height="32" alt="postgresql" /> |
 | `power-bi-svg` | <img src="icons/sources/power-bi.svg" width="32" height="32" alt="power-bi" /> |
