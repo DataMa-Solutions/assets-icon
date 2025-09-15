@@ -1,5 +1,31 @@
 # Changelog - DataMa Icons
 
+## [1.0.7] - 2025-09-15
+
+### ✨ Nouvelles fonctionnalités
+- **Feat:** added build for es6 modules / renamed in DatamaIconsNew
+- **Nouvelles icônes**: Ajout de 5 nouvelles icônes (cog, cogs, manage-billing, manage-org, manage-profile)
+
+### 🛠️ Améliorations techniques
+- **Fix:** icons
+- **Icônes améliorées**: Redesign de 3 icônes (check, cross, earth)
+
+### 📊 Statistiques
+- **154 icônes** organisées en **9 catégories**
+- Support complet du mode invert et nouvelles fonctionnalités
+
+### 🔄 Commits inclus
+- feat: added build for es6 modules / renamed in DatamaIconsNew
+- fix: icons
+- merge: sync main with staging (bring 2 commits)
+
+### 🔄 Compatibilité
+- Aucune rupture de compatibilité - l'API reste identique
+- Nouvelles options disponibles sans impact sur l'existant
+
+---
+
+
 ## [1.0.6] - 2025-01-XX
 
 ### ✨ Nouvelles fonctionnalités
