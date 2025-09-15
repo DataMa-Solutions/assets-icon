@@ -1,5 +1,28 @@
 # Changelog - DataMa Icons
 
+## [1.0.8] - 2025-09-15
+
+### ✨ Nouvelles fonctionnalités
+
+### 🛠️ Améliorations techniques
+
+### 📊 Statistiques
+- **154 icônes** organisées en **9 catégories**
+- Support complet du mode invert et nouvelles fonctionnalités
+
+### 🔄 Commits inclus
+- ci: sync workflows from staging (include ESM in release & deploy)
+- ci: include DataMaIconsNew.esm.js in GitHub release assets, Light zip, and GCS deploy
+- merge: align staging with main v1.0.7
+- merge: sync staging with main (bring 6 commits)
+
+### 🔄 Compatibilité
+- Aucune rupture de compatibilité - l'API reste identique
+- Nouvelles options disponibles sans impact sur l'existant
+
+---
+
+
 ## [1.0.7] - 2025-09-15
 
 ### ✨ Nouvelles fonctionnalités
