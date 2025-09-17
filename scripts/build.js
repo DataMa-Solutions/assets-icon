@@ -133,7 +133,7 @@ function createSVG(iconData, options = {}) {
     svg.setAttribute('stroke-width', strokeWidth);
     
     if (className) {
-        svg.className = className;
+        svg.classList.add(className);
     }
     
     if (iconData.isComplex && iconData.content) {
