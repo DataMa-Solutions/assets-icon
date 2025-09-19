@@ -186,7 +186,7 @@ Vue.use(DatamaIcons);
 | `rotate-ccw1-svg` | <img src="icons/light/rotate-ccw1.svg" width="32" height="32" alt="rotate-ccw1" /> |
 | `rotate-cw-svg` | <img src="icons/light/rotate-cw.svg" width="32" height="32" alt="rotate-cw" /> |
 | `rotate-cw1-svg` | <img src="icons/light/rotate-cw1.svg" width="32" height="32" alt="rotate-cw1" /> |
-| `save-svg` | <img src="icons/light/save.svg" width="32" height="32" alt="save" /> |
+| `save-svg` | <img src="icons/actions/save.svg" width="32" height="32" alt="save" /> |
 | `search-svg` | <img src="icons/ui/search.svg" width="32" height="32" alt="search" /> |
 | `settings-1-svg` | <img src="icons/ui/settings-1.svg" width="32" height="32" alt="settings-1" /> |
 | `settings-org-svg` | <img src="icons/ui/settings-org.svg" width="32" height="32" alt="settings-org" /> |
