@@ -1,3 +1,20 @@
+/*
+ * DATAMA SAS
+ * --------------
+ * NOTICE:  All information contained herein is, and remains
+ * the property of DataMa SAS and/or some open source packages used
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to DataMa SAS
+ * and its suppliers and may be covered by French and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from DataMa SAS.
+ * Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
+ * Copyright (c) 2025 DATAMA SAS, All rights reserved.
+ * Generated for file : build.js project project-deep-sky
+ */
+
 const fs = require('fs');
 const path = require('path');
 const { buildSvgData } = require('./build-svg');
@@ -49,12 +66,12 @@ export interface GenericIconProps extends VueIconProps {
 // Vue component exports
 export declare const IconGeneric: any;
 ${iconNames.map(iconName => {
-  const componentName = iconName
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
-  return `export declare const Icon${componentName}: any;`;
-}).join('\n')}
+    const componentName = iconName
+      .split('-')
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('');
+    return `export declare const Icon${componentName}: any;`;
+  }).join('\n')}
 
 // Plugin
 declare const DatamaIcons: {
@@ -133,7 +150,7 @@ function createSVG(iconData, options = {}) {
     svg.setAttribute('stroke-width', strokeWidth);
     
     if (className) {
-        svg.className = className;
+        svg.classList.add(className);
     }
     
     if (iconData.isComplex && iconData.content) {
@@ -383,7 +400,7 @@ function createSVG(iconData, options = {}) {
     svg.setAttribute('stroke-width', strokeWidth);
     
     if (className) {
-        svg.className = className;
+        svg.classList.add(className);
     }
     
     if (iconData.isComplex && iconData.content) {
@@ -615,22 +632,22 @@ Vue.use(DatamaIcons);
 |:-------------- |:------:|
 ${iconNames.map(name => {
   // Remove -svg suffix if present and construct proper path
-  const cleanName = name.replace(/-svg$/, '');
+    const cleanName = name.replace(/-svg$/, '');
   
-  // Get the category from icon data to build correct path
-  const iconInfo = iconData[name];
-  const category = iconInfo?.category || '';
+    // Get the category from icon data to build correct path
+    const iconInfo = iconData[name];
+    const category = iconInfo?.category || '';
   
-  // Construct the proper path based on category
-  let iconPath;
-  if (category) {
-    iconPath = `icons/${category}/${cleanName}.svg`;
-  } else {
-    iconPath = `icons/${cleanName}.svg`;
-  }
+    // Construct the proper path based on category
+    let iconPath;
+    if (category) {
+      iconPath = `icons/${category}/${cleanName}.svg`;
+    } else {
+      iconPath = `icons/${cleanName}.svg`;
+    }
   
-  return `| \`${name}\` | <img src="${iconPath}" width="32" height="32" alt="${cleanName}" /> |`;
-}).join('\n')}
+    return `| \`${name}\` | <img src="${iconPath}" width="32" height="32" alt="${cleanName}" /> |`;
+  }).join('\n')}
 
 ## Icon Data Format
 

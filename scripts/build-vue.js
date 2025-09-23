@@ -337,6 +337,9 @@ function generateCdnVueLibrary(iconData) {
     // Get fill color from data-fill attribute
     const fillColor = element.getAttribute('data-fill') || 'currentColor';
     
+    // Get invert option from data-invert attribute
+    const useInvert = element.getAttribute('data-invert') === 'true';
+    
     // Smart fill: if a custom fill is provided, use selective fill automatically
     const useSmartFill = fillColor !== 'currentColor' && fillColor !== 'original';
     
@@ -352,10 +355,23 @@ function generateCdnVueLibrary(iconData) {
     svg.setAttribute('fill', fillColor);
     svg.setAttribute('class', 'datama-svg ' + classList.filter(cls => !cls.startsWith('datama-') || cls === 'datama').join(' '));
     
-    // Smart fill logic: automatically use selective fill when custom color is provided
+    // Content selection logic: invert takes priority, then smart fill, then original
     if (icon.isComplex && icon.content) {
+      // Check if invert mode is requested and invertFillContent is available
+      if (useInvert && icon.invertFillContent) {
+        let content = icon.invertFillContent;
+        // Replace currentColor and white fills/strokes with the actual fill color (same logic as DataMaIconsNew.js)
+        if (fillColor !== 'currentColor') {
+          content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
+          content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
+          // Also replace white fills for invert mode
+          content = content.replace(/fill="white"/g, 'fill="' + fillColor + '"');
+          content = content.replace(/stroke="white"/g, 'stroke="' + fillColor + '"');
+        }
+        svg.innerHTML = content;
+      }
       // For complex icons with custom fill, use selective fill content (includes URL replacement) if available
-      if (useSmartFill && icon.selectiveFillContent) {
+      else if (useSmartFill && icon.selectiveFillContent) {
         let content = icon.selectiveFillContent;
         // Replace currentColor with the actual fill color
         content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
@@ -367,8 +383,21 @@ function generateCdnVueLibrary(iconData) {
       }
     } else if (icon.path) {
       if (icon.path.trim().startsWith('<')) {
+        // Check if invert mode is requested and invertFillContent is available
+        if (useInvert && icon.invertFillContent) {
+          let content = icon.invertFillContent;
+          // Replace currentColor and white fills/strokes with the actual fill color (same logic as DataMaIconsNew.js)
+          if (fillColor !== 'currentColor') {
+            content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
+            content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
+            // Also replace white fills for invert mode
+            content = content.replace(/fill="white"/g, 'fill="' + fillColor + '"');
+            content = content.replace(/stroke="white"/g, 'stroke="' + fillColor + '"');
+          }
+          svg.innerHTML = content;
+        }
         // For simple icons with custom fill, use selective fill content (includes URL replacement) if available
-        if (useSmartFill && icon.selectiveFillContent) {
+        else if (useSmartFill && icon.selectiveFillContent) {
           let content = icon.selectiveFillContent;
           content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
           content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
@@ -377,11 +406,25 @@ function generateCdnVueLibrary(iconData) {
           svg.innerHTML = icon.path;
         }
       } else {
-        // Simple path: always apply the fill color
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', icon.path);
-        path.setAttribute('fill', fillColor);
-        svg.appendChild(path);
+        // Simple path: apply invert or regular fill
+        if (useInvert && icon.invertFillContent) {
+          let content = icon.invertFillContent;
+          // Replace currentColor and white fills/strokes with the actual fill color (same logic as DataMaIconsNew.js)
+          if (fillColor !== 'currentColor') {
+            content = content.replace(/fill="currentColor"/g, 'fill="' + fillColor + '"');
+            content = content.replace(/stroke="currentColor"/g, 'stroke="' + fillColor + '"');
+            // Also replace white fills for invert mode
+            content = content.replace(/fill="white"/g, 'fill="' + fillColor + '"');
+            content = content.replace(/stroke="white"/g, 'stroke="' + fillColor + '"');
+          }
+          svg.innerHTML = content;
+        } else {
+          // Simple path: always apply the fill color
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', icon.path);
+          path.setAttribute('fill', fillColor);
+          svg.appendChild(path);
+        }
       }
     }
     
