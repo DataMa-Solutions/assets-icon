@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 152 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 153 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (152)
+## Available Icons (153)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -179,6 +179,7 @@ Vue.use(DatamaIcons);
 | `profile-svg` | <img src="icons/ui/profile.svg" width="32" height="32" alt="profile" /> |
 | `qlik-svg` | <img src="icons/logos/qlik.svg" width="32" height="32" alt="qlik" /> |
 | `redshift-svg` | <img src="icons/sources/redshift.svg" width="32" height="32" alt="redshift" /> |
+| `refresh-svg` | <img src="icons/actions/refresh.svg" width="32" height="32" alt="refresh" /> |
 | `release-notes-1-svg` | <img src="icons/ui/release-notes-1.svg" width="32" height="32" alt="release-notes-1" /> |
 | `release-notes-svg` | <img src="icons/ui/release-notes.svg" width="32" height="32" alt="release-notes" /> |
 | `reverse-axis-svg` | <img src="icons/light/reverse-axis.svg" width="32" height="32" alt="reverse-axis" /> |
