@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 104 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 105 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (104)
+## Available Icons (105)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -62,6 +62,7 @@ Vue.use(DatamaIcons);
 | `basketball-svg` | <img src="icons/ui/basketball.svg" width="32" height="32" alt="basketball" /> |
 | `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
 | `bookmark-svg` | <img src="icons/ui/bookmark.svg" width="32" height="32" alt="bookmark" /> |
+| `calendar-svg` | <img src="icons/ui/calendar.svg" width="32" height="32" alt="calendar" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
 | `cog-svg` | <img src="icons/settings/cog.svg" width="32" height="32" alt="cog" /> |
 | `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
