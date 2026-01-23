@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 105 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 104 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (105)
+## Available Icons (104)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -62,7 +62,6 @@ Vue.use(DatamaIcons);
 | `basketball-svg` | <img src="icons/ui/basketball.svg" width="32" height="32" alt="basketball" /> |
 | `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
 | `bookmark-svg` | <img src="icons/ui/bookmark.svg" width="32" height="32" alt="bookmark" /> |
-| `calendar-svg` | <img src="icons/ui/calendar.svg" width="32" height="32" alt="calendar" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
 | `cog-svg` | <img src="icons/settings/cog.svg" width="32" height="32" alt="cog" /> |
 | `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
@@ -79,6 +78,7 @@ Vue.use(DatamaIcons);
 | `detect-svg` | <img src="icons/data/detect.svg" width="32" height="32" alt="detect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
+| `dog-svg` | <img src="icons/illustrations/dog.svg" width="32" height="32" alt="dog" /> |
 | `drop-down-1-svg` | <img src="icons/navigation/drop-down-1.svg" width="32" height="32" alt="drop-down-1" /> |
 | `drop-down-svg` | <img src="icons/navigation/drop-down.svg" width="32" height="32" alt="drop-down" /> |
 | `drop-left-svg` | <img src="icons/navigation/drop-left.svg" width="32" height="32" alt="drop-left" /> |
@@ -143,7 +143,6 @@ Vue.use(DatamaIcons);
 | `profile-svg` | <img src="icons/ui/profile.svg" width="32" height="32" alt="profile" /> |
 | `qlik-svg` | <img src="icons/logos/qlik.svg" width="32" height="32" alt="qlik" /> |
 | `redshift-svg` | <img src="icons/sources/redshift.svg" width="32" height="32" alt="redshift" /> |
-| `refresh-svg` | <img src="icons/actions/refresh.svg" width="32" height="32" alt="refresh" /> |
 | `release-notes-1-svg` | <img src="icons/ui/release-notes-1.svg" width="32" height="32" alt="release-notes-1" /> |
 | `release-notes-svg` | <img src="icons/ui/release-notes.svg" width="32" height="32" alt="release-notes" /> |
 | `reverse-h-svg` | <img src="icons/actions/reverse-h.svg" width="32" height="32" alt="reverse-h" /> |
@@ -189,4 +188,4 @@ This package is auto-generated from SVG files. To contribute:
 
 ## License
 
-Copyright (c) 2025 DATAMA SAS, All rights reserved.
+Copyright (c) 2026 DATAMA SAS, All rights reserved.
