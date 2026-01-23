@@ -16,7 +16,7 @@
     "build:vue": "node scripts/build-vue.js",
     "build:font": "node scripts/build-font.js",
     "build": "node scripts/build.js",
-    "build:all": "npm run build:svg && npm run build:json && npm run build:vue && npm run build:font && npm run build",
+    "build:all": "npm run build:svg && npm run build:json && npm run build:vue && npm run build && npm run build:font",
     "dev": "node scripts/dev.js",
     "setup:cdn": "./scripts/setup-cdn.sh",
     "release:patch": "./scripts/release.sh patch",

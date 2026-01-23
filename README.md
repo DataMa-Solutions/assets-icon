@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 103 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 104 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (103)
+## Available Icons (104)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -78,6 +78,7 @@ Vue.use(DatamaIcons);
 | `detect-svg` | <img src="icons/data/detect.svg" width="32" height="32" alt="detect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
+| `dog-svg` | <img src="icons/illustrations/dog.svg" width="32" height="32" alt="dog" /> |
 | `drop-down-1-svg` | <img src="icons/navigation/drop-down-1.svg" width="32" height="32" alt="drop-down-1" /> |
 | `drop-down-svg` | <img src="icons/navigation/drop-down.svg" width="32" height="32" alt="drop-down" /> |
 | `drop-left-svg` | <img src="icons/navigation/drop-left.svg" width="32" height="32" alt="drop-left" /> |
@@ -187,4 +188,4 @@ This package is auto-generated from SVG files. To contribute:
 
 ## License
 
-Copyright (c) 2025 DATAMA SAS, All rights reserved.
+Copyright (c) 2026 DATAMA SAS, All rights reserved.
