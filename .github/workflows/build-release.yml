@@ -96,6 +96,7 @@ jobs:
           ls -la dist/
           echo ""
           echo "📊 Checking for required files..."
+          test -f dist/fonts && echo "✅ Fonts found" || echo "❌ Fonts missing"
           test -f dist/DataMaIconsNew.js && echo "✅ DataMaIconsNew.js found" || echo "❌ DataMaIconsNew.js missing"
           test -f dist/DataMaIconsNew.esm.js && echo "✅ DataMaIconsNew.esm.js found" || echo "❌ DataMaIconsNew.esm.js missing"
           test -f dist/datama-icons-cdn.js && echo "✅ datama-icons-cdn.js found" || echo "❌ datama-icons-cdn.js missing"
@@ -106,6 +107,7 @@ jobs:
         run: |
           # Create release directory
           mkdir -p release-assets
+          mkdir -p release-assets/fonts
           
           # Copy the essential JavaScript files for direct download
           cp dist/DataMaIconsNew.js release-assets/datama-icons-simple.js
@@ -113,6 +115,7 @@ jobs:
           cp dist/datama-icons-cdn.js release-assets/datama-icons-cdn.js
           cp dist/icons.js release-assets/datama-icons-data.js
           cp dist/icons.json release-assets/datama-icons-data.json
+          cp -R dist/fonts release-assets/fonts
           
           # Create complete archive
           mkdir -p complete-package
