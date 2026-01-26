@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 104 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 106 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -36,7 +36,7 @@ Vue.use(DatamaIcons);
   <div>
     <!-- Using specific icon component -->
     <IconCheck :size="24" fill="blue" />
-    
+
     <!-- Using generic icon component -->
     <IconGeneric name="check" :size="24" fill="blue" />
   </div>
@@ -47,13 +47,13 @@ Vue.use(DatamaIcons);
 
 - `size`: Number or string (default: 24)
 - `width`: Number or string (overrides size)
-- `height`: Number or string (overrides size)  
+- `height`: Number or string (overrides size)
 - `fill`: String (default: 'currentColor')
 - `stroke`: String (default: 'none')
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (104)
+## Available Icons (106)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -127,6 +127,7 @@ Vue.use(DatamaIcons);
 | `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
 | `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
+| `metabase-svg` | <img src="icons/sources/metabase.svg" width="32" height="32" alt="metabase" /> |
 | `mysql-svg` | <img src="icons/sources/mysql.svg" width="32" height="32" alt="mysql" /> |
 | `onedrive-svg` | <img src="icons/sources/onedrive.svg" width="32" height="32" alt="onedrive" /> |
 | `openai-svg` | <img src="icons/sources/openai.svg" width="32" height="32" alt="openai" /> |
