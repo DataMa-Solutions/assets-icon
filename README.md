@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 103 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 106 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -36,7 +36,7 @@ Vue.use(DatamaIcons);
   <div>
     <!-- Using specific icon component -->
     <IconCheck :size="24" fill="blue" />
-    
+
     <!-- Using generic icon component -->
     <IconGeneric name="check" :size="24" fill="blue" />
   </div>
@@ -47,13 +47,13 @@ Vue.use(DatamaIcons);
 
 - `size`: Number or string (default: 24)
 - `width`: Number or string (overrides size)
-- `height`: Number or string (overrides size)  
+- `height`: Number or string (overrides size)
 - `fill`: String (default: 'currentColor')
 - `stroke`: String (default: 'none')
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (103)
+## Available Icons (106)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -78,6 +78,7 @@ Vue.use(DatamaIcons);
 | `detect-svg` | <img src="icons/data/detect.svg" width="32" height="32" alt="detect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
+| `dog-svg` | <img src="icons/illustrations/dog.svg" width="32" height="32" alt="dog" /> |
 | `drop-down-1-svg` | <img src="icons/navigation/drop-down-1.svg" width="32" height="32" alt="drop-down-1" /> |
 | `drop-down-svg` | <img src="icons/navigation/drop-down.svg" width="32" height="32" alt="drop-down" /> |
 | `drop-left-svg` | <img src="icons/navigation/drop-left.svg" width="32" height="32" alt="drop-left" /> |
@@ -126,6 +127,7 @@ Vue.use(DatamaIcons);
 | `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
 | `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
+| `metabase-svg` | <img src="icons/sources/metabase.svg" width="32" height="32" alt="metabase" /> |
 | `mysql-svg` | <img src="icons/sources/mysql.svg" width="32" height="32" alt="mysql" /> |
 | `onedrive-svg` | <img src="icons/sources/onedrive.svg" width="32" height="32" alt="onedrive" /> |
 | `openai-svg` | <img src="icons/sources/openai.svg" width="32" height="32" alt="openai" /> |
@@ -187,4 +189,4 @@ This package is auto-generated from SVG files. To contribute:
 
 ## License
 
-Copyright (c) 2025 DATAMA SAS, All rights reserved.
+Copyright (c) 2026 DATAMA SAS, All rights reserved.

@@ -137,6 +137,7 @@ jobs:
           cp dist/DataMaIconsNew.js release/
           cp dist/DataMaIconsNew.esm.js release/
           cp dist/datama-icons-cdn.js release/
+          cp -r dist/fonts release/fonts
           cp README.md release/
           cp -r dist release/
           
