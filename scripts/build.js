@@ -11,7 +11,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from DataMa SAS.
  * Notice created by Django <django@datama.fr>, Wazhabits <anatole@datama.fr> updated by Anatole Piveteau
- * Copyright (c) 2025 DATAMA SAS, All rights reserved.
+ * Copyright (c) 2026 DATAMA SAS, All rights reserved.
  * Generated for file : build.js project project-deep-sky
  */
 
@@ -137,8 +137,7 @@ function createSVG(iconData, options = {}) {
         fill = 'currentColor',
         stroke = 'none',
         strokeWidth = 0,
-        className = '',
-        invert = false
+        className = ''
     } = options;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -387,8 +386,7 @@ function createSVG(iconData, options = {}) {
         fill = 'currentColor',
         stroke = 'none',
         strokeWidth = 0,
-        className = '',
-        invert = false
+        className = ''
     } = options;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
