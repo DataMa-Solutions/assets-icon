@@ -36,7 +36,7 @@ Vue.use(DatamaIcons);
   <div>
     <!-- Using specific icon component -->
     <IconCheck :size="24" fill="blue" />
-
+    
     <!-- Using generic icon component -->
     <IconGeneric name="check" :size="24" fill="blue" />
   </div>
@@ -47,7 +47,7 @@ Vue.use(DatamaIcons);
 
 - `size`: Number or string (default: 24)
 - `width`: Number or string (overrides size)
-- `height`: Number or string (overrides size)
+- `height`: Number or string (overrides size)  
 - `fill`: String (default: 'currentColor')
 - `stroke`: String (default: 'none')
 - `strokeWidth`: Number or string (default: 0)
@@ -62,6 +62,7 @@ Vue.use(DatamaIcons);
 | `basketball-svg` | <img src="icons/ui/basketball.svg" width="32" height="32" alt="basketball" /> |
 | `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
 | `bookmark-svg` | <img src="icons/ui/bookmark.svg" width="32" height="32" alt="bookmark" /> |
+| `calendar-svg` | <img src="icons/ui/calendar.svg" width="32" height="32" alt="calendar" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
 | `cog-svg` | <img src="icons/settings/cog.svg" width="32" height="32" alt="cog" /> |
 | `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
@@ -78,7 +79,6 @@ Vue.use(DatamaIcons);
 | `detect-svg` | <img src="icons/data/detect.svg" width="32" height="32" alt="detect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
-| `dog-svg` | <img src="icons/illustrations/dog.svg" width="32" height="32" alt="dog" /> |
 | `drop-down-1-svg` | <img src="icons/navigation/drop-down-1.svg" width="32" height="32" alt="drop-down-1" /> |
 | `drop-down-svg` | <img src="icons/navigation/drop-down.svg" width="32" height="32" alt="drop-down" /> |
 | `drop-left-svg` | <img src="icons/navigation/drop-left.svg" width="32" height="32" alt="drop-left" /> |
@@ -144,6 +144,7 @@ Vue.use(DatamaIcons);
 | `profile-svg` | <img src="icons/ui/profile.svg" width="32" height="32" alt="profile" /> |
 | `qlik-svg` | <img src="icons/logos/qlik.svg" width="32" height="32" alt="qlik" /> |
 | `redshift-svg` | <img src="icons/sources/redshift.svg" width="32" height="32" alt="redshift" /> |
+| `refresh-svg` | <img src="icons/actions/refresh.svg" width="32" height="32" alt="refresh" /> |
 | `release-notes-1-svg` | <img src="icons/ui/release-notes-1.svg" width="32" height="32" alt="release-notes-1" /> |
 | `release-notes-svg` | <img src="icons/ui/release-notes.svg" width="32" height="32" alt="release-notes" /> |
 | `reverse-h-svg` | <img src="icons/actions/reverse-h.svg" width="32" height="32" alt="reverse-h" /> |
