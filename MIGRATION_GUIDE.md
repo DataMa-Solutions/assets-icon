@@ -61,9 +61,9 @@ const icon = DataMaIcons.get('home-svg', { id: 'my-icon' });
 const greenCheck = DataMaIcons.get('check-svg', { fill: '#28a745' });
 
 // Force color on complex icons (use with caution)
-const coloredLogo = DataMaIcons.get('datama-svg', { 
+const coloredLogo = DataMaIcons.get('datama-svg', {
   fill: '#007acc',
-  forceComplexColor: true 
+  forceComplexColor: true
 });
 ```
 
@@ -102,12 +102,12 @@ import { DataMaIcons } from "./DataMaIconsNew.js";
   <div>
     <!-- Basic usage -->
     <i class="datama-icon" data-icon="check-svg"></i>
-    
+
     <!-- With custom size -->
     <i class="datama-icon" data-icon="home-svg" data-size="32"></i>
-    
+
     <!-- With custom color (for simple icons) -->
-    <i class="datama-icon" data-icon="download-svg" 
+    <i class="datama-icon" data-icon="download-svg"
        data-size="24" data-fill="#007acc"></i>
   </div>
 </template>
@@ -130,16 +130,16 @@ export default {
 <template>
   <div class="toolbar">
     <!-- Status icons with colors -->
-    <i class="datama-icon" data-icon="check-svg" 
+    <i class="datama-icon" data-icon="check-svg"
        data-fill="#28a745" data-size="20"></i>
-    <i class="datama-icon" data-icon="alert-triangle-svg" 
+    <i class="datama-icon" data-icon="alert-triangle-svg"
        data-fill="#ffc107" data-size="20"></i>
-    
+
     <!-- Complex icons (keep original colors) -->
     <i class="datama-icon" data-icon="datama-svg" data-size="32"></i>
-    
+
     <!-- Force color on complex icon -->
-    <i class="datama-icon" data-icon="settings-svg" 
+    <i class="datama-icon" data-icon="settings-svg"
        data-fill="#007acc" data-force-complex-color="true"></i>
   </div>
 </template>
@@ -188,12 +188,12 @@ Vue.use(DatamaIcons);
     <!-- Specific icon components -->
     <IconCheck :size="24" fill="#28a745" />
     <IconDownload :size="20" fill="#007acc" />
-    
+
     <!-- Generic component -->
     <IconGeneric name="datama-svg" :size="32" />
-    
+
     <!-- With all props -->
-    <IconGeneric 
+    <IconGeneric
       name="arrow-right-svg"
       :size="24"
       fill="currentColor"
@@ -246,9 +246,9 @@ All Vue components support:
 
 ```javascript
 // Simple icon with color
-const icon1 = DataMaIcons.get('check-svg', { 
-  size: 32, 
-  fill: '#28a745' 
+const icon1 = DataMaIcons.get('check-svg', {
+  size: 32,
+  fill: '#28a745'
 });
 
 // Complex icon (original colors)
@@ -270,17 +270,21 @@ const icon4 = DataMaIcons.get('download-svg', {
 
 ## 🎨 Icon Classification
 
-### Simple Icons (59 icons)
+### Simple Icons
 Automatically accept color changes:
-- **UI Elements**: check, x, download, save, edit, trash-2
-- **Navigation**: arrow-*, chevron-*, more-*
-- **Interface**: cog, filter, magnifier, maximize-2
+- Best for monochrome UI controls and utility actions
+- Use custom `fill` directly with predictable rendering
 
-### Complex Icons (59 icons)
+### Complex Icons
 Preserve original colors by default:
-- **Logos**: datama-svg, logo-*-svg
-- **Illustrations**: illustration-*-svg
-- **Advanced UI**: settings-svg, profile-*-svg
+- Logos, illustrations, multi-shape symbols, and brand/source icons
+- Can be color-forced when needed using `forceComplexColor`
+
+### Categories (including sort)
+The icon set is organized by categories (examples):
+- **UI / Settings / Navigation / Actions**
+- **Data / Sources / Logos / Illustrations**
+- **Sort**
 
 ## 🛠️ Development and Testing
 
@@ -361,9 +365,9 @@ if (typeof DataMaIcons !== 'undefined') {
 const iconData = DataMaIcons.getIconData('icon-name');
 if (iconData.isComplex) {
   // Use forceComplexColor if needed
-  const icon = DataMaIcons.get('icon-name', { 
+  const icon = DataMaIcons.get('icon-name', {
     fill: '#color',
-    forceComplexColor: true 
+    forceComplexColor: true
   });
 }
 ```
@@ -400,4 +404,4 @@ console.log(Vue.options.components); // Should include icon components
 - **Example Files**: `example.html`, `test-complex-icons.html`
 - **Color Examples**: `COLOR_EXAMPLES.md`
 - **API Documentation**: `README.md`
-- **Changelog**: `CHANGELOG.md` 
+- **Changelog**: `CHANGELOG.md`
