@@ -1,5 +1,29 @@
 # Changelog - DataMa Icons
 
+## [1.0.10] - 2026-04-14
+
+### ✨ New Features
+- **New icons**: Added 6 sorting icons in the `sort` category (`number-by-asc`, `number-by-desc`, `string-by-asc`, `string-by-desc`, `value-by-asc`, `value-by-desc`)
+
+### 🛠️ Technical Improvements
+- **SVG normalization**: Standardized `sort` icons format for build pipeline compatibility (`xmlns`, `viewBox`, removal of `scale(...)` wrappers and unnecessary IcoMoon attributes)
+- **Documentation**: Updated classification/category sections across project guides
+
+### 📊 Statistics
+- **112 icons** organized into **9 categories**
+- Official addition of the `sort` category
+
+### 🔄 Included Commits
+- feat: add sort icons category (6 new icons)
+- chore: normalize sort SVG files for build compatibility
+- docs: update classification/category references
+
+### 🔄 Compatibility
+- No breaking changes - API remains unchanged
+- New icons available with no impact on existing integrations
+
+---
+
 ## [1.0.9] - 2025-09-15
 
 ### ✨ Nouvelles fonctionnalités
