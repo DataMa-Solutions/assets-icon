@@ -1,46 +1,28 @@
 # Changelog - DataMa Icons
 
-## [1.1.0] - 2026-03-04
+## [1.0.10] - 2026-04-14
 
-### ✨ Nouvelles fonctionnalités
-- **Feat:** Add some missing icons
-- **Nouvelles icônes**: Ajout de 5 nouvelles icônes (calendar, metabase, refresh, reverse-h, reverse-v)
+### ✨ New Features
+- **New icons**: Added 6 sorting icons in the `sort` category (`number-by-asc`, `number-by-desc`, `string-by-asc`, `string-by-desc`, `value-by-asc`, `value-by-desc`)
 
-### 🛠️ Améliorations techniques
-- **Fix:** Wrong syntax for classList
-- **Fix:** classname
-- **Fix:** invert on cdn.
+### 🛠️ Technical Improvements
+- **SVG normalization**: Standardized `sort` icons format for build pipeline compatibility (`xmlns`, `viewBox`, removal of `scale(...)` wrappers and unnecessary IcoMoon attributes)
+- **Documentation**: Updated classification/category sections across project guides
 
-### 📊 Statistiques
-- **106 icônes** organisées en **8 catégories**
-- Support complet du mode invert et nouvelles fonctionnalités
+### 📊 Statistics
+- **112 icons** organized into **9 categories**
+- Official addition of the `sort` category
 
-### 🔄 Commits inclus
-- feat: Add some missing icons
-- fix: Wrong syntax for classList
-- fix: classname
-- fix: invert on cdn.
-- Merge pull request #14 from DataMa-Solutions/staging
-- Merge pull request #13 from DataMa-Solutions/valentin/add-metabase-icon
-- 🍱 metabase svg
-- Merge pull request #12 from DataMa-Solutions/feature/fonts-generation
-- Conflict resolution
-- :bug: Build order
-- Merge pull request #11 from DataMa-Solutions/feature/fonts-generation
-- :sparkles: Generate Fonts & deploy to Google Cloud Storage
-- Merge pull request #10 from DataMa-Solutions/valentin/add-calendar-icon
-- feat(icon) add calendar icon
-- Merge pull request #9 from DataMa-Solutions/anthony/dev-7822-add-refresh-icon-to-icons-project-clean
-- feat(icons): add new icon for refresh
-- Merge pull request #7 from DataMa-Solutions/staging
-- Merge pull request #6 from DataMa-Solutions/anatole/dev-7432-inputs-v2-crash-test
+### 🔄 Included Commits
+- feat: add sort icons category (6 new icons)
+- chore: normalize sort SVG files for build compatibility
+- docs: update classification/category references
 
-### 🔄 Compatibilité
-- Aucune rupture de compatibilité - l'API reste identique
-- Nouvelles options disponibles sans impact sur l'existant
+### 🔄 Compatibility
+- No breaking changes - API remains unchanged
+- New icons available with no impact on existing integrations
 
 ---
-
 
 ## [1.0.9] - 2025-09-15
 

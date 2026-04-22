@@ -241,9 +241,14 @@ addIcon('settings-svg', 20, '#6c757d')
 - `upload-svg`, `copy-svg`, `share-svg`, `search-svg`
 
 ### UI Icons
-- `settings-svg`, `cog-svg`, `filter-svg`, `sort-svg`
+- `settings-svg`, `cog-svg`, `search-svg`, `lock-svg`
 - `eye-svg`, `lock-svg`, `unlock-svg`, `key-svg`
 - `user-svg`, `profile-svg`, `group-svg`, `team-svg`
+
+### Sort Icons
+- `number-by-asc-svg`, `number-by-desc-svg`
+- `string-by-asc-svg`, `string-by-desc-svg`
+- `value-by-asc-svg`, `value-by-desc-svg`
 
 ### Status Icons
 - `check-svg`, `alert-circle-svg`, `alert-triangle-svg`

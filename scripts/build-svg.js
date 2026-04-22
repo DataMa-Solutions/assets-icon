@@ -1234,4 +1234,9 @@ function buildSvgData() {
   return iconData;
 }
 
+// Run if called directly
+if (require.main === module) {
+  buildSvgData();
+}
+
 module.exports = { buildSvgData, extractSvgData }; 

@@ -1,0 +1,374 @@
+---
+description: Règles strictes pour les icônes Vue3 - Format standardisé pour génération de police webfont
+globs: icons/vue3/**/*.svg
+alwaysApply: true
+---
+
+# Vue3 Icons - Style Guide & Standards
+
+This guide defines the **strict standards** for creating SVG icons in the `icons/vue3/` folder. These icons are used to generate an icon font via the `webfont` library, so consistency and proper structure are critical.
+
+---
+
+## 🎯 Icon Font Generation
+
+Icons in `icons/vue3/` are automatically converted into a web font using:
+- **Script**: `scripts/build-font.js` (standalone, independent)
+- **Library**: `webfont` (https://github.com/itgalaxy/webfont)
+- **Output**: `dist/fonts/vue3-icons.[woff2|woff|ttf|css|html]`
+
+## ⚠️ CRITICAL: Stroke vs Fill for Webfont
+
+**THE PROBLEM:**
+Webfont library **DOES NOT support stroke-based SVGs properly**. When you use `stroke` attributes, the resulting font glyphs will:
+- ❌ Display incorrectly or not at all
+- ❌ Have visual artifacts
+- ❌ Lose stroke properties (width, linecap, linejoin)
+- ❌ Render inconsistently across browsers
+
+**THE SOLUTION:**
+Icons MUST use **filled paths** (`fill="currentColor"`), NOT stroked paths.
+
+**TWO APPROACHES:**
+
+### Approach 1: Create Filled Icons Directly (RECOMMENDED)
+Design icons with filled paths from the start. Use design tools (Figma, Illustrator, Inkscape) to:
+1. Draw your icon with strokes
+2. Use "Stroke to Path" or "Outline Stroke" command
+3. Export as filled SVG with `fill="currentColor"`
+
+### Approach 2: Stroke Icons for Display, Manual Conversion for Font
+If you want to keep stroke-based versions for web display:
+1. Create stroke version: `icon-name.svg` (for direct web use)
+2. Convert to filled version: `icon-name-filled.svg` (for webfont)
+3. Use filled version in `icons/vue3/` folder
+
+**NOTE**: The build script attempts automatic stroke→fill conversion, but this is **NOT RELIABLE** and often produces poor results. Always create proper filled versions manually.
+
+---
+
+## 📐 Mandatory SVG Structure for Webfont
+
+**EVERY icon MUST follow this EXACT structure (FILLED VERSION):**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="currentColor" d="..."/>
+</svg>
+```
+
+### ✅ Required Elements
+
+1. **XML Declaration**: `<?xml version="1.0" encoding="UTF-8"?>`
+2. **SVG Root**:
+   - `xmlns="http://www.w3.org/2000/svg"` (required)
+   - `viewBox="0 0 24 24"` (ALWAYS 24×24)
+3. **Single Path Element**:
+   - `fill="currentColor"` (REQUIRED - inherits color from context)
+   - NO `stroke` attributes (webfont doesn't support them)
+   - `d="..."` (path data - must be a filled shape)
+
+### ⚠️ IMPORTANT: Creating Filled Paths
+
+Since strokes don't work with webfont, you need to create filled paths that simulate the stroke appearance:
+
+**In Figma:**
+1. Draw your icon with 2px strokes and rounded caps/joins
+2. Select all stroke paths
+3. Right-click → "Outline Stroke"
+4. Merge/Union overlapping shapes if needed
+5. Export as SVG with `fill="currentColor"`
+
+**In Adobe Illustrator:**
+1. Draw your icon with 2pt strokes and rounded caps/joins
+2. Select all stroked paths
+3. Object → Path → Outline Stroke
+4. Pathfinder → Unite overlapping shapes
+5. Export as SVG, ensure `fill="currentColor"`
+
+**In Inkscape:**
+1. Draw your icon with 2px strokes and rounded caps/joins
+2. Select all stroked paths
+3. Path → Stroke to Path
+4. Path → Union for overlapping shapes
+5. Export as Optimized SVG with `fill="currentColor"`
+
+### ❌ Forbidden Elements
+
+**DO NOT use any of these:**
+
+- `<g>` groups (keep structure flat)
+- `<circle>`, `<rect>`, `<line>`, `<polyline>`, `<polygon>` (convert to path)
+- `<defs>`, `<mask>`, `<clipPath>`, `<filter>` (not needed for line art)
+- `id` or `data-name` attributes (breaks webfont parsing)
+- Multiple `<path>` elements (merge into one path using `M` commands)
+- `width` or `height` attributes (use `viewBox` only)
+- Inline styles or `<style>` tags
+
+---
+
+## 🎨 Visual Style Guide
+
+### Design Philosophy
+
+- **Filled Line Art**: Icons that LOOK like 2px strokes but are actually filled paths
+- **Minimalist**: Simple, clean, no unnecessary detail
+- **Rounded**: All line endings and corners appear rounded
+- **Modern**: Contemporary, geometric precision
+- **Consistent**: Uniform visual weight (equivalent to 2px stroke)
+
+### Technical Specifications
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| **ViewBox** | `0 0 24 24` | Always 24×24 grid |
+| **Visual Weight** | `~2px` | Filled paths that appear 2px thick |
+| **Line Endings** | Rounded | Use rounded path ends (not sharp) |
+| **Corners** | Rounded | Smooth rounded corners |
+| **Margins** | 3-4px | Space from edges |
+| **Color** | `currentColor` | Inherits from context |
+| **Fill** | Required | MUST use `fill`, NOT `stroke` |
+
+### Grid & Alignment
+
+- Use a 24×24 grid system
+- Align to grid when possible (helps with pixel-perfect rendering)
+- Leave 3-4px margin from edges for optical balance
+- Center icons visually (not just mathematically)
+
+---
+
+## 🛠️ SVG Path Construction
+
+Since all shapes must be converted to a **single `<path>`**, here's how:
+
+### 1. Lines → Path
+
+```xml
+<!-- ❌ BAD: Using <line> -->
+<line x1="12" y1="3" x2="12" y2="12"/>
+
+<!-- ✅ GOOD: Path command -->
+<path d="M12,3 L12,12"/>
+```
+
+### 2. Circles → Path (Arc Commands)
+
+```xml
+<!-- ❌ BAD: Using <circle> -->
+<circle cx="12" cy="12" r="4"/>
+
+<!-- ✅ GOOD: Arc commands for full circle -->
+<path d="M16,12 A4,4 0 1,1 8,12 A4,4 0 1,1 16,12"/>
+```
+
+**Explanation**:
+- `M16,12`: Move to starting point (cx + r, cy)
+- `A4,4 0 1,1 8,12`: Arc with radius 4, draw half circle to (cx - r, cy)
+- `A4,4 0 1,1 16,12`: Arc back to starting point (completes circle)
+
+### 3. Rectangles → Path
+
+```xml
+<!-- ❌ BAD: Using <rect> -->
+<rect x="4" y="4" width="16" height="16" rx="2"/>
+
+<!-- ✅ GOOD: Path with rounded corners -->
+<path d="M6,4 L18,4 Q20,4 20,6 L20,18 Q20,20 18,20 L6,20 Q4,20 4,18 L4,6 Q4,4 6,4 Z"/>
+```
+
+### 4. Multiple Elements → Single Path
+
+Use `M` (move to) to combine disconnected shapes:
+
+```xml
+<!-- ❌ BAD: Multiple paths -->
+<path d="M12,3 L12,12"/>
+<path d="M5,7 C3,9,2,11,2,13"/>
+
+<!-- ✅ GOOD: Single path with M command -->
+<path d="M12,3 L12,12 M5,7 C3,9,2,11,2,13"/>
+```
+
+### 5. Path Commands Reference
+
+| Command | Name | Syntax | Description |
+|---------|------|--------|-------------|
+| `M x,y` | Move To | `M10,20` | Move to point without drawing |
+| `L x,y` | Line To | `L20,10` | Draw straight line |
+| `H x` | Horizontal Line | `H15` | Horizontal line to x |
+| `V y` | Vertical Line | `V15` | Vertical line to y |
+| `C x1,y1 x2,y2 x,y` | Cubic Bezier | `C10,5 15,5 20,10` | Smooth curve |
+| `Q x1,y1 x,y` | Quadratic Bezier | `Q15,5 20,10` | Simple curve |
+| `A rx,ry rot large sweep x,y` | Arc | `A5,5 0 1,1 10,10` | Elliptical arc |
+| `Z` | Close Path | `Z` | Close path to start |
+
+**Tip**: Use UPPERCASE for absolute coordinates, lowercase for relative.
+
+---
+
+## ✨ Icon Creation Workflow
+
+### STEP 1: User Request Analysis
+
+When a user requests a new icon:
+
+1. **Clarify the concept**:
+   - What does the icon represent?
+   - Where will it be used? (UI context)
+   - Any specific requirements?
+
+2. **Propose 2-3 visual options**:
+   ```
+   Option 1: [Minimalist approach - describe]
+   Option 2: [Balanced detail - describe]
+   Option 3: [Alternative metaphor - describe]
+   ```
+
+3. **Wait for user confirmation** before creating the SVG
+
+### STEP 2: SVG Creation
+
+1. Design the icon on a 24×24 grid
+2. Use stroke-width="2" for all elements
+3. Convert all shapes to a single `<path>` element
+4. Ensure proper spacing (3-4px margins)
+5. Test visual balance and clarity
+
+### STEP 3: Validation Checklist
+
+Before saving the icon, verify:
+
+- [ ] XML declaration present
+- [ ] ViewBox is `0 0 24 24`
+- [ ] Single `<path>` element only
+- [ ] Stroke properties correct: `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`
+- [ ] No forbidden elements (`<g>`, `<circle>`, `<rect>`, etc.)
+- [ ] No `id` or `data-name` attributes
+- [ ] Path data is clean and optimized
+- [ ] Visual appearance is balanced and clear
+
+---
+
+## 📚 Examples
+
+### ✅ Perfect Example: disconnect.svg
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12,3 L12,12 M4.929,6.929 C3.737,8.121,3,9.765,3,11.5 c0,4.963,4.037,9,9,9 s9,-4.037,9,-9 c0,-1.735,-0.737,-3.379,-1.929,-4.571"/>
+</svg>
+```
+
+**Why it's perfect**:
+- Proper structure with XML declaration
+- Single path with multiple segments (vertical line + arc)
+- Correct stroke properties
+- Rounded caps and joins
+- Clean, readable path data
+
+### ✅ Perfect Example: home.svg
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3,9 L12,2 L21,9 V20 C21,21.1,20.1,22,19,22 H15 M9,22 H5 C3.9,22,3,21.1,3,20 V9 M9,22 V12 H15 V22"/>
+</svg>
+```
+
+**Why it's perfect**:
+- House outline with door detail
+- All elements combined into one path
+- Good use of `M` to separate door from house outline
+- Proper margins and proportions
+
+### ❌ BAD Example
+
+```xml
+<svg viewBox="0 0 24 24">
+  <g id="icon-group">
+    <circle cx="12" cy="12" r="10" fill="#000"/>
+    <line x1="12" y1="2" x2="12" y2="12" stroke="black" stroke-width="2"/>
+  </g>
+</svg>
+```
+
+**Problems**:
+- No XML declaration
+- Missing `xmlns`
+- Uses `<g>`, `<circle>`, `<line>` instead of `<path>`
+- Has `id` attribute (forbidden)
+- Uses hardcoded colors instead of `currentColor`
+- Filled circle instead of stroke-based line art
+
+---
+
+## 🚀 Font Generation
+
+After creating or modifying icons, regenerate the font:
+
+```bash
+node scripts/build-font.js
+```
+
+**Output files** (in `dist/fonts/`):
+- `vue3-icons.woff2` (modern browsers)
+- `vue3-icons.woff` (legacy support)
+- `vue3-icons.ttf` (desktop use)
+- `vue3-icons.css` (stylesheet with classes)
+- `vue3-icons.html` (demo page)
+- `vue3-icons-mapping.json` (unicode map)
+
+**Usage in HTML**:
+```html
+<link rel="stylesheet" href="vue3-icons.css">
+<i class="vue3-icon vue3-icon-home"></i>
+<i class="vue3-icon vue3-icon-settings vue3-icon-2x"></i>
+```
+
+---
+
+## 🔧 Webfont Library Integration
+
+The build script uses `webfont` with these optimized settings:
+
+```javascript
+await webfont({
+  files: 'icons/vue3/*.svg',
+  fontName: 'vue3-icons',
+  formats: ['woff2', 'woff', 'ttf'],
+  startUnicode: 0xE000, // Private Use Area
+  fontHeight: 1000, // High quality
+  normalize: true, // Normalize SVG paths
+  centerHorizontally: true, // Center glyphs
+  descent: 128, // Vertical metrics
+  ascent: 872
+});
+```
+
+**Key points**:
+- Stroke-based SVGs are converted to fills automatically
+- Unicode range: U+E000 to U+EFFF (Private Use Area)
+- Font metrics optimized for 24px icon size
+- Normalization ensures consistent rendering
+
+---
+
+## 📝 Summary Checklist
+
+When creating a Vue3 icon:
+
+1. ✅ Use EXACT SVG structure (XML declaration + proper attributes)
+2. ✅ Single `<path>` element with stroke properties
+3. ✅ ViewBox is ALWAYS `0 0 24 24`
+4. ✅ Convert all shapes (circles, rects, lines) to path commands
+5. ✅ No groups, no IDs, no forbidden elements
+6. ✅ Rounded line caps and joins
+7. ✅ 2px stroke width
+8. ✅ 3-4px margins from edges
+9. ✅ Clean, optimized path data
+10. ✅ Test by regenerating font: `node scripts/build-font.js`
+
+**Remember**: These icons become font glyphs, so structure and consistency are critical for proper rendering!
