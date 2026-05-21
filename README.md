@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 118 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 119 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (118)
+## Available Icons (119)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -90,6 +90,7 @@ Vue.use(DatamaIcons);
 | `excel-outline-2-svg` | <img src="icons/sources/excel-outline-2.svg" width="32" height="32" alt="excel-outline-2" /> |
 | `excel-outline-svg` | <img src="icons/sources/excel-outline.svg" width="32" height="32" alt="excel-outline" /> |
 | `excel-svg` | <img src="icons/sources/excel.svg" width="32" height="32" alt="excel" /> |
+| `export-svg` | <img src="icons/vue3/export.svg" width="32" height="32" alt="export" /> |
 | `eyes-svg` | <img src="icons/ui/eyes.svg" width="32" height="32" alt="eyes" /> |
 | `facebook-svg` | <img src="icons/sources/facebook.svg" width="32" height="32" alt="facebook" /> |
 | `flow-svg` | <img src="icons/ui/flow.svg" width="32" height="32" alt="flow" /> |
