@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 118 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 121 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (118)
+## Available Icons (121)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -80,6 +80,7 @@ Vue.use(DatamaIcons);
 | `disconnect-svg` | <img src="icons/vue3/disconnect.svg" width="32" height="32" alt="disconnect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
+| `download-svg` | <img src="icons/ui/download.svg" width="32" height="32" alt="download" /> |
 | `drop-down-1-svg` | <img src="icons/navigation/drop-down-1.svg" width="32" height="32" alt="drop-down-1" /> |
 | `drop-down-svg` | <img src="icons/navigation/drop-down.svg" width="32" height="32" alt="drop-down" /> |
 | `drop-left-svg` | <img src="icons/navigation/drop-left.svg" width="32" height="32" alt="drop-left" /> |
@@ -175,6 +176,8 @@ Vue.use(DatamaIcons);
 | `value-by-desc-svg` | <img src="icons/sort/value-by-desc.svg" width="32" height="32" alt="value-by-desc" /> |
 | `warning-svg` | <img src="icons/ui/warning.svg" width="32" height="32" alt="warning" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
+| `zoom-in-svg` | <img src="icons/ui/zoom-in.svg" width="32" height="32" alt="zoom-in" /> |
+| `zoom-out-svg` | <img src="icons/ui/zoom-out.svg" width="32" height="32" alt="zoom-out" /> |
 
 ## Icon Data Format
 
