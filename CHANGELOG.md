@@ -1,5 +1,40 @@
 # Changelog - DataMa Icons
 
+## [1.2.0] - 2026-06-03
+
+### ✨ Nouvelles fonctionnalités
+- **Nouvelles icônes**: Ajout de 20 nouvelles icônes (disconnect, download, grid, home, inactive-sort, minus, number-by-asc, number-by-desc, plus, refresh, search, settings, string-by-asc, string-by-desc, table, user, value-by-asc, value-by-desc, zoom-in, zoom-out)
+
+### 🛠️ Améliorations techniques
+
+### 📊 Statistiques
+- **126 icônes** organisées en **10 catégories**
+- Support complet du mode invert et nouvelles fonctionnalités
+
+### 🔄 Commits inclus
+- Merge pull request #19 from DataMa-Solutions/release/may-2026
+- Merge branch 'staging' of github.com:DataMa-Solutions/assets-icon into release/may-2026
+- :sparkles: add zoom-in and zoom-out icons (#24)
+- :sparkles: add download icon (#22)
+- Merge pull request #23 from DataMa-Solutions/cursor/setup-agents-md-5aaf
+- Add AGENTS.md with cloud-specific development instructions
+- :sparkle: Release of May 2026
+- Merge pull request #18 from DataMa-Solutions/valentin/inactive-sort-icon
+- :bento: add inactive sort icon
+- Merge pull request #17 from DataMa-Solutions/valentin/sort-icons
+- 🍱 add sort icons
+- Merge pull request #16 from DataMa-Solutions/anatole/dev-7979-homepage
+- :sparkles: Add new icons
+- Merge pull request #15 from DataMa-Solutions/anatole/dev-7979-homepage
+- :sparkles: Vue3 icons
+
+### 🔄 Compatibilité
+- Aucune rupture de compatibilité - l'API reste identique
+- Nouvelles options disponibles sans impact sur l'existant
+
+---
+
+
 ## [1.0.10] - 2026-04-14
 
 ### ✨ New Features
