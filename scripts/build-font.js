@@ -1,18 +1,25 @@
 /**
- * DataMa Icons Font Builder
+ * Vue3 Icons Font Builder (Standalone)
  * 
- * This script generates a font family "Datama Assets" from SVG icons,
- * similar to Font Awesome or Material Design Icons.
+ * This script generates a standalone icon font from the Vue3 icons folder.
+ * It reads SVG files directly from icons/vue3/ and generates font files.
+ * 
+ * Features:
+ * - Independent of other build scripts
+ * - Processes only icons/vue3/ folder
+ * - Optimized for stroke-based line art icons (not filled icons)
+ * - Preserves rounded edges and line styles
  * 
  * Usage:
  *   node scripts/build-font.js
  * 
  * Output:
- *   - dist/fonts/datama-assets.woff2
- *   - dist/fonts/datama-assets.woff
- *   - dist/fonts/datama-assets.ttf
- *   - dist/css/datama-assets.css
- *   - dist/fonts/datama-assets.html (demo file)
+ *   - dist/fonts/vue3-icons.woff2
+ *   - dist/fonts/vue3-icons.woff
+ *   - dist/fonts/vue3-icons.ttf
+ *   - dist/fonts/vue3-icons.css
+ *   - dist/fonts/vue3-icons.html (demo file)
+ *   - dist/fonts/vue3-icons-mapping.json
  */
 
 const fs = require('fs');
@@ -24,279 +31,130 @@ const cheerio = require('cheerio');
  * Configuration
  */
 const CONFIG = {
-  fontName: 'datama-assets',
-  fontFamily: 'Datama Assets',
-  classNamePrefix: 'datama-icon',
-  defaultFontSize: '16px',
-  fontBaseSize: 512, // Base size for font generation (should match SVG viewBox)
+  fontName: 'vue3-icons',
+  fontFamily: 'Vue3 Icons',
+  classNamePrefix: 'vue3-icon',
+  defaultFontSize: '24px',
+  fontBaseSize: 1000, // Base size for font generation (higher = better quality)
   startUnicode: 0xE000, // Private Use Area start (E000-EFFF)
-  outputDir: {
-    fonts: path.join(__dirname, '../dist/fonts')
-  }
+  iconsDir: path.join(__dirname, '../icons/vue3'),
+  outputDir: path.join(__dirname, '../dist/fonts')
 };
 
 /**
- * Load SVG data from build process
+ * Load SVG files directly from icons/vue3/ folder
  */
-function loadSvgData() {
-  const rootDir = process.cwd();
-  const svgDataPath = path.join(rootDir, 'dist', 'svg-data.json');
+function loadSvgFiles() {
+  const iconsDir = CONFIG.iconsDir;
   
-  if (!fs.existsSync(svgDataPath)) {
-    console.error('❌ No SVG data found. Please run "npm run build:svg" first.');
+  if (!fs.existsSync(iconsDir)) {
+    console.error(`❌ Icons directory not found: ${iconsDir}`);
     process.exit(1);
   }
   
-  return JSON.parse(fs.readFileSync(svgDataPath, 'utf8'));
+  const files = fs.readdirSync(iconsDir)
+    .filter(file => file.endsWith('.svg'))
+    .sort();
+  
+  if (files.length === 0) {
+    console.error(`❌ No SVG files found in: ${iconsDir}`);
+    process.exit(1);
+  }
+  
+  return files.map(file => ({
+    name: file.replace('.svg', ''),
+    path: path.join(iconsDir, file)
+  }));
 }
 
 /**
- * Check if a rect element is a background (covers entire viewBox)
+ * Validate and prepare SVG for font generation
+ * Vue3 icons MUST use filled paths for proper webfont rendering
  */
-function isBackgroundRect($rect, viewBox) {
-  const width = parseFloat($rect.attr('width') || '0');
-  const height = parseFloat($rect.attr('height') || '0');
-  const x = parseFloat($rect.attr('x') || '0');
-  const y = parseFloat($rect.attr('y') || '0');
-  const fill = $rect.attr('fill') || '';
-  
-  // Parse viewBox
-  const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(' ').map(parseFloat);
-  
-  // More lenient tolerance for dimensions and position
-  // Allow rectangles that are close to viewBox size (within 2 units)
-  const dimensionTolerance = 2;
-  const positionTolerance = 2;
-  
-  // Check if rect dimensions are close to viewBox dimensions
-  const widthClose = Math.abs(width - vbWidth) < dimensionTolerance || 
-                     (width >= vbWidth * 0.9 && width <= vbWidth * 1.1);
-  const heightClose = Math.abs(height - vbHeight) < dimensionTolerance || 
-                      (height >= vbHeight * 0.9 && height <= vbHeight * 1.1);
-  
-  // Check if position is close to viewBox origin (allow small offsets)
-  const xClose = Math.abs(x - vbX) < positionTolerance || x <= vbX + 1;
-  const yClose = Math.abs(y - vbY) < positionTolerance || y <= vbY + 1;
-  
-  // Check if it covers most of the viewBox area (at least 80%)
-  const rectArea = width * height;
-  const viewBoxArea = vbWidth * vbHeight;
-  const coverageRatio = rectArea / viewBoxArea;
-  
-  // Also check if it's a solid color fill (not transparent/none)
-  const isSolidFill = fill && fill !== 'none' && fill !== 'transparent';
-  
-  // Check if it's in a mask (common pattern for background rects)
-  const isInMask = $rect.closest('mask').length > 0;
-  
-  // If it's in a mask and covers most of the viewBox, it's likely a background
-  if (isInMask && coverageRatio > 0.8 && isSolidFill) {
-    return true;
-  }
-  
-  // If it covers the viewBox (with tolerance) and has a solid fill, it's likely a background
-  if (widthClose && heightClose && xClose && yClose && isSolidFill) {
-    return true;
-  }
-  
-  // Also check for rectangles that are exactly or almost exactly the viewBox size
-  // (common pattern: 24x24 in a 24x24 or 25x25 viewBox)
-  if (isInMask && 
-      ((Math.abs(width - 24) < 0.5 && Math.abs(height - 24) < 0.5) ||
-       (Math.abs(width - vbWidth) < 1 && Math.abs(height - vbHeight) < 1))) {
-    return true;
-  }
-  
-  // Special case: rectangles that are 24x24 (common background size)
-  // even if viewBox is slightly different (like 24x25 or 25x25)
-  if (isInMask && 
-      Math.abs(width - 24) < 0.5 && 
-      Math.abs(height - 24) < 0.5 && 
-      isSolidFill) {
-    return true;
-  }
-  
-  // If rectangle is in a mask and covers at least 90% of the area, it's likely a background
-  if (isInMask && coverageRatio > 0.9 && isSolidFill) {
-    return true;
-  }
-  
-  return false;
-}
-
-/**
- * Remove background rectangles from SVG content
- */
-function removeBackgroundRects(svgContent, viewBox) {
+function validateAndPrepareSvg(svgContent, iconName) {
   const $ = cheerio.load(svgContent, { xmlMode: true });
+  const $svg = $('svg');
   
-  // First pass: Remove all rects in masks that look like backgrounds
-  // Be more aggressive with masks - if a rect in a mask is large, remove it
-  $('mask rect').each((i, element) => {
-    const $rect = $(element);
-    const width = parseFloat($rect.attr('width') || '0');
-    const height = parseFloat($rect.attr('height') || '0');
-    const fill = $rect.attr('fill') || '';
+  // Check for required viewBox
+  const viewBox = $svg.attr('viewBox');
+  if (!viewBox) {
+    console.warn(`⚠️  Icon "${iconName}" missing viewBox attribute, using default "0 0 24 24"`);
+    $svg.attr('viewBox', '0 0 24 24');
+  }
+  
+  // Validate standard format: viewBox should be "0 0 24 24"
+  if (viewBox && viewBox !== '0 0 24 24') {
+    console.warn(`⚠️  Icon "${iconName}" has non-standard viewBox: ${viewBox}`);
+  }
+  
+  // Check for paths and validate they use fill, not stroke
+  const $paths = $svg.find('path');
+  $paths.each((i, element) => {
+    const $path = $(element);
+    const stroke = $path.attr('stroke');
+    const fill = $path.attr('fill');
     
-    // Parse viewBox
-    const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(' ').map(parseFloat);
+    // ERROR: If icon uses stroke, it won't work properly with webfont
+    if (stroke) {
+      console.error(`❌ Icon "${iconName}" uses stroke attribute!`);
+      console.error(`   Webfont does NOT support stroke-based SVGs.`);
+      console.error(`   Please convert to filled paths using "Outline Stroke" in your design tool.`);
+      console.error(`   See .cursor/rules/vue3-icons-style.mdc for instructions.`);
+      // Remove stroke attributes but warn user
+      $path.removeAttr('stroke');
+      $path.removeAttr('stroke-width');
+      $path.removeAttr('stroke-linecap');
+      $path.removeAttr('stroke-linejoin');
+    }
     
-    // If rect in mask is large (>= 20x20 or >= 80% of viewBox) and has solid fill, remove it
-    const isLarge = (width >= 20 && height >= 20) || 
-                    (width >= vbWidth * 0.8 && height >= vbHeight * 0.8);
-    const isSolidFill = fill && fill !== 'none' && fill !== 'transparent';
-    
-    if (isLarge && isSolidFill) {
-      $rect.remove();
+    // Ensure fill="currentColor" for proper rendering
+    if (!fill || fill === 'none') {
+      $path.attr('fill', 'currentColor');
     }
   });
   
-  // Second pass: Remove rect elements that cover the entire viewBox (anywhere)
-  $('rect').each((i, element) => {
-    const $rect = $(element);
-    if (isBackgroundRect($rect, viewBox)) {
-      $rect.remove();
-    }
-  });
-  
-  // Also remove empty masks after removing their content
-  $('mask').each((i, element) => {
-    const $mask = $(element);
-    // Remove mask if it's empty or only contains removed rects
-    const hasContent = $mask.children().length > 0 && 
-                      $mask.find('rect, path, circle, ellipse, polygon, polyline, g').length > 0;
-    if (!hasContent) {
-      const maskId = $mask.attr('id');
-      // Remove mask attribute from elements that reference this mask
-      if (maskId) {
-        $(`[mask*="${maskId}"]`).removeAttr('mask');
-      }
-      $mask.remove();
-    }
-  });
-  
-  // Remove mask attributes from groups if mask was removed
-  $('g[mask]').each((i, element) => {
-    const $g = $(element);
-    const maskUrl = $g.attr('mask');
-    if (maskUrl) {
-      const maskId = maskUrl.replace('url(#', '').replace(')', '');
-      if ($(`#${maskId}`).length === 0) {
-        // Mask doesn't exist, remove the mask attribute
-        $g.removeAttr('mask');
-      }
-    }
-  });
+  // Remove problematic attributes
+  $svg.removeAttr('id');
+  $svg.find('[data-name]').removeAttr('data-name');
   
   return $.html();
 }
 
 /**
- * Convert icon data to SVG file for font generation
+ * Prepare SVG file for webfont generation
  */
-function createSvgFileForIcon(iconName, iconData, tempDir) {
-  const svgContent = iconData.isComplex ? iconData.content : iconData.path;
-  const viewBox = iconData.viewBox || '0 0 24 24';
+function prepareSvgForFont(iconFile, tempDir) {
+  const iconName = iconFile.name;
+  const svgPath = iconFile.path;
   
-  // Create SVG wrapper
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">`;
+  // Read original SVG
+  const svgContent = fs.readFileSync(svgPath, 'utf8');
   
-  if (iconData.isComplex) {
-    // For complex icons, remove background rects before using content
-    const cleanedContent = removeBackgroundRects(svgContent, viewBox);
-    svg += cleanedContent;
-  } else {
-    // For simple icons, wrap path in SVG
-    svg += `<path d="${svgContent}" fill="currentColor"/>`;
-  }
+  // Validate and prepare SVG for font generation
+  const processedSvg = validateAndPrepareSvg(svgContent, iconName);
   
-  svg += '</svg>';
+  // Write to temporary directory
+  const outputPath = path.join(tempDir, `${iconName}.svg`);
+  fs.writeFileSync(outputPath, processedSvg);
   
-  // Parse and clean the final SVG to remove any remaining background rects
-  const $ = cheerio.load(svg, { xmlMode: true });
-  const $svg = $('svg');
-  
-  // First pass: Aggressively remove large rects in masks
-  $svg.find('mask rect').each((i, element) => {
-    const $rect = $(element);
-    const width = parseFloat($rect.attr('width') || '0');
-    const height = parseFloat($rect.attr('height') || '0');
-    const fill = $rect.attr('fill') || '';
-    
-    // Parse viewBox
-    const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(' ').map(parseFloat);
-    
-    // If rect in mask is large (>= 20x20 or >= 80% of viewBox) and has solid fill, remove it
-    const isLarge = (width >= 20 && height >= 20) || 
-                    (width >= vbWidth * 0.8 && height >= vbHeight * 0.8);
-    const isSolidFill = fill && fill !== 'none' && fill !== 'transparent';
-    
-    if (isLarge && isSolidFill) {
-      $rect.remove();
-    }
-  });
-  
-  // Second pass: Remove background rects from anywhere in the SVG (including defs, masks, etc.)
-  $svg.find('rect').each((i, element) => {
-    const $rect = $(element);
-    if (isBackgroundRect($rect, viewBox)) {
-      $rect.remove();
-    }
-  });
-  
-  // Remove empty masks and defs
-  $svg.find('mask').each((i, element) => {
-    const $mask = $(element);
-    const hasContent = $mask.children().length > 0 && 
-                      $mask.find('rect, path, circle, ellipse, polygon, polyline, g').length > 0;
-    if (!hasContent) {
-      const maskId = $mask.attr('id');
-      // Remove mask attribute from elements that reference this mask
-      if (maskId) {
-        $svg.find(`[mask*="${maskId}"]`).removeAttr('mask');
-      }
-      $mask.remove();
-    }
-  });
-  
-  // Remove empty defs
-  $svg.find('defs').each((i, element) => {
-    const $defs = $(element);
-    if ($defs.children().length === 0) {
-      $defs.remove();
-    }
-  });
-  
-  // Remove mask attributes from groups if mask was removed
-  $svg.find('g[mask]').each((i, element) => {
-    const $g = $(element);
-    const maskUrl = $g.attr('mask');
-    if (maskUrl) {
-      const maskId = maskUrl.replace('url(#', '').replace(')', '');
-      if ($svg.find(`#${maskId}`).length === 0) {
-        $g.removeAttr('mask');
-      }
-    }
-  });
-  
-  svg = $.html();
-  
-  // Write temporary SVG file
-  const svgPath = path.join(tempDir, `${iconName}.svg`);
-  fs.writeFileSync(svgPath, svg);
-  
-  return svgPath;
+  return outputPath;
 }
 
 /**
  * Generate CSS file for the font
  */
-function generateCSS(fontName, fontFamily, classNamePrefix, iconMap, fontBaseSize) {
+function generateCSS(fontName, fontFamily, classNamePrefix, iconMap) {
+  const timestamp = new Date().toISOString();
+  
   const css = `/**
- * Datama Assets Icon Font
- * Generated automatically - do not edit manually
+ * ${fontFamily} - Icon Font
+ * Generated: ${timestamp}
+ * 
+ * This file is automatically generated from icons/vue3/ folder.
+ * Do not edit manually - regenerate using: node scripts/build-font.js
  */
 
+/* Font Face Definition */
 @font-face {
   font-family: '${fontFamily}';
   src: url('${fontName}.woff2') format('woff2'),
@@ -307,49 +165,71 @@ function generateCSS(fontName, fontFamily, classNamePrefix, iconMap, fontBaseSiz
   font-display: block;
 }
 
+/* Base Icon Class */
 .${classNamePrefix} {
-  font-family: '${fontFamily}';
+  /* Font properties */
+  font-family: '${fontFamily}', sans-serif;
   font-weight: normal;
   font-style: normal;
   font-size: ${CONFIG.defaultFontSize};
+  
+  /* Display properties */
   display: inline-block;
   line-height: 1;
+  vertical-align: middle;
+  
+  /* Text properties */
   text-transform: none;
   letter-spacing: normal;
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
+  
+  /* Font smoothing */
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* User interaction */
+  user-select: none;
 }
 
-/* Individual icon classes */
+/* Individual Icon Classes */
 ${Object.entries(iconMap)
+  .sort(([a], [b]) => a.localeCompare(b))
   .map(([iconName, unicode]) => {
     const className = iconName.replace(/-/g, '-');
     const unicodeHex = typeof unicode === 'number' 
       ? unicode.toString(16).toUpperCase().padStart(4, '0')
-      : unicode;
-    return `.${classNamePrefix}-${className}:before { content: '\\${unicodeHex}'; }`;
+      : unicode.toString().padStart(4, '0');
+    return `.${classNamePrefix}-${className}::before { content: '\\${unicodeHex}'; }`;
   })
   .join('\n')}
 
-/* Icon sizes */
-.${classNamePrefix}-xs { font-size: 0.75em; }
-.${classNamePrefix}-sm { font-size: 0.875em; }
-.${classNamePrefix}-lg { font-size: 1.333em; }
-.${classNamePrefix}-xl { font-size: 1.5em; }
-.${classNamePrefix}-2x { font-size: 2em; }
-.${classNamePrefix}-3x { font-size: 3em; }
-.${classNamePrefix}-4x { font-size: 4em; }
-.${classNamePrefix}-5x { font-size: 5em; }
+/* Size Modifiers */
+.${classNamePrefix}-xs  { font-size: 0.75em; }  /* 18px at 24px base */
+.${classNamePrefix}-sm  { font-size: 0.875em; } /* 21px at 24px base */
+.${classNamePrefix}-lg  { font-size: 1.333em; } /* 32px at 24px base */
+.${classNamePrefix}-xl  { font-size: 1.5em; }   /* 36px at 24px base */
+.${classNamePrefix}-2x  { font-size: 2em; }     /* 48px at 24px base */
+.${classNamePrefix}-3x  { font-size: 3em; }     /* 72px at 24px base */
+.${classNamePrefix}-4x  { font-size: 4em; }     /* 96px at 24px base */
+.${classNamePrefix}-5x  { font-size: 5em; }     /* 120px at 24px base */
 
-/* Fixed width icons */
+/* Fixed Width (useful for lists/navigation) */
 .${classNamePrefix}-fw {
   text-align: center;
   width: 1.25em;
 }
+
+/* Rotation Utilities */
+.${classNamePrefix}-rotate-90  { transform: rotate(90deg); }
+.${classNamePrefix}-rotate-180 { transform: rotate(180deg); }
+.${classNamePrefix}-rotate-270 { transform: rotate(270deg); }
+
+/* Flip Utilities */
+.${classNamePrefix}-flip-h { transform: scaleX(-1); }
+.${classNamePrefix}-flip-v { transform: scaleY(-1); }
 `;
 
   return css;
@@ -360,6 +240,7 @@ ${Object.entries(iconMap)
  */
 function generateHTMLDemo(fontName, fontFamily, classNamePrefix, iconMap) {
   const icons = Object.keys(iconMap).sort();
+  const timestamp = new Date().toISOString();
   
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -369,93 +250,214 @@ function generateHTMLDemo(fontName, fontFamily, classNamePrefix, iconMap) {
   <title>${fontFamily} - Icon Font Demo</title>
   <link rel="stylesheet" href="${fontName}.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       padding: 2rem;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
     }
+    
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
     h1 {
       color: #333;
+      font-size: 2.5rem;
       margin-bottom: 0.5rem;
+      font-weight: 700;
     }
+    
     .subtitle {
       color: #666;
-      margin-bottom: 2rem;
+      font-size: 1.125rem;
     }
+    
+    .badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    
+    .info-box {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border-left: 4px solid #667eea;
+    }
+    
+    .info-box h3 {
+      color: #333;
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+    
+    .code-example {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+    }
+    
+    .code-example code {
+      display: block;
+      margin: 0.5rem 0;
+      color: #68d391;
+    }
+    
+    .code-example .comment {
+      color: #a0aec0;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 2rem 0 1.5rem 0;
+      font-weight: 600;
+    }
+    
     .icon-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.5rem;
       margin-top: 2rem;
     }
+    
     .icon-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      transition: background 0.2s;
+      padding: 1.5rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+      background: white;
     }
+    
     .icon-item:hover {
-      background: #f9f9f9;
+      background: #f7fafc;
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
     }
+    
     .icon-item i {
-      font-size: 2em;
-      color: #333;
-      margin-bottom: 0.5rem;
+      font-size: 2.5em;
+      color: #667eea;
+      margin-bottom: 0.75rem;
     }
+    
     .icon-name {
       font-size: 0.75rem;
-      color: #666;
+      color: #4a5568;
       text-align: center;
       word-break: break-word;
+      font-weight: 500;
     }
-    .code-example {
-      background: #f5f5f5;
-      padding: 1rem;
-      border-radius: 4px;
-      margin-top: 2rem;
-      font-family: 'Courier New', monospace;
+    
+    .icon-unicode {
+      font-size: 0.625rem;
+      color: #a0aec0;
+      margin-top: 0.25rem;
+      font-family: monospace;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      color: #718096;
       font-size: 0.875rem;
-    }
-    .code-example code {
-      display: block;
-      margin: 0.5rem 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>${fontFamily}</h1>
-    <p class="subtitle">Icon Font Library - ${icons.length} icons available</p>
+    <header>
+      <h1>${fontFamily}</h1>
+      <p class="subtitle">
+        Modern Line Art Icon Font
+        <span class="badge">${icons.length} Icons</span>
+      </p>
+    </header>
     
-    <div class="code-example">
-      <strong>Usage:</strong>
-      <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-check"&gt;&lt;/i&gt;</code>
-      <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-home ${classNamePrefix}-lg"&gt;&lt;/i&gt;</code>
-      <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-settings ${classNamePrefix}-2x"&gt;&lt;/i&gt;</code>
+    <div class="info-box">
+      <h3>📦 Installation & Usage</h3>
+      <div class="code-example">
+        <code><span class="comment">&lt;!-- Include CSS --&gt;</span></code>
+        <code>&lt;link rel="stylesheet" href="${fontName}.css"&gt;</code>
+        <code></code>
+        <code><span class="comment">&lt;!-- Use icons --&gt;</span></code>
+        <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-${icons[0]}"&gt;&lt;/i&gt;</code>
+        <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-${icons[0]} ${classNamePrefix}-2x"&gt;&lt;/i&gt;</code>
+        <code>&lt;i class="${classNamePrefix} ${classNamePrefix}-${icons[0]} ${classNamePrefix}-lg ${classNamePrefix}-rotate-90"&gt;&lt;/i&gt;</code>
+      </div>
     </div>
     
+    <h2 class="section-title">🎨 Available Icons</h2>
     <div class="icon-grid">
       ${icons.map(iconName => {
         const className = iconName.replace(/-/g, '-');
+        const unicode = iconMap[iconName];
+        const unicodeHex = typeof unicode === 'number' 
+          ? 'U+' + unicode.toString(16).toUpperCase().padStart(4, '0')
+          : 'U+' + unicode.toString().padStart(4, '0');
         return `
-        <div class="icon-item">
-          <i class="${classNamePrefix} ${classNamePrefix}-${className}"></i>
-          <span class="icon-name">${iconName}</span>
-        </div>`;
+      <div class="icon-item" onclick="copyClassName('${classNamePrefix}-${className}')" title="Click to copy class name">
+        <i class="${classNamePrefix} ${classNamePrefix}-${className}"></i>
+        <span class="icon-name">${iconName}</span>
+        <span class="icon-unicode">${unicodeHex}</span>
+      </div>`;
       }).join('')}
     </div>
+    
+    <footer>
+      <p>Generated: ${timestamp}</p>
+      <p>Font Family: ${fontFamily} • Base Size: ${CONFIG.defaultFontSize}</p>
+    </footer>
   </div>
+  
+  <script>
+    function copyClassName(className) {
+      const text = '${classNamePrefix} ' + className;
+      navigator.clipboard.writeText(text).then(() => {
+        const notification = document.createElement('div');
+        notification.textContent = 'Copied: ' + text;
+        notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#667eea;color:white;padding:1rem 1.5rem;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:1000;font-family:sans-serif;font-size:0.875rem;';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2000);
+      });
+    }
+  </script>
 </body>
 </html>`;
 
@@ -463,82 +465,61 @@ function generateHTMLDemo(fontName, fontFamily, classNamePrefix, iconMap) {
 }
 
 /**
- * Generate icon mapping (icon name to unicode)
+ * Create temporary directory and clean it
  */
-function generateIconMap(iconNames) {
-  const iconMap = {};
-  let currentUnicode = CONFIG.startUnicode;
+function prepareTempDirectory() {
+  const tempDir = path.join(__dirname, '../.temp-vue3-font-svgs');
   
-  iconNames.forEach(iconName => {
-    iconMap[iconName] = currentUnicode.toString(16).toUpperCase();
-    currentUnicode++;
-    
-    // Prevent overflow of Private Use Area
-    if (currentUnicode > 0xEFFF) {
-      console.warn('⚠️  Warning: Running out of Unicode Private Use Area codes!');
+  // Create if doesn't exist
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
+  
+  // Clean existing files
+  const existingFiles = fs.readdirSync(tempDir);
+  existingFiles.forEach(file => {
+    const filePath = path.join(tempDir, file);
+    if (fs.statSync(filePath).isFile()) {
+      fs.unlinkSync(filePath);
     }
   });
   
-  return iconMap;
+  return tempDir;
 }
 
 /**
  * Main build function
  */
 async function buildFont() {
-  console.log('🚀 Starting Datama Assets font generation...\n');
+  console.log('🚀 Starting Vue3 Icons font generation...\n');
+  console.log(`📂 Source: ${CONFIG.iconsDir}`);
+  console.log(`📦 Output: ${CONFIG.outputDir}\n`);
   
   try {
-    // Step 1: Load SVG data
-    console.log('📝 Step 1: Loading SVG data...');
-    const svgData = loadSvgData();
-    const rawIconNames = Object.keys(svgData).sort();
+    // Step 1: Load SVG files
+    console.log('📝 Step 1: Loading SVG files from icons/vue3/...');
+    const iconFiles = loadSvgFiles();
+    const iconNames = iconFiles.map(f => f.name);
     
-    // Remove -svg suffix from icon names
-    const iconNames = rawIconNames.map(name => name.replace(/-svg$/, ''));
+    console.log(`✅ Found ${iconFiles.length} icons: ${iconNames.join(', ')}\n`);
     
-    if (iconNames.length === 0) {
-      console.error('❌ No icons found in SVG data.');
-      process.exit(1);
-    }
+    // Step 2: Prepare temporary directory
+    console.log('📁 Step 2: Preparing temporary directory...');
+    const tempDir = prepareTempDirectory();
+    console.log(`✅ Temp directory ready: ${tempDir}\n`);
     
-    console.log(`✅ Loaded ${iconNames.length} icons\n`);
-    
-    // Step 2: Create temporary directory for SVG files
-    console.log('📁 Step 2: Preparing SVG files...');
-    const tempDir = path.join(__dirname, '../.temp-font-svgs');
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir, { recursive: true });
-    }
-    
-    // Clean temp directory
-    let existingFiles = [];
-    try {
-      existingFiles = fs.readdirSync(tempDir);
-      existingFiles.forEach(file => {
-        const filePath = path.join(tempDir, file);
-        if (fs.statSync(filePath).isFile()) {
-          fs.unlinkSync(filePath);
-        }
-      });
-    } catch (err) {
-      // Directory might be empty, that's okay
-    }
-    
-    // Create SVG files for each icon
-    const svgFiles = [];
-    iconNames.forEach((iconName, index) => {
-      // Use original name with -svg suffix to get data from svgData
-      const originalIconName = rawIconNames[index];
-      const iconData = svgData[originalIconName];
-      const svgPath = createSvgFileForIcon(iconName, iconData, tempDir);
-      svgFiles.push(svgPath);
+    // Step 3: Process SVG files
+    console.log('🔧 Step 3: Processing SVG files...');
+    const processedSvgs = [];
+    iconFiles.forEach(iconFile => {
+      const svgPath = prepareSvgForFont(iconFile, tempDir);
+      processedSvgs.push(svgPath);
+      console.log(`   ✓ ${iconFile.name}`);
     });
+    console.log(`✅ Processed ${processedSvgs.length} SVG files\n`);
     
-    console.log(`✅ Prepared ${svgFiles.length} SVG files\n`);
-    
-    // Step 3: Generate font
-    console.log('🔤 Step 3: Generating font files...');
+    // Step 4: Generate font with webfont
+    console.log('🔤 Step 4: Generating font files with webfont...');
     const result = await webfont({
       files: path.join(tempDir, '*.svg'),
       fontName: CONFIG.fontName,
@@ -550,113 +531,87 @@ async function buildFont() {
       fontStyle: 'normal',
       fontWeight: 'normal',
       fixedWidth: false,
-      descent: 0
+      descent: 128, // Add descent for better vertical alignment
+      ascent: CONFIG.fontBaseSize - 128 // Adjust ascent accordingly
     });
     
-    // Step 4: Create output directories
-    console.log('\n📦 Step 4: Saving font files...');
-    const fontDir = CONFIG.outputDir.fonts;
-    if (!fs.existsSync(fontDir)) {
-      fs.mkdirSync(fontDir, { recursive: true });
-    }
+    console.log(`✅ Font generated successfully\n`);
     
-    // Save font files
+    // Step 5: Create output directory
+    console.log('📦 Step 5: Creating output directory...');
+    if (!fs.existsSync(CONFIG.outputDir)) {
+      fs.mkdirSync(CONFIG.outputDir, { recursive: true });
+    }
+    console.log(`✅ Output directory ready: ${CONFIG.outputDir}\n`);
+    
+    // Step 6: Save font files
+    console.log('💾 Step 6: Saving font files...');
     if (result.woff2) {
-      fs.writeFileSync(path.join(fontDir, `${CONFIG.fontName}.woff2`), result.woff2);
-      console.log(`✅ Generated ${CONFIG.fontName}.woff2 (${(result.woff2.length / 1024).toFixed(2)} KB)`);
+      const woff2Path = path.join(CONFIG.outputDir, `${CONFIG.fontName}.woff2`);
+      fs.writeFileSync(woff2Path, result.woff2);
+      console.log(`   ✓ ${CONFIG.fontName}.woff2 (${(result.woff2.length / 1024).toFixed(2)} KB)`);
     }
     if (result.woff) {
-      fs.writeFileSync(path.join(fontDir, `${CONFIG.fontName}.woff`), result.woff);
-      console.log(`✅ Generated ${CONFIG.fontName}.woff (${(result.woff.length / 1024).toFixed(2)} KB)`);
+      const woffPath = path.join(CONFIG.outputDir, `${CONFIG.fontName}.woff`);
+      fs.writeFileSync(woffPath, result.woff);
+      console.log(`   ✓ ${CONFIG.fontName}.woff (${(result.woff.length / 1024).toFixed(2)} KB)`);
     }
     if (result.ttf) {
-      fs.writeFileSync(path.join(fontDir, `${CONFIG.fontName}.ttf`), result.ttf);
-      console.log(`✅ Generated ${CONFIG.fontName}.ttf (${(result.ttf.length / 1024).toFixed(2)} KB)`);
+      const ttfPath = path.join(CONFIG.outputDir, `${CONFIG.fontName}.ttf`);
+      fs.writeFileSync(ttfPath, result.ttf);
+      console.log(`   ✓ ${CONFIG.fontName}.ttf (${(result.ttf.length / 1024).toFixed(2)} KB)`);
     }
+    console.log(`✅ All font files saved\n`);
     
-    // Step 5: Generate icon mapping
-    console.log('\n🗺️  Step 5: Generating icon mapping...');
+    // Step 7: Generate icon mapping
+    console.log('🗺️  Step 7: Generating icon mapping...');
     const iconMap = {};
+    let currentUnicode = CONFIG.startUnicode;
     
-    // Try to get glyphs data from result
-    if (result.glyphsData && Array.isArray(result.glyphsData) && result.glyphsData.length > 0) {
-      console.log(`   Found ${result.glyphsData.length} glyphs in result`);
+    iconNames.forEach(iconName => {
+      iconMap[iconName] = currentUnicode;
+      currentUnicode++;
       
-      result.glyphsData.forEach((glyph, index) => {
-        const iconName = iconNames[index];
-        if (!iconName) return;
-        
-        // Handle different unicode formats
-        let unicodeValue = null;
-        if (glyph.unicode) {
-          if (Array.isArray(glyph.unicode) && glyph.unicode.length > 0) {
-            unicodeValue = typeof glyph.unicode[0] === 'string' 
-              ? glyph.unicode[0].charCodeAt(0) 
-              : glyph.unicode[0];
-          } else if (typeof glyph.unicode === 'string') {
-            unicodeValue = glyph.unicode.charCodeAt(0);
-          } else if (typeof glyph.unicode === 'number') {
-            unicodeValue = glyph.unicode;
-          }
-        }
-        
-        // If no unicode found, use calculated value
-        if (unicodeValue === null) {
-          unicodeValue = CONFIG.startUnicode + index;
-        }
-        
-        iconMap[iconName] = unicodeValue;
-      });
-    } else if (result.glyphs && Array.isArray(result.glyphs) && result.glyphs.length > 0) {
-      // Alternative property name
-      console.log(`   Found ${result.glyphs.length} glyphs in result.glyphs`);
-      result.glyphs.forEach((glyph, index) => {
-        const iconName = iconNames[index];
-        if (iconName) {
-          const unicode = glyph.unicode || (CONFIG.startUnicode + index);
-          iconMap[iconName] = typeof unicode === 'string' ? unicode.charCodeAt(0) : unicode;
-        }
-      });
-    } else {
-      // Fallback: generate mapping based on startUnicode
-      console.log(`   Using fallback: generating mapping for ${iconNames.length} icons`);
-      let currentUnicode = CONFIG.startUnicode;
-      iconNames.forEach(iconName => {
-        iconMap[iconName] = currentUnicode;
-        currentUnicode++;
-      });
-    }
+      // Warn if running out of Private Use Area
+      if (currentUnicode > 0xEFFF) {
+        console.warn(`⚠️  Warning: Exceeding Unicode Private Use Area (E000-EFFF)`);
+      }
+    });
     
-    console.log(`   Generated mapping for ${Object.keys(iconMap).length} icons`);
+    console.log(`✅ Generated mapping for ${Object.keys(iconMap).length} icons\n`);
     
-    // Step 6: Generate CSS
-    console.log('\n🎨 Step 6: Generating CSS file...');
-    const css = generateCSS(CONFIG.fontName, CONFIG.fontFamily, CONFIG.classNamePrefix, iconMap, CONFIG.fontBaseSize);
-    const cssPath = path.join(fontDir, `${CONFIG.fontName}.css`);
+    // Step 8: Generate CSS file
+    console.log('🎨 Step 8: Generating CSS file...');
+    const css = generateCSS(CONFIG.fontName, CONFIG.fontFamily, CONFIG.classNamePrefix, iconMap);
+    const cssPath = path.join(CONFIG.outputDir, `${CONFIG.fontName}.css`);
     fs.writeFileSync(cssPath, css);
-    console.log(`✅ Generated ${CONFIG.fontName}.css`);
+    console.log(`   ✓ ${CONFIG.fontName}.css`);
+    console.log(`✅ CSS file generated\n`);
     
-    // Step 7: Generate HTML demo
-    console.log('\n📄 Step 7: Generating HTML demo...');
+    // Step 9: Generate HTML demo
+    console.log('📄 Step 9: Generating HTML demo...');
     const html = generateHTMLDemo(CONFIG.fontName, CONFIG.fontFamily, CONFIG.classNamePrefix, iconMap);
-    const htmlPath = path.join(fontDir, `${CONFIG.fontName}.html`);
+    const htmlPath = path.join(CONFIG.outputDir, `${CONFIG.fontName}.html`);
     fs.writeFileSync(htmlPath, html);
-    console.log(`✅ Generated ${CONFIG.fontName}.html`);
+    console.log(`   ✓ ${CONFIG.fontName}.html`);
+    console.log(`✅ HTML demo generated\n`);
     
-    // Step 8: Save icon mapping JSON
-    console.log('\n💾 Step 8: Saving icon mapping...');
-    const mappingPath = path.join(fontDir, `${CONFIG.fontName}-mapping.json`);
-    const mappingCount = Object.keys(iconMap).length;
-    if (mappingCount === 0) {
-      console.warn('⚠️  Warning: Icon mapping is empty!');
-      console.warn(`   iconNames length: ${iconNames.length}`);
-      console.warn(`   result keys: ${Object.keys(result).join(', ')}`);
-    }
-    fs.writeFileSync(mappingPath, JSON.stringify(iconMap, null, 2));
-    console.log(`✅ Generated ${CONFIG.fontName}-mapping.json (${mappingCount} icons)`);
+    // Step 10: Save icon mapping JSON
+    console.log('💾 Step 10: Saving icon mapping...');
+    const mappingPath = path.join(CONFIG.outputDir, `${CONFIG.fontName}-mapping.json`);
+    const mappingData = {
+      fontName: CONFIG.fontName,
+      fontFamily: CONFIG.fontFamily,
+      classPrefix: CONFIG.classNamePrefix,
+      generated: new Date().toISOString(),
+      icons: iconMap
+    };
+    fs.writeFileSync(mappingPath, JSON.stringify(mappingData, null, 2));
+    console.log(`   ✓ ${CONFIG.fontName}-mapping.json (${Object.keys(iconMap).length} icons)`);
+    console.log(`✅ Icon mapping saved\n`);
     
-    // Cleanup temp directory
-    console.log('\n🧹 Cleaning up...');
+    // Step 11: Cleanup temporary directory
+    console.log('🧹 Step 11: Cleaning up...');
     try {
       const filesToClean = fs.readdirSync(tempDir);
       filesToClean.forEach(file => {
@@ -666,25 +621,41 @@ async function buildFont() {
         }
       });
       fs.rmdirSync(tempDir);
-      console.log('✅ Cleanup complete');
+      console.log(`✅ Temporary directory cleaned\n`);
     } catch (err) {
-      console.warn('⚠️  Could not clean up temp directory:', err.message);
+      console.warn(`⚠️  Could not clean up temp directory: ${err.message}\n`);
     }
     
-    // Summary
-    console.log('\n✅ Font generation completed successfully!');
-    console.log(`📊 Generated ${iconNames.length} icons`);
-    console.log(`📁 All files in: dist/fonts/`);
-    console.log(`   - ${CONFIG.fontName}.woff2`);
-    console.log(`   - ${CONFIG.fontName}.woff`);
-    console.log(`   - ${CONFIG.fontName}.ttf`);
-    console.log(`   - ${CONFIG.fontName}.css`);
-    console.log(`   - ${CONFIG.fontName}.html`);
-    console.log(`\n💡 Usage: <i class="${CONFIG.classNamePrefix} ${CONFIG.classNamePrefix}-${iconNames[0]}"></i>`);
+    // Success summary
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('✨ Font generation completed successfully! ✨');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    console.log(`📊 Statistics:`);
+    console.log(`   • Icons processed: ${iconNames.length}`);
+    console.log(`   • Font formats: WOFF2, WOFF, TTF`);
+    console.log(`   • Base size: ${CONFIG.fontBaseSize}px`);
+    console.log(`   • Unicode range: U+${CONFIG.startUnicode.toString(16).toUpperCase()} - U+${(CONFIG.startUnicode + iconNames.length - 1).toString(16).toUpperCase()}\n`);
+    console.log(`📁 Output files:`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}.woff2`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}.woff`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}.ttf`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}.css`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}.html (demo)`);
+    console.log(`   • ${CONFIG.outputDir}/${CONFIG.fontName}-mapping.json\n`);
+    console.log(`💡 Usage example:`);
+    console.log(`   <i class="${CONFIG.classNamePrefix} ${CONFIG.classNamePrefix}-${iconNames[0]}"></i>\n`);
+    console.log(`🌐 Open ${CONFIG.fontName}.html in your browser to see all icons!`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     
   } catch (error) {
-    console.error('❌ Font generation failed:', error.message);
-    console.error(error.stack);
+    console.error('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('❌ Font generation failed!');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    console.error(`Error: ${error.message}\n`);
+    if (error.stack) {
+      console.error('Stack trace:');
+      console.error(error.stack);
+    }
     process.exit(1);
   }
 }

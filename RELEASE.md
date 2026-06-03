@@ -46,7 +46,7 @@ Utilisez le script automatisé :
 # Release patch (1.0.0 → 1.0.1)
 ./scripts/release.sh patch
 
-# Release minor (1.0.0 → 1.1.0)  
+# Release minor (1.0.0 → 1.1.0)
 ./scripts/release.sh minor
 
 # Release major (1.0.0 → 2.0.0)
@@ -153,7 +153,7 @@ npm test
 
 # Script de release automatique
 npm run release:patch   # → ./scripts/release.sh patch
-npm run release:minor   # → ./scripts/release.sh minor  
+npm run release:minor   # → ./scripts/release.sh minor
 npm run release:major   # → ./scripts/release.sh major
 ```
 
@@ -195,4 +195,4 @@ git push origin :refs/tags/v1.0.1
 
 # Supprimer la release GitHub (manuellement via l'interface)
 # Les packages NPM ne peuvent pas être "non-publiés" après 24h
-``` 
+```

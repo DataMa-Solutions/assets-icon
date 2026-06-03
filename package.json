@@ -15,6 +15,7 @@
     "build:json": "node scripts/build-json.js",
     "build:vue": "node scripts/build-vue.js",
     "build:font": "node scripts/build-font.js",
+    "build:vue3-font": "node scripts/build-font.js",
     "build": "node scripts/build.js",
     "build:all": "npm run build:svg && npm run build:json && npm run build:vue && npm run build && npm run build:font",
     "dev": "node scripts/dev.js",
