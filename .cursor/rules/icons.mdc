@@ -1,0 +1,16 @@
+---
+description: Charge le skill icons à chaque création ou édition d'icône SVG
+globs: icons/**/*.svg
+alwaysApply: false
+---
+
+# Icons
+
+When creating or editing any file under `icons/`, **read and apply** the skill before making changes:
+
+1. [.cursor/skills/icons/SKILL.md](../skills/icons/SKILL.md) — mandatory, full workflow and standards
+2. [.cursor/skills/icons/reference.md](../skills/icons/reference.md) — path syntax and examples if needed
+
+The skill is the **single source of truth** for icon authoring. Do not rely on deprecated inline rules.
+
+After changes: `npm run build:all` and `npm test`.

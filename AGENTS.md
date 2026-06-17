@@ -23,5 +23,6 @@ This is a **standalone SVG icon library** (`@datama/icons`) — no external serv
 - The font demo page is generated at `dist/fonts/vue3-icons.html` after `build:font`. Serve it with any static server (e.g. `python3 -m http.server 8080` from `dist/fonts/`).
 - ESLint has pre-existing errors in the codebase (style/indent issues). These are not regressions.
 - Tests validate icon structure and SVG validity. Some tests warn "run build first" if `dist/` is absent — run `npm run build:all` first for full test coverage.
-- The `icons/` directory contains source SVGs organized by category (`actions/`, `data/`, `illustrations/`, `logos/`, `navigation/`, `settings/`, `sort/`, `sources/`, `ui/`, `vue3/`).
+- The `icons/` directory contains source SVGs organized by category (`actions/`, `charts/`, `data/`, `illustrations/`, `logos/`, `navigation/`, `settings/`, `sort/`, `sources/`, `ui/`, `vue3/`).
 - Only icons in `icons/vue3/` are included in the web font build.
+- **Icon authoring skill**: see [.cursor/skills/icons/SKILL.md](.cursor/skills/icons/SKILL.md) (loaded automatically via [.cursor/rules/icons.mdc](.cursor/rules/icons.mdc) when editing `icons/**/*.svg`).

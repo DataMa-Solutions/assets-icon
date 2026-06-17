@@ -99,7 +99,7 @@ function validateAndPrepareSvg(svgContent, iconName) {
       console.error(`❌ Icon "${iconName}" uses stroke attribute!`);
       console.error(`   Webfont does NOT support stroke-based SVGs.`);
       console.error(`   Please convert to filled paths using "Outline Stroke" in your design tool.`);
-      console.error(`   See .cursor/rules/vue3-icons-style.mdc for instructions.`);
+      console.error(`   See .cursor/skills/icons/SKILL.md for instructions.`);
       // Remove stroke attributes but warn user
       $path.removeAttr('stroke');
       $path.removeAttr('stroke-width');

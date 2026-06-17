@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 121 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 131 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,12 +53,16 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (121)
+## Available Icons (131)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
 | `add-folder-svg` | <img src="icons/actions/add-folder.svg" width="32" height="32" alt="add-folder" /> |
+| `areas-svg` | <img src="icons/charts/areas.svg" width="32" height="32" alt="areas" /> |
 | `assess-svg` | <img src="icons/data/assess.svg" width="32" height="32" alt="assess" /> |
+| `bars-stacked-2-svg` | <img src="icons/charts/bars-stacked-2.svg" width="32" height="32" alt="bars-stacked-2" /> |
+| `bars-stacked-svg` | <img src="icons/charts/bars-stacked.svg" width="32" height="32" alt="bars-stacked" /> |
+| `bars-svg` | <img src="icons/charts/bars.svg" width="32" height="32" alt="bars" /> |
 | `basketball-svg` | <img src="icons/ui/basketball.svg" width="32" height="32" alt="basketball" /> |
 | `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
 | `bookmark-svg` | <img src="icons/ui/bookmark.svg" width="32" height="32" alt="bookmark" /> |
@@ -124,6 +128,7 @@ Vue.use(DatamaIcons);
 | `journey-svg` | <img src="icons/data/journey.svg" width="32" height="32" alt="journey" /> |
 | `leave-org-svg` | <img src="icons/actions/leave-org.svg" width="32" height="32" alt="leave-org" /> |
 | `license-key-svg` | <img src="icons/ui/license-key.svg" width="32" height="32" alt="license-key" /> |
+| `lines-svg` | <img src="icons/charts/lines.svg" width="32" height="32" alt="lines" /> |
 | `link-open-svg` | <img src="icons/ui/link-open.svg" width="32" height="32" alt="link-open" /> |
 | `lock-svg` | <img src="icons/ui/lock.svg" width="32" height="32" alt="lock" /> |
 | `looker-svg` | <img src="icons/sources/looker.svg" width="32" height="32" alt="looker" /> |
@@ -131,8 +136,10 @@ Vue.use(DatamaIcons);
 | `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
 | `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
+| `mekko-svg` | <img src="icons/charts/mekko.svg" width="32" height="32" alt="mekko" /> |
 | `metabase-svg` | <img src="icons/sources/metabase.svg" width="32" height="32" alt="metabase" /> |
 | `minus-svg` | <img src="icons/vue3/minus.svg" width="32" height="32" alt="minus" /> |
+| `moves-svg` | <img src="icons/charts/moves.svg" width="32" height="32" alt="moves" /> |
 | `mysql-svg` | <img src="icons/sources/mysql.svg" width="32" height="32" alt="mysql" /> |
 | `number-by-asc-svg` | <img src="icons/sort/number-by-asc.svg" width="32" height="32" alt="number-by-asc" /> |
 | `number-by-desc-svg` | <img src="icons/sort/number-by-desc.svg" width="32" height="32" alt="number-by-desc" /> |
@@ -156,6 +163,7 @@ Vue.use(DatamaIcons);
 | `release-notes-svg` | <img src="icons/ui/release-notes.svg" width="32" height="32" alt="release-notes" /> |
 | `reverse-h-svg` | <img src="icons/actions/reverse-h.svg" width="32" height="32" alt="reverse-h" /> |
 | `reverse-v-svg` | <img src="icons/actions/reverse-v.svg" width="32" height="32" alt="reverse-v" /> |
+| `scatter-svg` | <img src="icons/charts/scatter.svg" width="32" height="32" alt="scatter" /> |
 | `search-svg` | <img src="icons/vue3/search.svg" width="32" height="32" alt="search" /> |
 | `settings-1-svg` | <img src="icons/ui/settings-1.svg" width="32" height="32" alt="settings-1" /> |
 | `settings-org-svg` | <img src="icons/ui/settings-org.svg" width="32" height="32" alt="settings-org" /> |
@@ -167,6 +175,7 @@ Vue.use(DatamaIcons);
 | `string-by-desc-svg` | <img src="icons/sort/string-by-desc.svg" width="32" height="32" alt="string-by-desc" /> |
 | `table-svg` | <img src="icons/vue3/table.svg" width="32" height="32" alt="table" /> |
 | `tableau-svg` | <img src="icons/sources/tableau.svg" width="32" height="32" alt="tableau" /> |
+| `tree-svg` | <img src="icons/charts/tree.svg" width="32" height="32" alt="tree" /> |
 | `tutorials-svg` | <img src="icons/ui/tutorials.svg" width="32" height="32" alt="tutorials" /> |
 | `update-svg` | <img src="icons/actions/update.svg" width="32" height="32" alt="update" /> |
 | `upload-1-svg` | <img src="icons/actions/upload-1.svg" width="32" height="32" alt="upload-1" /> |
@@ -175,6 +184,7 @@ Vue.use(DatamaIcons);
 | `value-by-asc-svg` | <img src="icons/sort/value-by-asc.svg" width="32" height="32" alt="value-by-asc" /> |
 | `value-by-desc-svg` | <img src="icons/sort/value-by-desc.svg" width="32" height="32" alt="value-by-desc" /> |
 | `warning-svg` | <img src="icons/ui/warning.svg" width="32" height="32" alt="warning" /> |
+| `waterfall-svg` | <img src="icons/charts/waterfall.svg" width="32" height="32" alt="waterfall" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
 | `zoom-in-svg` | <img src="icons/ui/zoom-in.svg" width="32" height="32" alt="zoom-in" /> |
 | `zoom-out-svg` | <img src="icons/ui/zoom-out.svg" width="32" height="32" alt="zoom-out" /> |
