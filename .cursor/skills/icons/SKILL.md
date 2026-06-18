@@ -34,15 +34,26 @@ Categories are discovered automatically from subfolders (`actions/`, `charts/`, 
 - Which category folder? (create a new one if needed, e.g. `icons/charts/`)
 - Should it be included in the webfont? → only if placed in `icons/vue3/`
 
-### 2. Propose 2–3 visual variants
+### 2. Analyze existing icons before drawing
+
+Before authoring a new SVG from scratch, **search the library for a viable base**:
+
+1. List or grep `icons/**/*.svg` (all categories: `ui/`, `vue3/`, `charts/`, `actions/`, …).
+2. Read candidates that share the same metaphor or geometry (e.g. `vue3/search.svg` for zoom icons).
+3. If a base icon already matches the intended shape, **reuse its path verbatim** and only append the delta (badge, modifier, second glyph).
+4. Keep the same `fill-rule`, winding, and viewport conventions as the base — do not redraw the base from memory.
+
+**Example:** `zoom-in` / `zoom-out` must copy `icons/vue3/search.svg` exactly (ring + handle via `fill-rule="evenodd"`), then add a rounded `+` or `−` inside the lens. Never replace the ring with a filled disc.
+
+### 3. Propose 2–3 visual variants
 
 Describe each option (minimal, balanced, alternative metaphor). **Wait for user confirmation** before writing the SVG unless the user explicitly asked to implement directly.
 
-### 3. Create the SVG
+### 4. Create the SVG
 
 Follow structure, style, and viewport rules below.
 
-### 4. Build and verify
+### 5. Build and verify
 
 ```bash
 npm run build:all
@@ -176,6 +187,7 @@ Full command table and examples: [reference.md](reference.md).
 ## Pre-save checklist
 
 ```
+- [ ] Existing icons reviewed; base path reused when applicable
 - [ ] XML declaration + xmlns + viewBox 0 0 24 24
 - [ ] Single <path>, fill="currentColor", no stroke
 - [ ] No forbidden elements or attributes
