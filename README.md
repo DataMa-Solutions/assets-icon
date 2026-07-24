@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 200 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 206 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (200)
+## Available Icons (206)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -62,6 +62,7 @@ Vue.use(DatamaIcons);
 | `alert-triangle-svg` | <img src="icons/legacy/alert-triangle.svg" width="32" height="32" alt="alert-triangle" /> |
 | `annotate-svg` | <img src="icons/charts/annotate.svg" width="32" height="32" alt="annotate" /> |
 | `area-chart-svg` | <img src="icons/legacy/area-chart.svg" width="32" height="32" alt="area-chart" /> |
+| `areas-svg` | <img src="icons/charts/areas.svg" width="32" height="32" alt="areas" /> |
 | `arrow-bottom-svg` | <img src="icons/legacy/arrow-bottom.svg" width="32" height="32" alt="arrow-bottom" /> |
 | `arrow-down-right-svg` | <img src="icons/legacy/arrow-down-right.svg" width="32" height="32" alt="arrow-down-right" /> |
 | `arrow-down-svg` | <img src="icons/ui/arrow-down.svg" width="32" height="32" alt="arrow-down" /> |
@@ -74,6 +75,8 @@ Vue.use(DatamaIcons);
 | `axis-cut-svg` | <img src="icons/charts/axis-cut.svg" width="32" height="32" alt="axis-cut" /> |
 | `axis-svg` | <img src="icons/charts/axis.svg" width="32" height="32" alt="axis" /> |
 | `balance-scale-svg` | <img src="icons/legacy/balance-scale.svg" width="32" height="32" alt="balance-scale" /> |
+| `bars-stacked-2-svg` | <img src="icons/charts/bars-stacked-2.svg" width="32" height="32" alt="bars-stacked-2" /> |
+| `bars-stacked-svg` | <img src="icons/charts/bars-stacked.svg" width="32" height="32" alt="bars-stacked" /> |
 | `bars-svg` | <img src="icons/charts/bars.svg" width="32" height="32" alt="bars" /> |
 | `basketball-svg` | <img src="icons/ui/basketball.svg" width="32" height="32" alt="basketball" /> |
 | `book-svg` | <img src="icons/ui/book.svg" width="32" height="32" alt="book" /> |
@@ -177,11 +180,13 @@ Vue.use(DatamaIcons);
 | `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
 | `mariadb-svg` | <img src="icons/sources/mariadb.svg" width="32" height="32" alt="mariadb" /> |
 | `maximize-2-svg` | <img src="icons/legacy/maximize-2.svg" width="32" height="32" alt="maximize-2" /> |
+| `mekko-svg` | <img src="icons/charts/mekko.svg" width="32" height="32" alt="mekko" /> |
 | `merge-cells-svg` | <img src="icons/ui/merge-cells.svg" width="32" height="32" alt="merge-cells" /> |
 | `metabase-svg` | <img src="icons/sources/metabase.svg" width="32" height="32" alt="metabase" /> |
 | `minus-svg` | <img src="icons/vue3/minus.svg" width="32" height="32" alt="minus" /> |
 | `more-horizontal-svg` | <img src="icons/legacy/more-horizontal.svg" width="32" height="32" alt="more-horizontal" /> |
 | `more-vertical-svg` | <img src="icons/legacy/more-vertical.svg" width="32" height="32" alt="more-vertical" /> |
+| `moves-svg` | <img src="icons/charts/moves.svg" width="32" height="32" alt="moves" /> |
 | `multiply-svg` | <img src="icons/charts/multiply.svg" width="32" height="32" alt="multiply" /> |
 | `mysql-svg` | <img src="icons/sources/mysql.svg" width="32" height="32" alt="mysql" /> |
 | `new-pillar-svg` | <img src="icons/charts/new-pillar.svg" width="32" height="32" alt="new-pillar" /> |
@@ -219,6 +224,7 @@ Vue.use(DatamaIcons);
 | `rotate-cw-svg` | <img src="icons/legacy/rotate-cw.svg" width="32" height="32" alt="rotate-cw" /> |
 | `rotate-cw1-svg` | <img src="icons/legacy/rotate-cw1.svg" width="32" height="32" alt="rotate-cw1" /> |
 | `save-svg` | <img src="icons/legacy/save.svg" width="32" height="32" alt="save" /> |
+| `scatter-svg` | <img src="icons/charts/scatter.svg" width="32" height="32" alt="scatter" /> |
 | `search-svg` | <img src="icons/vue3/search.svg" width="32" height="32" alt="search" /> |
 | `settings-1-svg` | <img src="icons/ui/settings-1.svg" width="32" height="32" alt="settings-1" /> |
 | `settings-org-svg` | <img src="icons/ui/settings-org.svg" width="32" height="32" alt="settings-org" /> |
