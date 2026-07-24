@@ -145,15 +145,16 @@ function createSVG(iconData, options = {}) {
     svg.setAttribute('viewBox', iconData.viewBox || '0 0 24 24');
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
-    svg.setAttribute('fill', fill);
-    svg.setAttribute('stroke', stroke);
-    svg.setAttribute('stroke-width', strokeWidth);
-    
+    // Do not put stroke="none"/stroke-width="0" on the root: it inherits into
+    // complex stroke icons (Tableau WebView) and kills line art. Only set
+    // explicit stroke attrs when the caller asks for them.
     if (className) {
         svg.classList.add(className);
     }
     
     if (iconData.isComplex && iconData.content) {
+        // Root fill none so stroke paths with fill="none" stay outlines.
+        svg.setAttribute('fill', 'none');
         // Check if invert mode is requested
         if (options.invert && iconData.invertFillContent) {
             // Use invert fill version
@@ -172,10 +173,20 @@ function createSVG(iconData, options = {}) {
             }
             svg.innerHTML = content;
         } else {
-            // Use original content with all original colors and gradients
-            svg.innerHTML = iconData.content;
+            // Use original content; resolve currentColor when a custom fill is passed
+            let content = iconData.content;
+            if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
         }
     } else if (!iconData.isComplex && iconData.path) {
+        svg.setAttribute('fill', fill);
+        if (stroke !== 'none') {
+            svg.setAttribute('stroke', stroke);
+            svg.setAttribute('stroke-width', strokeWidth);
+        }
         // Check if invert mode is requested
         if (options.invert && iconData.invertFillContent) {
             // Use invert fill version
@@ -395,15 +406,14 @@ function createSVG(iconData, options = {}) {
     svg.setAttribute('viewBox', iconData.viewBox || '0 0 24 24');
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
-    svg.setAttribute('fill', fill);
-    svg.setAttribute('stroke', stroke);
-    svg.setAttribute('stroke-width', strokeWidth);
-    
+    // Do not put stroke="none"/stroke-width="0" on the root: it inherits into
+    // complex stroke icons (Tableau WebView) and kills line art.
     if (className) {
         svg.classList.add(className);
     }
     
     if (iconData.isComplex && iconData.content) {
+        svg.setAttribute('fill', 'none');
         // Check if invert mode is requested
         if (options.invert && iconData.invertFillContent) {
             let content = iconData.invertFillContent;
@@ -420,9 +430,19 @@ function createSVG(iconData, options = {}) {
             }
             svg.innerHTML = content;
         } else {
-            svg.innerHTML = iconData.content;
+            let content = iconData.content;
+            if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none') {
+                content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
+                content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
+            }
+            svg.innerHTML = content;
         }
     } else if (!iconData.isComplex && iconData.path) {
+        svg.setAttribute('fill', fill);
+        if (stroke !== 'none') {
+            svg.setAttribute('stroke', stroke);
+            svg.setAttribute('stroke-width', strokeWidth);
+        }
         if (options.invert && iconData.invertFillContent) {
             let content = iconData.invertFillContent;
             if (fill !== 'currentColor') {

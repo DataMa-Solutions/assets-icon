@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Bars only (no axes) -->
+  <path fill="currentColor" d="M 4.25,12.5 H 7.5 V 19.5 H 4.25 Z M 8.75,8.5 H 12 V 19.5 H 8.75 Z M 13.25,14 H 16.5 V 19.5 H 13.25 Z M 17.75,4.5 H 21 V 19.5 H 17.75 Z"/>
+</svg>

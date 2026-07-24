@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <path fill="currentColor" d="M 4,20 L 4,4 L 6,4 L 6,18 L 20,18 L 20,20 Z M 8,14 L 8,16 L 16,16 L 16,14 Z M 8,10 L 8,12 L 13,12 L 13,10 Z"/>
+  <g>
+    <g>
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" d="M 5.25,19.25 V 5.75 M 5.25,19.25 H 18.75"/>
+      <path fill="currentColor" d="M 5.25,3.4 L 2.85,7.1 H 7.65 Z M 20.6,19.25 L 16.9,16.85 V 21.65 Z"/>
+    </g>
+  </g>
 </svg>

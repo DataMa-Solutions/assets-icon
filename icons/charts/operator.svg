@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <path fill="currentColor" d="M 6,5 L 6,7 L 18,7 L 18,5 Z M 6,11 L 6,13 L 18,13 L 18,11 Z M 8,17 L 8,19 L 16,19 L 16,17 Z"/>
+  <g>
+    <g>
+      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 4.5,7.25 H 9.75 M 7.125,4.75 V 9.75"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 14.25,7.25 H 19.5"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 5.25,14.25 L 9,18 M 9,14.25 L 5.25,18"/>
+      <path fill="currentColor" d="M 16.875,13.35 A 1.05,1.05 0 1,1 16.875,15.45 A 1.05,1.05 0 1,1 16.875,13.35 M 16.875,18.55 A 1.05,1.05 0 1,1 16.875,20.65 A 1.05,1.05 0 1,1 16.875,18.55"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 14.25,17 H 19.5"/>
+    </g>
+  </g>
 </svg>
