@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g>
+    <g>
+      <!-- 4 hollow rounded squares (2×2), outline only -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" d="M 5,4.5 H 9 A 1.5,1.5 0 0,1 10.5,6 V 9 A 1.5,1.5 0 0,1 9,10.5 H 5 A 1.5,1.5 0 0,1 3.5,9 V 6 A 1.5,1.5 0 0,1 5,4.5 Z M 15,4.5 H 19 A 1.5,1.5 0 0,1 20.5,6 V 9 A 1.5,1.5 0 0,1 19,10.5 H 15 A 1.5,1.5 0 0,1 13.5,9 V 6 A 1.5,1.5 0 0,1 15,4.5 Z M 5,13.5 H 9 A 1.5,1.5 0 0,1 10.5,15 V 18 A 1.5,1.5 0 0,1 9,19.5 H 5 A 1.5,1.5 0 0,1 3.5,18 V 15 A 1.5,1.5 0 0,1 5,13.5 Z M 15,13.5 H 19 A 1.5,1.5 0 0,1 20.5,15 V 18 A 1.5,1.5 0 0,1 19,19.5 H 15 A 1.5,1.5 0 0,1 13.5,18 V 15 A 1.5,1.5 0 0,1 15,13.5 Z"/>
+    </g>
+  </g>
+</svg>

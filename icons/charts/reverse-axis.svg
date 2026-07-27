@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g>
+    <g>
+      <!-- L-axis (same weight as axis.svg) -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" d="M 5.25,19.25 V 5.75 M 5.25,19.25 H 18.75"/>
+      <!-- Diagonal ↔: wide rounded heads, thinner shaft -->
+      <path fill="currentColor" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round" stroke-linecap="round" d="M 7.50,7.50 L 8.17,11.35 L 9.23,10.29 L 13.71,14.77 L 12.65,15.83 L 16.50,16.50 L 15.83,12.65 L 14.77,13.71 L 10.29,9.23 L 11.35,8.17 Z"/>
+    </g>
+  </g>
+</svg>

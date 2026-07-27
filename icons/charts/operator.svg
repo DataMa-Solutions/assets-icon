@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Same 2×2 layout as grid: × + − % centered in each cell -->
   <g>
     <g>
-      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 4.5,7.25 H 9.75 M 7.125,4.75 V 9.75"/>
-      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 14.25,7.25 H 19.5"/>
-      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 5.25,14.25 L 9,18 M 9,14.25 L 5.25,18"/>
-      <path fill="currentColor" d="M 16.875,13.35 A 1.05,1.05 0 1,1 16.875,15.45 A 1.05,1.05 0 1,1 16.875,13.35 M 16.875,18.55 A 1.05,1.05 0 1,1 16.875,20.65 A 1.05,1.05 0 1,1 16.875,18.55"/>
-      <path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" d="M 14.25,17 H 19.5"/>
+      <!-- × top-left (center 7,7) -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" d="M 5.1,5.1 L 8.9,8.9 M 8.9,5.1 L 5.1,8.9"/>
+      <!-- + top-right (center 17,7) -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" d="M 17,5 V 9 M 15,7 H 19"/>
+      <!-- − bottom-left (center 7,17) -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" d="M 5,17 H 9"/>
+      <!-- % bottom-right (center 17,17): diagonal + two dots -->
+      <path fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" d="M 15.1,19 L 18.9,15"/>
+      <path fill="currentColor" d="M 15.55,14.55 A 1.05,1.05 0 1,1 15.55,16.65 A 1.05,1.05 0 1,1 15.55,14.55 M 18.45,17.35 A 1.05,1.05 0 1,1 18.45,19.45 A 1.05,1.05 0 1,1 18.45,17.35"/>
     </g>
   </g>
 </svg>

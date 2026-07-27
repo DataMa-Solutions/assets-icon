@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 208 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 211 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (208)
+## Available Icons (211)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -86,6 +86,7 @@ Vue.use(DatamaIcons);
 | `calendar-display-svg` | <img src="icons/legacy/calendar-display.svg" width="32" height="32" alt="calendar-display" /> |
 | `calendar-markers-svg` | <img src="icons/legacy/calendar-markers.svg" width="32" height="32" alt="calendar-markers" /> |
 | `calendar-svg` | <img src="icons/ui/calendar.svg" width="32" height="32" alt="calendar" /> |
+| `cards-svg` | <img src="icons/charts/cards.svg" width="32" height="32" alt="cards" /> |
 | `chat-svg` | <img src="icons/legacy/chat.svg" width="32" height="32" alt="chat" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
 | `chevron-down-svg` | <img src="icons/ui/chevron-down.svg" width="32" height="32" alt="chevron-down" /> |
@@ -98,6 +99,7 @@ Vue.use(DatamaIcons);
 | `cogs-svg` | <img src="icons/settings/cogs.svg" width="32" height="32" alt="cogs" /> |
 | `comment-bubble-svg` | <img src="icons/ui/comment-bubble.svg" width="32" height="32" alt="comment-bubble" /> |
 | `compare-svg` | <img src="icons/data/compare.svg" width="32" height="32" alt="compare" /> |
+| `connector-svg` | <img src="icons/charts/connector.svg" width="32" height="32" alt="connector" /> |
 | `contacts-svg` | <img src="icons/ui/contacts.svg" width="32" height="32" alt="contacts" /> |
 | `copy-svg` | <img src="icons/ui/copy.svg" width="32" height="32" alt="copy" /> |
 | `cross-svg` | <img src="icons/ui/cross.svg" width="32" height="32" alt="cross" /> |
@@ -121,6 +123,7 @@ Vue.use(DatamaIcons);
 | `drop-up-svg` | <img src="icons/navigation/drop-up.svg" width="32" height="32" alt="drop-up" /> |
 | `earth-svg` | <img src="icons/ui/earth.svg" width="32" height="32" alt="earth" /> |
 | `edit-svg` | <img src="icons/ui/edit.svg" width="32" height="32" alt="edit" /> |
+| `elements-svg` | <img src="icons/charts/elements.svg" width="32" height="32" alt="elements" /> |
 | `excel-outline-2-svg` | <img src="icons/sources/excel-outline-2.svg" width="32" height="32" alt="excel-outline-2" /> |
 | `excel-outline-svg` | <img src="icons/sources/excel-outline.svg" width="32" height="32" alt="excel-outline" /> |
 | `excel-svg` | <img src="icons/sources/excel.svg" width="32" height="32" alt="excel" /> |
@@ -142,7 +145,7 @@ Vue.use(DatamaIcons);
 | `google-svg` | <img src="icons/sources/google.svg" width="32" height="32" alt="google" /> |
 | `google-trend-svg` | <img src="icons/sources/google-trend.svg" width="32" height="32" alt="google-trend" /> |
 | `graph-chart-svg` | <img src="icons/data/graph-chart.svg" width="32" height="32" alt="graph-chart" /> |
-| `grid-svg` | <img src="icons/vue3/grid.svg" width="32" height="32" alt="grid" /> |
+| `grid-svg` | <img src="icons/ui/grid.svg" width="32" height="32" alt="grid" /> |
 | `group-svg` | <img src="icons/ui/group.svg" width="32" height="32" alt="group" /> |
 | `groups-svg` | <img src="icons/ui/groups.svg" width="32" height="32" alt="groups" /> |
 | `handshake-svg` | <img src="icons/legacy/handshake.svg" width="32" height="32" alt="handshake" /> |
@@ -218,7 +221,7 @@ Vue.use(DatamaIcons);
 | `refresh-svg` | <img src="icons/vue3/refresh.svg" width="32" height="32" alt="refresh" /> |
 | `release-notes-1-svg` | <img src="icons/ui/release-notes-1.svg" width="32" height="32" alt="release-notes-1" /> |
 | `release-notes-svg` | <img src="icons/ui/release-notes.svg" width="32" height="32" alt="release-notes" /> |
-| `reverse-axis-svg` | <img src="icons/legacy/reverse-axis.svg" width="32" height="32" alt="reverse-axis" /> |
+| `reverse-axis-svg` | <img src="icons/charts/reverse-axis.svg" width="32" height="32" alt="reverse-axis" /> |
 | `reverse-h-svg` | <img src="icons/actions/reverse-h.svg" width="32" height="32" alt="reverse-h" /> |
 | `reverse-v-svg` | <img src="icons/actions/reverse-v.svg" width="32" height="32" alt="reverse-v" /> |
 | `rotate-ccw-svg` | <img src="icons/legacy/rotate-ccw.svg" width="32" height="32" alt="rotate-ccw" /> |
