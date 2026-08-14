@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_4" data-name="Calque 4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #383d45;
+      }
+
+      .cls-2 {
+        fill: url(#Dégradé_sans_nom_47);
+      }
+
+      .cls-3 {
+        fill: url(#Dégradé_sans_nom_48);
+      }
+
+      .cls-4 {
+        fill: url(#Dégradé_sans_nom_47-2);
+      }
+    </style>
+    <linearGradient id="Dégradé_sans_nom_47" data-name="Dégradé sans nom 47" x1="-1888.45" y1="454.3" x2="-1888.42" y2="454.33" gradientTransform="translate(94431 29997) scale(50 -66)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e2e4e7"/>
+      <stop offset="1" stop-color="#dde0e4"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_48" data-name="Dégradé sans nom 48" x1="-43.25" y1="454.32" x2="-43.25" y2="454.31" gradientTransform="translate(58 29997) scale(1 -66)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d9dce1"/>
+      <stop offset="1" stop-color="#e4e6e9"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_47-2" data-name="Dégradé sans nom 47" x1="-1851.55" y1="440.51" x2="-1851.53" y2="440.53" gradientTransform="translate(46306 14553) scale(25 -33)" xlink:href="#Dégradé_sans_nom_47"/>
+  </defs>
+  <path class="cls-2" d="M3.76,21c-.32,0-.65-.1-.93-.31-.68-.51-.81-1.48-.3-2.16L13.52,4.03c.51-.68,1.48-.81,2.16-.3.68.51.81,1.48.3,2.16l-10.99,14.51c-.3.4-.76.61-1.23.61Z"/>
+  <path class="cls-3" d="M14.75,21c-.85,0-1.54-.69-1.54-1.54V4.96c0-.85.69-1.54,1.54-1.54s1.54.69,1.54,1.54v14.51c0,.85-.69,1.54-1.54,1.54Z"/>
+  <path class="cls-4" d="M14.75,21c-.32,0-.65-.1-.93-.31-.68-.51-.81-1.48-.3-2.16l5.49-7.25c.51-.68,1.48-.81,2.16-.3.68.51.81,1.48.3,2.16l-5.49,7.25c-.3.4-.76.61-1.23.61Z"/>
+  <g>
+    <circle class="cls-1" cx="3.76" cy="19.46" r="1.76"/>
+    <circle class="cls-1" cx="9.25" cy="12.21" r="1.76"/>
+    <circle class="cls-1" cx="14.75" cy="4.96" r="1.76"/>
+    <circle class="cls-1" cx="14.75" cy="19.46" r="1.76"/>
+    <circle class="cls-1" cx="20.24" cy="12.21" r="1.76"/>
+  </g>
+</svg>

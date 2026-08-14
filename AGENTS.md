@@ -25,3 +25,7 @@ This is a **standalone SVG icon library** (`@datama/icons`) — no external serv
 - Tests validate icon structure and SVG validity. Some tests warn "run build first" if `dist/` is absent — run `npm run build:all` first for full test coverage.
 - The `icons/` directory contains source SVGs organized by category (`actions/`, `data/`, `illustrations/`, `logos/`, `navigation/`, `settings/`, `sort/`, `sources/`, `ui/`, `vue3/`).
 - Only icons in `icons/vue3/` are included in the web font build.
+- **Vue3 prep icons convention** (no conversion scripts — edit SVGs directly):
+  - `{name}.svg` — monochrome, filled paths, `fill="currentColor"`, included in the webfont.
+  - `{name}-color.svg` — brand color variant, SVG only (excluded from webfont).
+  - Regenerate font after changes: `npm run build:font`, then sync `dist/fonts/` to deep-space `public/fonts/`.

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_4" data-name="Calque 4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Dégradé_sans_nom_7);
+      }
+
+      .cls-2 {
+        fill: url(#Dégradé_sans_nom_6);
+      }
+
+      .cls-3 {
+        fill: url(#Dégradé_sans_nom_6-3);
+      }
+
+      .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-5 {
+        mask: url(#mask);
+      }
+
+      .cls-6 {
+        fill: url(#Dégradé_sans_nom_2);
+      }
+
+      .cls-7 {
+        fill: #34439e;
+      }
+
+      .cls-8 {
+        fill: url(#Dégradé_sans_nom_3-2);
+      }
+
+      .cls-9 {
+        fill: url(#Dégradé_sans_nom_3);
+      }
+
+      .cls-10 {
+        fill: url(#Dégradé_sans_nom_6-2);
+      }
+    </style>
+    <linearGradient id="Dégradé_sans_nom_3" data-name="Dégradé sans nom 3" x1="-1849.37" y1="704.28" x2="-1849.04" y2="704.07" gradientTransform="translate(46248 17618) scale(25 -25)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#364088"/>
+      <stop offset="1" stop-color="#6e7ee1"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_2" data-name="Dégradé sans nom 2" x1="-1849.61" y1="704.13" x2="-1849.21" y2="704.13" gradientTransform="translate(46248 17618) scale(25 -25)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#515fc4"/>
+      <stop offset="1" stop-color="#7084ea"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_3-2" data-name="Dégradé sans nom 3" x1="-1849.25" y1="704.5" x2="-1849.1" y2="704.4" xlink:href="#Dégradé_sans_nom_3"/>
+    <linearGradient id="Dégradé_sans_nom_6" data-name="Dégradé sans nom 6" x1="-1849.46" y1="704.57" x2="-1849.33" y2="704.42" gradientTransform="translate(46248 17618) scale(25 -25)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4858ae"/>
+      <stop offset="1" stop-color="#4e60ce"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_6-2" data-name="Dégradé sans nom 6" x1="-1849.5" y1="704.61" x2="-1849.34" y2="704.42" xlink:href="#Dégradé_sans_nom_6"/>
+    <linearGradient id="Dégradé_sans_nom_6-3" data-name="Dégradé sans nom 6" x1="-1849.66" y1="704.47" x2="-1849.5" y2="704.28" xlink:href="#Dégradé_sans_nom_6"/>
+    <mask id="mask" x="6.39" y="2" width="11.25" height="18.75" maskUnits="userSpaceOnUse">
+      <g id="mask0_87_7777" data-name="mask0 87 7777">
+        <path class="cls-10" d="M12.64,8.25c1.73,0,3.13-1.4,3.13-3.13s-1.4-3.13-3.13-3.13-3.13,1.4-3.13,3.13,1.4,3.13,3.13,3.13Z"/>
+        <path class="cls-3" d="M8.4,8.87c-.42,0-.77.34-.77.77v6.11c0,2.76,2.24,5,5,5s5-2.24,5-5v-6.11c0-.42-.34-.77-.77-.77h-8.47Z"/>
+      </g>
+    </mask>
+    <linearGradient id="Dégradé_sans_nom_7" data-name="Dégradé sans nom 7" x1="-1849.84" y1="704.24" x2="-1849.39" y2="704.24" gradientTransform="translate(46248 17618) scale(25 -25)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2a3887"/>
+      <stop offset="1" stop-color="#4c56b9"/>
+    </linearGradient>
+  </defs>
+  <path class="cls-9" d="M13.89,10.69c0-.31.25-.56.56-.56h7c.31,0,.56.25.56.56v4.12c0,2.24-1.82,4.06-4.06,4.06s-4.06-1.82-4.06-4.06v-4.12Z"/>
+  <path class="cls-6" d="M7.64,9.64c0-.42.34-.77.77-.77h8.47c.42,0,.77.34.77.77v6.11c0,2.76-2.24,5-5,5s-5-2.24-5-5v-6.11Z"/>
+  <circle class="cls-7" cx="18.89" cy="7" r="1.88"/>
+  <circle class="cls-8" cx="18.89" cy="7" r="1.88"/>
+  <circle class="cls-2" cx="13.26" cy="5.75" r="2.5"/>
+  <g class="cls-5">
+    <path d="M6.39,9.5c0-1.04.84-1.88,1.88-1.88h4.38c1.04,0,1.88.84,1.88,1.88v7.5c0,1.04-.84,1.88-1.88,1.88h-6.25v-9.38Z"/>
+  </g>
+  <rect class="cls-1" x="2.01" y="6.38" width="11.25" height="11.25" rx="5.62" ry="5.62"/>
+  <path class="cls-4" d="M10.14,8.87h-5v1.15h1.87v5.1h1.26v-5.1h1.87v-1.15Z"/>
+</svg>

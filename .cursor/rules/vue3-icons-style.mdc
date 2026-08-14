@@ -69,6 +69,10 @@ If you want to keep stroke-based versions for web display:
    - NO `stroke` attributes (webfont doesn't support them)
    - `d="..."` (path data - must be a filled shape)
 
+Brand-color variants (`*-color.svg`) may keep original fills and multiple paths. They are SVG-only: `build-font.js` skips `*-color.svg` because a webfont glyph cannot carry several colors.
+
+Outline variants (`*-outline.svg`) use a **2px inset stroke** (inner hole), not a centered or outward stroke. The outer silhouette must match the filled logo so white gaps between elements stay identical.
+
 ### ⚠️ IMPORTANT: Creating Filled Paths
 
 Since strokes don't work with webfont, you need to create filled paths that simulate the stroke appearance:
@@ -190,6 +194,8 @@ Use `M` (move to) to combine disconnected shapes:
 <!-- ✅ GOOD: Single path with M command -->
 <path d="M12,3 L12,12 M5,7 C3,9,2,11,2,13"/>
 ```
+
+When combining overlapping filled capsules (simulated 2px strokes), keep the default **nonzero** fill rule. Do not set `fill-rule="evenodd"` on those icons: overlaps would punch holes instead of joining.
 
 ### 5. Path Commands Reference
 
