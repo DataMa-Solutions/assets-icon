@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 212 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 235 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,11 +53,12 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (212)
+## Available Icons (235)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
 | `add-folder-svg` | <img src="icons/actions/add-folder.svg" width="32" height="32" alt="add-folder" /> |
+| `ai-generator-svg` | <img src="icons/vue3/ai-generator.svg" width="32" height="32" alt="ai-generator" /> |
 | `alert-circle-svg` | <img src="icons/legacy/alert-circle.svg" width="32" height="32" alt="alert-circle" /> |
 | `alert-triangle-svg` | <img src="icons/legacy/alert-triangle.svg" width="32" height="32" alt="alert-triangle" /> |
 | `annotate-svg` | <img src="icons/charts/annotate.svg" width="32" height="32" alt="annotate" /> |
@@ -71,7 +72,7 @@ Vue.use(DatamaIcons);
 | `arrow-top-svg` | <img src="icons/legacy/arrow-top.svg" width="32" height="32" alt="arrow-top" /> |
 | `arrow-up-right-svg` | <img src="icons/legacy/arrow-up-right.svg" width="32" height="32" alt="arrow-up-right" /> |
 | `arrow-up-svg` | <img src="icons/ui/arrow-up.svg" width="32" height="32" alt="arrow-up" /> |
-| `assess-svg` | <img src="icons/data/assess.svg" width="32" height="32" alt="assess" /> |
+| `assess-svg` | <img src="icons/vue3/assess.svg" width="32" height="32" alt="assess" /> |
 | `axis-cut-svg` | <img src="icons/charts/axis-cut.svg" width="32" height="32" alt="axis-cut" /> |
 | `axis-svg` | <img src="icons/charts/axis.svg" width="32" height="32" alt="axis" /> |
 | `balance-scale-svg` | <img src="icons/legacy/balance-scale.svg" width="32" height="32" alt="balance-scale" /> |
@@ -85,7 +86,7 @@ Vue.use(DatamaIcons);
 | `bug-svg` | <img src="icons/legacy/bug.svg" width="32" height="32" alt="bug" /> |
 | `calendar-display-svg` | <img src="icons/legacy/calendar-display.svg" width="32" height="32" alt="calendar-display" /> |
 | `calendar-markers-svg` | <img src="icons/legacy/calendar-markers.svg" width="32" height="32" alt="calendar-markers" /> |
-| `calendar-svg` | <img src="icons/ui/calendar.svg" width="32" height="32" alt="calendar" /> |
+| `calendar-svg` | <img src="icons/vue3/calendar.svg" width="32" height="32" alt="calendar" /> |
 | `cards-svg` | <img src="icons/charts/cards.svg" width="32" height="32" alt="cards" /> |
 | `chat-svg` | <img src="icons/legacy/chat.svg" width="32" height="32" alt="chat" /> |
 | `check-svg` | <img src="icons/ui/check.svg" width="32" height="32" alt="check" /> |
@@ -103,15 +104,17 @@ Vue.use(DatamaIcons);
 | `contacts-svg` | <img src="icons/ui/contacts.svg" width="32" height="32" alt="contacts" /> |
 | `copy-svg` | <img src="icons/ui/copy.svg" width="32" height="32" alt="copy" /> |
 | `cross-svg` | <img src="icons/ui/cross.svg" width="32" height="32" alt="cross" /> |
+| `csv-color-svg` | <img src="icons/vue3/csv-color.svg" width="32" height="32" alt="csv-color" /> |
+| `csv-mono-svg` | <img src="icons/sources/csv-mono.svg" width="32" height="32" alt="csv-mono" /> |
 | `csv-outline-2-svg` | <img src="icons/sources/csv-outline-2.svg" width="32" height="32" alt="csv-outline-2" /> |
 | `csv-outline-svg` | <img src="icons/sources/csv-outline.svg" width="32" height="32" alt="csv-outline" /> |
-| `csv-svg` | <img src="icons/sources/csv.svg" width="32" height="32" alt="csv" /> |
+| `csv-svg` | <img src="icons/vue3/csv.svg" width="32" height="32" alt="csv" /> |
 | `cube-svg` | <img src="icons/ui/cube.svg" width="32" height="32" alt="cube" /> |
 | `data-svg` | <img src="icons/data/data.svg" width="32" height="32" alt="data" /> |
-| `database-svg` | <img src="icons/data/database.svg" width="32" height="32" alt="database" /> |
+| `database-svg` | <img src="icons/vue3/database.svg" width="32" height="32" alt="database" /> |
 | `datama-logo-svg` | <img src="icons/logos/datama-logo.svg" width="32" height="32" alt="datama-logo" /> |
 | `datama-svg` | <img src="icons/legacy/datama.svg" width="32" height="32" alt="datama" /> |
-| `detect-svg` | <img src="icons/data/detect.svg" width="32" height="32" alt="detect" /> |
+| `detect-svg` | <img src="icons/vue3/detect.svg" width="32" height="32" alt="detect" /> |
 | `disconnect-svg` | <img src="icons/vue3/disconnect.svg" width="32" height="32" alt="disconnect" /> |
 | `documentation-svg` | <img src="icons/ui/documentation.svg" width="32" height="32" alt="documentation" /> |
 | `documents-svg` | <img src="icons/ui/documents.svg" width="32" height="32" alt="documents" /> |
@@ -124,10 +127,12 @@ Vue.use(DatamaIcons);
 | `earth-svg` | <img src="icons/ui/earth.svg" width="32" height="32" alt="earth" /> |
 | `edit-svg` | <img src="icons/ui/edit.svg" width="32" height="32" alt="edit" /> |
 | `elements-svg` | <img src="icons/charts/elements.svg" width="32" height="32" alt="elements" /> |
+| `excel-mono-svg` | <img src="icons/sources/excel-mono.svg" width="32" height="32" alt="excel-mono" /> |
 | `excel-outline-2-svg` | <img src="icons/sources/excel-outline-2.svg" width="32" height="32" alt="excel-outline-2" /> |
 | `excel-outline-svg` | <img src="icons/sources/excel-outline.svg" width="32" height="32" alt="excel-outline" /> |
 | `excel-svg` | <img src="icons/sources/excel.svg" width="32" height="32" alt="excel" /> |
 | `eyes-svg` | <img src="icons/ui/eyes.svg" width="32" height="32" alt="eyes" /> |
+| `facebook-mono-svg` | <img src="icons/sources/facebook-mono.svg" width="32" height="32" alt="facebook-mono" /> |
 | `facebook-svg` | <img src="icons/sources/facebook.svg" width="32" height="32" alt="facebook" /> |
 | `filter-svg` | <img src="icons/legacy/filter.svg" width="32" height="32" alt="filter" /> |
 | `flow-svg` | <img src="icons/ui/flow.svg" width="32" height="32" alt="flow" /> |
@@ -138,10 +143,13 @@ Vue.use(DatamaIcons);
 | `gauge-horizontal-svg` | <img src="icons/ui/gauge-horizontal.svg" width="32" height="32" alt="gauge-horizontal" /> |
 | `gauge-svg` | <img src="icons/legacy/gauge.svg" width="32" height="32" alt="gauge" /> |
 | `google-ads-svg` | <img src="icons/sources/google-ads.svg" width="32" height="32" alt="google-ads" /> |
+| `google-analytics-mono-svg` | <img src="icons/sources/google-analytics-mono.svg" width="32" height="32" alt="google-analytics-mono" /> |
 | `google-analytics-svg` | <img src="icons/sources/google-analytics.svg" width="32" height="32" alt="google-analytics" /> |
-| `google-bigquery-svg` | <img src="icons/sources/google-bigquery.svg" width="32" height="32" alt="google-bigquery" /> |
+| `google-bigquery-mono-svg` | <img src="icons/sources/google-bigquery-mono.svg" width="32" height="32" alt="google-bigquery-mono" /> |
+| `google-bigquery-svg` | <img src="icons/vue3/google-bigquery.svg" width="32" height="32" alt="google-bigquery" /> |
 | `google-drive-svg` | <img src="icons/sources/google-drive.svg" width="32" height="32" alt="google-drive" /> |
-| `google-sheets-svg` | <img src="icons/sources/google-sheets.svg" width="32" height="32" alt="google-sheets" /> |
+| `google-sheets-mono-svg` | <img src="icons/sources/google-sheets-mono.svg" width="32" height="32" alt="google-sheets-mono" /> |
+| `google-sheets-svg` | <img src="icons/vue3/google-sheets.svg" width="32" height="32" alt="google-sheets" /> |
 | `google-svg` | <img src="icons/sources/google.svg" width="32" height="32" alt="google" /> |
 | `google-trend-svg` | <img src="icons/sources/google-trend.svg" width="32" height="32" alt="google-trend" /> |
 | `graph-chart-svg` | <img src="icons/data/graph-chart.svg" width="32" height="32" alt="graph-chart" /> |
@@ -175,10 +183,11 @@ Vue.use(DatamaIcons);
 | `license-key-svg` | <img src="icons/ui/license-key.svg" width="32" height="32" alt="license-key" /> |
 | `lines-svg` | <img src="icons/charts/lines.svg" width="32" height="32" alt="lines" /> |
 | `link-open-svg` | <img src="icons/ui/link-open.svg" width="32" height="32" alt="link-open" /> |
-| `link-svg` | <img src="icons/legacy/link.svg" width="32" height="32" alt="link" /> |
+| `link-svg` | <img src="icons/vue3/link.svg" width="32" height="32" alt="link" /> |
 | `lock-svg` | <img src="icons/ui/lock.svg" width="32" height="32" alt="lock" /> |
 | `looker-svg` | <img src="icons/sources/looker.svg" width="32" height="32" alt="looker" /> |
 | `magnifier-svg` | <img src="icons/legacy/magnifier.svg" width="32" height="32" alt="magnifier" /> |
+| `mail-svg` | <img src="icons/vue3/mail.svg" width="32" height="32" alt="mail" /> |
 | `manage-billing-svg` | <img src="icons/settings/manage-billing.svg" width="32" height="32" alt="manage-billing" /> |
 | `manage-org-svg` | <img src="icons/settings/manage-org.svg" width="32" height="32" alt="manage-org" /> |
 | `manage-profile-svg` | <img src="icons/settings/manage-profile.svg" width="32" height="32" alt="manage-profile" /> |
@@ -186,12 +195,14 @@ Vue.use(DatamaIcons);
 | `maximize-2-svg` | <img src="icons/legacy/maximize-2.svg" width="32" height="32" alt="maximize-2" /> |
 | `mekko-svg` | <img src="icons/charts/mekko.svg" width="32" height="32" alt="mekko" /> |
 | `merge-cells-svg` | <img src="icons/ui/merge-cells.svg" width="32" height="32" alt="merge-cells" /> |
-| `metabase-svg` | <img src="icons/sources/metabase.svg" width="32" height="32" alt="metabase" /> |
+| `metabase-mono-svg` | <img src="icons/sources/metabase-mono.svg" width="32" height="32" alt="metabase-mono" /> |
+| `metabase-svg` | <img src="icons/vue3/metabase.svg" width="32" height="32" alt="metabase" /> |
 | `minus-svg` | <img src="icons/vue3/minus.svg" width="32" height="32" alt="minus" /> |
 | `more-horizontal-svg` | <img src="icons/legacy/more-horizontal.svg" width="32" height="32" alt="more-horizontal" /> |
 | `more-vertical-svg` | <img src="icons/legacy/more-vertical.svg" width="32" height="32" alt="more-vertical" /> |
 | `moves-svg` | <img src="icons/charts/moves.svg" width="32" height="32" alt="moves" /> |
 | `multiply-svg` | <img src="icons/charts/multiply.svg" width="32" height="32" alt="multiply" /> |
+| `mysql-mono-svg` | <img src="icons/sources/mysql-mono.svg" width="32" height="32" alt="mysql-mono" /> |
 | `mysql-svg` | <img src="icons/sources/mysql.svg" width="32" height="32" alt="mysql" /> |
 | `new-pillar-svg` | <img src="icons/charts/new-pillar.svg" width="32" height="32" alt="new-pillar" /> |
 | `new-tab-svg` | <img src="icons/legacy/new-tab.svg" width="32" height="32" alt="new-tab" /> |
@@ -204,8 +215,10 @@ Vue.use(DatamaIcons);
 | `paint-svg` | <img src="icons/ui/paint.svg" width="32" height="32" alt="paint" /> |
 | `palette-svg` | <img src="icons/ui/palette.svg" width="32" height="32" alt="palette" /> |
 | `peace-svg` | <img src="icons/legacy/peace.svg" width="32" height="32" alt="peace" /> |
+| `piano-color-svg` | <img src="icons/sources/piano-color.svg" width="32" height="32" alt="piano-color" /> |
+| `piano-mono-svg` | <img src="icons/sources/piano-mono.svg" width="32" height="32" alt="piano-mono" /> |
 | `piano-svg` | <img src="icons/sources/piano.svg" width="32" height="32" alt="piano" /> |
-| `pivot-svg` | <img src="icons/data/pivot.svg" width="32" height="32" alt="pivot" /> |
+| `pivot-svg` | <img src="icons/vue3/pivot.svg" width="32" height="32" alt="pivot" /> |
 | `play-svg` | <img src="icons/legacy/play.svg" width="32" height="32" alt="play" /> |
 | `plus-circle-svg` | <img src="icons/ui/plus-circle.svg" width="32" height="32" alt="plus-circle" /> |
 | `plus-svg` | <img src="icons/vue3/plus.svg" width="32" height="32" alt="plus" /> |
@@ -218,6 +231,8 @@ Vue.use(DatamaIcons);
 | `profile-svg` | <img src="icons/ui/profile.svg" width="32" height="32" alt="profile" /> |
 | `qlik-svg` | <img src="icons/logos/qlik.svg" width="32" height="32" alt="qlik" /> |
 | `ratio-svg` | <img src="icons/charts/ratio.svg" width="32" height="32" alt="ratio" /> |
+| `redshift-color-svg` | <img src="icons/sources/redshift-color.svg" width="32" height="32" alt="redshift-color" /> |
+| `redshift-mono-svg` | <img src="icons/sources/redshift-mono.svg" width="32" height="32" alt="redshift-mono" /> |
 | `redshift-svg` | <img src="icons/sources/redshift.svg" width="32" height="32" alt="redshift" /> |
 | `refresh-svg` | <img src="icons/vue3/refresh.svg" width="32" height="32" alt="refresh" /> |
 | `release-notes-1-svg` | <img src="icons/ui/release-notes-1.svg" width="32" height="32" alt="release-notes-1" /> |
@@ -238,8 +253,12 @@ Vue.use(DatamaIcons);
 | `share-2-svg` | <img src="icons/legacy/share-2.svg" width="32" height="32" alt="share-2" /> |
 | `shopping-cart-svg` | <img src="icons/ui/shopping-cart.svg" width="32" height="32" alt="shopping-cart" /> |
 | `sidebar-toggle-svg` | <img src="icons/ui/sidebar-toggle.svg" width="32" height="32" alt="sidebar-toggle" /> |
+| `slack-mono-svg` | <img src="icons/sources/slack-mono.svg" width="32" height="32" alt="slack-mono" /> |
+| `slack-svg` | <img src="icons/sources/slack.svg" width="32" height="32" alt="slack" /> |
+| `snowflake-mono-svg` | <img src="icons/sources/snowflake-mono.svg" width="32" height="32" alt="snowflake-mono" /> |
 | `snowflake-svg` | <img src="icons/sources/snowflake.svg" width="32" height="32" alt="snowflake" /> |
 | `split-by-svg` | <img src="icons/ui/split-by.svg" width="32" height="32" alt="split-by" /> |
+| `sql-svg` | <img src="icons/vue3/sql.svg" width="32" height="32" alt="sql" /> |
 | `stacked-svg` | <img src="icons/legacy/stacked.svg" width="32" height="32" alt="stacked" /> |
 | `star-cool-svg` | <img src="icons/ui/star-cool.svg" width="32" height="32" alt="star-cool" /> |
 | `string-by-asc-svg` | <img src="icons/sort/string-by-asc.svg" width="32" height="32" alt="string-by-asc" /> |
@@ -248,8 +267,11 @@ Vue.use(DatamaIcons);
 | `table-minimal-svg` | <img src="icons/ui/table-minimal.svg" width="32" height="32" alt="table-minimal" /> |
 | `table-striped-svg` | <img src="icons/ui/table-striped.svg" width="32" height="32" alt="table-striped" /> |
 | `table-svg` | <img src="icons/vue3/table.svg" width="32" height="32" alt="table" /> |
+| `tableau-mono-svg` | <img src="icons/sources/tableau-mono.svg" width="32" height="32" alt="tableau-mono" /> |
 | `tableau-svg` | <img src="icons/sources/tableau.svg" width="32" height="32" alt="tableau" /> |
 | `tag-svg` | <img src="icons/charts/tag.svg" width="32" height="32" alt="tag" /> |
+| `teams-mono-svg` | <img src="icons/sources/teams-mono.svg" width="32" height="32" alt="teams-mono" /> |
+| `teams-svg` | <img src="icons/vue3/teams.svg" width="32" height="32" alt="teams" /> |
 | `text-color-svg` | <img src="icons/legacy/text-color.svg" width="32" height="32" alt="text-color" /> |
 | `trash-2-svg` | <img src="icons/legacy/trash-2.svg" width="32" height="32" alt="trash-2" /> |
 | `tree-hierarchy-svg` | <img src="icons/charts/tree-hierarchy.svg" width="32" height="32" alt="tree-hierarchy" /> |
@@ -260,11 +282,12 @@ Vue.use(DatamaIcons);
 | `update-svg` | <img src="icons/actions/update.svg" width="32" height="32" alt="update" /> |
 | `upload-1-svg` | <img src="icons/actions/upload-1.svg" width="32" height="32" alt="upload-1" /> |
 | `upload-svg` | <img src="icons/actions/upload.svg" width="32" height="32" alt="upload" /> |
+| `url-svg` | <img src="icons/vue3/url.svg" width="32" height="32" alt="url" /> |
 | `user-svg` | <img src="icons/vue3/user.svg" width="32" height="32" alt="user" /> |
 | `value-by-asc-svg` | <img src="icons/sort/value-by-asc.svg" width="32" height="32" alt="value-by-asc" /> |
 | `value-by-desc-svg` | <img src="icons/sort/value-by-desc.svg" width="32" height="32" alt="value-by-desc" /> |
 | `warning-svg` | <img src="icons/ui/warning.svg" width="32" height="32" alt="warning" /> |
-| `waterfall-svg` | <img src="icons/charts/waterfall.svg" width="32" height="32" alt="waterfall" /> |
+| `waterfall-svg` | <img src="icons/vue3/waterfall.svg" width="32" height="32" alt="waterfall" /> |
 | `x-svg` | <img src="icons/legacy/x.svg" width="32" height="32" alt="x" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
 | `zoom-in-svg` | <img src="icons/ui/zoom-in.svg" width="32" height="32" alt="zoom-in" /> |
