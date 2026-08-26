@@ -54,6 +54,8 @@ function loadSvgFiles() {
   
   const files = fs.readdirSync(iconsDir)
     .filter(file => file.endsWith('.svg'))
+    .filter(file => !file.endsWith('-color.svg'))
+    .filter(file => !file.includes(' '))
     .sort();
   
   if (files.length === 0) {
