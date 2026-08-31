@@ -247,4 +247,12 @@ describe('Package Structure', () => {
       console.warn('Dist directory not found, run build first');
     }
   });
+});
+
+describe('DataMaIconsNew runtime templates', () => {
+  test('should not assign Element.innerHTML in generated JS APIs', () => {
+    const buildJs = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'build.js'), 'utf8');
+    expect(buildJs).not.toMatch(/svg\.innerHTML\s*=/);
+    expect(buildJs).toMatch(/function setSvgContent\(/);
+  });
 }); 
