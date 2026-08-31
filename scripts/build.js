@@ -117,7 +117,37 @@ export default DataMaLightIcons;
   
   // Create vanilla JavaScript API (nouvelle version compatible)
   const iconDataJson = JSON.stringify(iconData, null, 2);
-  
+
+  const setSvgContentRuntime = `/**
+ * Inject inner SVG markup without Element.innerHTML (Power BI AppSource).
+ */
+function setSvgContent(svgElement, content) {
+    if (!svgElement) {
+        return svgElement;
+    }
+    while (svgElement.firstChild) {
+        svgElement.removeChild(svgElement.firstChild);
+    }
+    if (content == null || content === '') {
+        return svgElement;
+    }
+    const wrapped = '<svg xmlns="http://www.w3.org/2000/svg">' + content + '</svg>';
+    const doc = new DOMParser().parseFromString(wrapped, 'image/svg+xml');
+    const root = doc && doc.documentElement;
+    if (!root || root.getElementsByTagName('parsererror').length > 0) {
+        return svgElement;
+    }
+    let child = root.firstChild;
+    while (child) {
+        const next = child.nextSibling;
+        svgElement.appendChild(document.importNode(child, true));
+        child = next;
+    }
+    return svgElement;
+}
+
+`;
+
   const vanillaJsApi = `/**
  * DataMa Icons - JavaScript API (NEW VERSION)
  * Compatible with both ES modules and classic scripts
@@ -126,7 +156,7 @@ export default DataMaLightIcons;
 // Icon data embedded
 const DataMaLightIconsNew = ${iconDataJson};
 
-/**
+${setSvgContentRuntime}/**
  * Create SVG element from icon data
  */
 function createSVG(iconData, options = {}) {
@@ -163,7 +193,7 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             // Use selective fill version (includes URL replacement) when custom fill is provided
             let content = iconData.selectiveFillContent;
@@ -171,7 +201,7 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else {
             // Use original content; resolve currentColor when a custom fill is passed
             let content = iconData.content;
@@ -179,7 +209,7 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         }
     } else if (!iconData.isComplex && iconData.path) {
         svg.setAttribute('fill', fill);
@@ -195,7 +225,7 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             // Use selective fill version (includes URL replacement) for simple icons when custom fill is provided
             let content = iconData.selectiveFillContent;
@@ -203,7 +233,7 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else {
             // For simple icons, create a path element
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -215,7 +245,7 @@ function createSVG(iconData, options = {}) {
         // Fallback for malformed icon data
         console.warn(\`Malformed icon data for icon. isComplex: \${iconData.isComplex}, hasContent: \${!!iconData.content}, hasPath: \${!!iconData.path}\`);
         if (iconData.content) {
-            svg.innerHTML = iconData.content;
+            setSvgContent(svg, iconData.content);
         } else if (iconData.path) {
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', iconData.path);
@@ -387,7 +417,7 @@ if (typeof module !== 'undefined' && module.exports) {
 // Icon data embedded
 const DataMaLightIconsNew = ${iconDataJson};
 
-/**
+${setSvgContentRuntime}/**
  * Create SVG element from icon data
  */
 function createSVG(iconData, options = {}) {
@@ -421,21 +451,21 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             let content = iconData.selectiveFillContent;
             if (fill !== 'currentColor') {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else {
             let content = iconData.content;
             if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none') {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         }
     } else if (!iconData.isComplex && iconData.path) {
         svg.setAttribute('fill', fill);
@@ -449,14 +479,14 @@ function createSVG(iconData, options = {}) {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else if (fill !== 'currentColor' && fill !== 'original' && fill !== 'none' && iconData.selectiveFillContent) {
             let content = iconData.selectiveFillContent;
             if (fill !== 'currentColor') {
                 content = content.replace(/fill="currentColor"/g, 'fill="' + fill + '"');
                 content = content.replace(/stroke="currentColor"/g, 'stroke="' + fill + '"');
             }
-            svg.innerHTML = content;
+            setSvgContent(svg, content);
         } else {
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', iconData.path);
@@ -466,7 +496,7 @@ function createSVG(iconData, options = {}) {
     } else {
         console.warn(\`Malformed icon data for icon. isComplex: \${iconData.isComplex}, hasContent: \${!!iconData.content}, hasPath: \${!!iconData.path}\`);
         if (iconData.content) {
-            svg.innerHTML = iconData.content;
+            setSvgContent(svg, iconData.content);
         } else if (iconData.path) {
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', iconData.path);

@@ -6,6 +6,8 @@ Complete guide to integrate DataMa icons in the `light/` project and dataviz ext
 
 The `light/` project uses a **self-hosted** approach without external dependencies to ensure compatibility with all dataviz platforms.
 
+`DataMaIconsNew.esm.js` injects complex catalog SVG with a local `setSvgContent` helper (`DOMParser` + `importNode`). Do **not** reintroduce `Element.innerHTML` in `scripts/build.js` templates — Power BI AppSource certification forbids it.
+
 ### Architecture
 
 ```
