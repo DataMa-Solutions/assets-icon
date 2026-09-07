@@ -91,6 +91,19 @@ describe('Icons Structure', () => {
     }
   });
 
+  test('should keep Light what-if-svg sourced from icons/ui/what-if.svg', () => {
+    const sourcePath = path.join(__dirname, '..', 'icons', 'ui', 'what-if.svg');
+    expect(fs.existsSync(sourcePath)).toBe(true);
+
+    const distPath = path.join(__dirname, '..', 'dist', 'svg-data.json');
+    if (fs.existsSync(distPath)) {
+      const data = JSON.parse(fs.readFileSync(distPath, 'utf8'));
+      expect(data['what-if-svg']).toBeDefined();
+      const glyph = data['what-if-svg'].path || data['what-if-svg'].content;
+      expect(glyph).toContain('L 14,9.4');
+    }
+  });
+
   test('should extract SVG data correctly', () => {
     const testSvg = `
       <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

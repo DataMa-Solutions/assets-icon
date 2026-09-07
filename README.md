@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 236 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 235 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (236)
+## Available Icons (235)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -231,7 +231,6 @@ Vue.use(DatamaIcons);
 | `profile-svg` | <img src="icons/ui/profile.svg" width="32" height="32" alt="profile" /> |
 | `qlik-svg` | <img src="icons/logos/qlik.svg" width="32" height="32" alt="qlik" /> |
 | `ratio-svg` | <img src="icons/charts/ratio.svg" width="32" height="32" alt="ratio" /> |
-| `redshift-color-svg` | <img src="icons/sources/redshift-color.svg" width="32" height="32" alt="redshift-color" /> |
 | `redshift-mono-svg` | <img src="icons/sources/redshift-mono.svg" width="32" height="32" alt="redshift-mono" /> |
 | `redshift-svg` | <img src="icons/sources/redshift.svg" width="32" height="32" alt="redshift" /> |
 | `refresh-svg` | <img src="icons/vue3/refresh.svg" width="32" height="32" alt="refresh" /> |
@@ -253,9 +252,9 @@ Vue.use(DatamaIcons);
 | `share-2-svg` | <img src="icons/legacy/share-2.svg" width="32" height="32" alt="share-2" /> |
 | `shopping-cart-svg` | <img src="icons/ui/shopping-cart.svg" width="32" height="32" alt="shopping-cart" /> |
 | `sidebar-toggle-svg` | <img src="icons/ui/sidebar-toggle.svg" width="32" height="32" alt="sidebar-toggle" /> |
-| `slide-svg` | <img src="icons/ui/slide.svg" width="32" height="32" alt="slide" /> |
 | `slack-mono-svg` | <img src="icons/sources/slack-mono.svg" width="32" height="32" alt="slack-mono" /> |
 | `slack-svg` | <img src="icons/sources/slack.svg" width="32" height="32" alt="slack" /> |
+| `slide-svg` | <img src="icons/ui/slide.svg" width="32" height="32" alt="slide" /> |
 | `snowflake-mono-svg` | <img src="icons/sources/snowflake-mono.svg" width="32" height="32" alt="snowflake-mono" /> |
 | `snowflake-svg` | <img src="icons/sources/snowflake.svg" width="32" height="32" alt="snowflake" /> |
 | `split-by-svg` | <img src="icons/ui/split-by.svg" width="32" height="32" alt="split-by" /> |
@@ -283,12 +282,12 @@ Vue.use(DatamaIcons);
 | `update-svg` | <img src="icons/actions/update.svg" width="32" height="32" alt="update" /> |
 | `upload-1-svg` | <img src="icons/actions/upload-1.svg" width="32" height="32" alt="upload-1" /> |
 | `upload-svg` | <img src="icons/actions/upload.svg" width="32" height="32" alt="upload" /> |
-| `url-svg` | <img src="icons/vue3/url.svg" width="32" height="32" alt="url" /> |
 | `user-svg` | <img src="icons/vue3/user.svg" width="32" height="32" alt="user" /> |
 | `value-by-asc-svg` | <img src="icons/sort/value-by-asc.svg" width="32" height="32" alt="value-by-asc" /> |
 | `value-by-desc-svg` | <img src="icons/sort/value-by-desc.svg" width="32" height="32" alt="value-by-desc" /> |
 | `warning-svg` | <img src="icons/ui/warning.svg" width="32" height="32" alt="warning" /> |
 | `waterfall-svg` | <img src="icons/vue3/waterfall.svg" width="32" height="32" alt="waterfall" /> |
+| `what-if-svg` | <img src="icons/ui/what-if.svg" width="32" height="32" alt="what-if" /> |
 | `x-svg` | <img src="icons/legacy/x.svg" width="32" height="32" alt="x" /> |
 | `xtwitter-svg` | <img src="icons/sources/xtwitter.svg" width="32" height="32" alt="xtwitter" /> |
 | `zoom-in-svg` | <img src="icons/ui/zoom-in.svg" width="32" height="32" alt="zoom-in" /> |

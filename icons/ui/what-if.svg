@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- What If: simulation / scenario (refresh ring + question mark) -->
+  <path fill="currentColor" fill-rule="evenodd" d="M 12,3 C 7.0,3 3,7.0 3,12 C 3,17.0 7.0,21 12,21 C 17.0,21 21,17.0 21,12 L 19,12 C 19,15.9 15.9,19 12,19 C 8.1,19 5,15.9 5,12 C 5,8.1 8.1,5 12,5 C 13.8,5 15.4,5.7 16.6,6.8 L 14,9.4 L 21,10 L 20.4,3 L 18,5.4 C 16.4,3.9 14.3,3 12,3 Z"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M 9.7,10.3 Q 9.7,8 12,8 Q 14.3,8 14.3,10.1 Q 14.3,11.5 12.9,12.2 Q 12,12.7 12,13.7 L 12,14.1"/>
+  <circle cx="12" cy="16.4" r="1.1" fill="currentColor" stroke="none"/>
+</svg>

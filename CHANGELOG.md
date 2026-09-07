@@ -4,6 +4,7 @@
 
 ### ✨ New Features
 - **slide-svg**: restore Plotter slide / presentation glyph as `icons/ui/slide.svg` so the next `@datama/icons` build does not drop the key that Light already ships in `DataMaIconsNew`
+- **what-if-svg**: persist Light What If glyph (refresh ring + question mark) as `icons/ui/what-if.svg` so the next `@datama/icons` build does not drop the key that Light already ships in `DataMaIconsNew`
 
 ---
 
