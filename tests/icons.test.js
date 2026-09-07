@@ -79,6 +79,18 @@ describe('Icons Structure', () => {
     }
   });
 
+  test('should keep Plotter slide-svg sourced from icons/ui/slide.svg', () => {
+    const sourcePath = path.join(__dirname, '..', 'icons', 'ui', 'slide.svg');
+    expect(fs.existsSync(sourcePath)).toBe(true);
+
+    const distPath = path.join(__dirname, '..', 'dist', 'svg-data.json');
+    if (fs.existsSync(distPath)) {
+      const data = JSON.parse(fs.readFileSync(distPath, 'utf8'));
+      expect(data['slide-svg']).toBeDefined();
+      expect(data['slide-svg'].path).toContain('M4.5 5.75');
+    }
+  });
+
   test('should extract SVG data correctly', () => {
     const testSvg = `
       <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -1,5 +1,12 @@
 # Changelog - DataMa Icons
 
+## [Unreleased]
+
+### ✨ New Features
+- **slide-svg**: restore Plotter slide / presentation glyph as `icons/ui/slide.svg` so the next `@datama/icons` build does not drop the key that Light already ships in `DataMaIconsNew`
+
+---
+
 ## [1.0.10] - 2026-04-14
 
 ### ✨ New Features

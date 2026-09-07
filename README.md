@@ -1,6 +1,6 @@
 # @datama/icons
 
-DataMa icon library with 235 icons, available as Vue 2 components and JSON data.
+DataMa icon library with 236 icons, available as Vue 2 components and JSON data.
 
 ## Installation
 
@@ -53,7 +53,7 @@ Vue.use(DatamaIcons);
 - `strokeWidth`: Number or string (default: 0)
 - `class`: String, object, or array for additional CSS classes
 
-## Available Icons (235)
+## Available Icons (236)
 
 | Nom de l'icône | Aperçu |
 |:-------------- |:------:|
@@ -253,6 +253,7 @@ Vue.use(DatamaIcons);
 | `share-2-svg` | <img src="icons/legacy/share-2.svg" width="32" height="32" alt="share-2" /> |
 | `shopping-cart-svg` | <img src="icons/ui/shopping-cart.svg" width="32" height="32" alt="shopping-cart" /> |
 | `sidebar-toggle-svg` | <img src="icons/ui/sidebar-toggle.svg" width="32" height="32" alt="sidebar-toggle" /> |
+| `slide-svg` | <img src="icons/ui/slide.svg" width="32" height="32" alt="slide" /> |
 | `slack-mono-svg` | <img src="icons/sources/slack-mono.svg" width="32" height="32" alt="slack-mono" /> |
 | `slack-svg` | <img src="icons/sources/slack.svg" width="32" height="32" alt="slack" /> |
 | `snowflake-mono-svg` | <img src="icons/sources/snowflake-mono.svg" width="32" height="32" alt="snowflake-mono" /> |
