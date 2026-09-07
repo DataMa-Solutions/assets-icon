@@ -22,6 +22,8 @@ light/
 │           └── icons.json              # Icon data (optional)
 ```
 
+`DataMaIconsNew.esm.js` is a **build artifact**. Do not add catalog keys there by hand: the next `npm run build:all` in `assets-icon` plus `scripts/icons/sync-from-assets-icon.sh` overwrites it. Source SVGs live under `assets-icon/icons/<category>/<name>.svg` and become `<name>-svg`.
+
 ## 🚀 Quick Start
 
 ### 1. Import in your components
